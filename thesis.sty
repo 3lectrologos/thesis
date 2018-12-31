@@ -112,7 +112,7 @@
 \RequirePackage{tcolorbox}
 
 \newcommand{\titlecolor}{Plum!50!black}
-\newcommand{\titlecolorsec}{Plum!80!black}
+\newcommand{\titlecolorsec}{Plum!60!black}
 
 %\tcbset
 
@@ -147,12 +147,10 @@
     \parbox[b]{\textwidth}{\color{white}{\fontsize{45}{45}\selectfont\textsf{\textbf{\thechapter}}}
     \quad\quad\Huge\raisebox{0.4em}{#1}}}%
   \else
-    \fcolorbox{\titlecolorsec}{\titlecolor}{%
-    \parbox[b][2em][c]{\dimexpr 1.3in+\hoffset+\oddsidemargin+\textwidth-2\fboxsep-2\fboxrule}
-    {%
-    \hspace{\dimexpr 1in+\hoffset+\oddsidemargin-4pt}
-    \Huge\color{white}#1}%
-    }
+    \tcbox[nobeforeafter,colframe=\titlecolorsec,colback=\titlecolor,boxrule=1pt,leftrule=0mm,arc=6mm,sharp corners,boxsep=0mm,left=0mm,right=0mm,top=8pt,bottom=8pt]{%
+    \hspace{\dimexpr 1in+\hoffset+\oddsidemargin}
+    \parbox[b]{\textwidth}{\Huge\color{white}#1}%
+    }%
   \fi%
 }
 
@@ -193,10 +191,10 @@
 % Paragraph title format
 \newcommand{\adddot}[1]{#1.\hspace{-0.5em}}
 \titleformat{\paragraph}[runin]
-{\sffamily}
+{}%\sffamily}
 {}
 {0pt}
-{\fontsize{13}{13}\selectfont\bfseries\adddot}
+{\fontsize{12}{12}\selectfont\bfseries\adddot}
 [\hspace{-10em}]
 
 % -----------------------------------------------------------------------------
