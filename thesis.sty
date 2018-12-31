@@ -1,0 +1,286 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesis}[2018/11/30 v0.1 PhD Thesis style]
+
+% -----------------------------------------------------------------------------
+% Hyperrefs and citations
+% -----------------------------------------------------------------------------
+
+% Style (taken from ICML 2013)
+\RequirePackage{hyperref}
+\RequirePackage{color}
+\definecolor{mydarkblue}{rgb}{0,0.08,0.45}
+\hypersetup{ %
+  pdftitle={},
+  pdfauthor={},
+  pdfsubject={},
+  pdfkeywords={},
+  pdfborder=0 0 0,
+  pdfpagemode=UseNone,
+  colorlinks=true,
+  linkcolor=Plum!80!black,
+  citecolor=Plum!80!black,
+  filecolor=Plum!80!black,
+  urlcolor=Plum!80!black,
+  pdfview=FitH}
+
+% Custom commands
+\newcommand{\sectref}[1]{\hyperref[#1]{Section \ref*{#1}}}
+\newcommand{\chapref}[1]{\hyperref[#1]{Chapter \ref*{#1}}}
+\newcommand{\figref}[1]{\hyperref[#1]{Figure \ref*{#1}}}
+\newcommand{\figsref}[1]{\hyperref[#1]{Figures \ref*{#1}}}
+\newcommand{\tabref}[1]{\hyperref[#1]{ Table \ref*{#1}}}
+\newcommand{\algoref}[1]{\hyperref[#1]{Algorithm \ref*{#1}}}
+\newcommand{\theoremref}[1]{\hyperref[#1]{Theorem \ref*{#1}}}
+\newcommand{\lemmaref}[1]{\hyperref[#1]{Lemma \ref*{#1}}}
+\newcommand{\lemmasref}[1]{\hyperref[#1]{Lemmas \ref*{#1}}}
+\newcommand{\corref}[1]{\hyperref[#1]{Corollary \ref*{#1}}}
+\newcommand{\eqtref}[1]{\hyperref[#1]{\mbox{(\ref*{#1})}}}
+\newcommand{\appref}[1]{\hyperref[#1]{Appendix \ref*{#1}}}
+\newcommand{\lineref}[1]{\hyperref[#1]{line \ref*{#1}}}
+\newcommand{\linesref}[2]{\hyperref[#1]{lines \ref*{#1}--\ref*{#2}}}
+\newcommand{\linsref}[1]{\hyperref[#1]{lines \ref*{#1}}}
+
+
+% Modification to natbib citations (taken from ICML 2018)
+\newcommand{\yrcite}[1]{\citeyearpar{#1}}
+\renewcommand{\cite}[1]{\citep{#1}}
+\setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}
+
+
+% -----------------------------------------------------------------------------
+% Page margins
+% -----------------------------------------------------------------------------
+
+\RequirePackage{geometry}
+\geometry{paper=letterpaper,includeall,vscale=0.85,hscale=0.85,bottom=0.9in,
+          bindingoffset=0.35in,outer=0.25in}
+
+% Space between text and footnotes
+\setlength{\skip\footins}{2em}
+
+% Space between text and bottom page number
+\setlength{\footskip}{3em}
+
+
+% -----------------------------------------------------------------------------
+% Math
+% -----------------------------------------------------------------------------
+
+\newcommand{\twopartdef}[4]
+{
+	\left\{
+		\begin{array}{ll}
+			#1\,,& \mbox{if } #2 \\
+			#3\,,& \mbox{if } #4
+		\end{array}
+	\right.
+}
+
+\newcommand{\twopartdefo}[3]
+{
+	\left\{
+		\begin{array}{ll}
+			#1\,,& \mbox{if } #2 \\
+			#3\,,& \mbox{otherwise}
+		\end{array}
+	\right.
+}
+
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+
+% Bold math symbol shortcut
+\RequirePackage{bm}
+\def\*#1{\bm{#1}}
+
+% Theory environments
+\RequirePackage{amsthm}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{cor}{Corollary}
+\newtheorem{assumption}{Assumption}
+
+
+% -----------------------------------------------------------------------------
+% Chapter/Section title styles
+% -----------------------------------------------------------------------------
+
+\RequirePackage{xstring}
+\RequirePackage[usenames,dvipsnames]{xcolor}
+\RequirePackage[sf]{titlesec}
+\RequirePackage{tcolorbox}
+
+\newcommand{\titlecolor}{Plum!50!black}
+\newcommand{\titlecolorsec}{Plum!80!black}
+
+%\tcbset
+
+% Chapter colorbox definition
+%\fboxrule=1pt
+%\newcommand{\colorchapter}[1]{%
+%  \if\ttl@key@numberless
+%    \fcolorbox{\titlecolorsec}{\titlecolor}{%
+%    \parbox[b][3em][c]{\dimexpr 1.3in+\hoffset+\oddsidemargin+\textwidth-2\fboxsep-2\fboxrule}
+%    {%
+%    \hspace{\dimexpr 1in+\hoffset+\oddsidemargin-8pt}
+%    \color{white}{\fontsize{45}{45}\selectfont\textsf{\textbf{\thechapter}}}
+%    \quad\quad\Huge\raisebox{0.4em}{#1}}%
+%    }
+%  \else
+%    \fcolorbox{\titlecolorsec}{\titlecolor}{%
+%    \parbox[b][2em][c]{\dimexpr 1.3in+\hoffset+\oddsidemargin+\textwidth-2\fboxsep-2\fboxrule}
+%    {%
+%    \hspace{\dimexpr 1in+\hoffset+\oddsidemargin-4pt}
+%    \Huge\color{white}#1}%
+%    }
+%  \fi%
+%}
+
+% Chapter colorbox definition
+\fboxrule=1pt
+\newcommand{\colorchapter}[1]{%
+  \if\ttl@key@numberless
+    %\fcolorbox{\titlecolorsec}{\titlecolor}{%
+    \tcbox[nobeforeafter,colframe=\titlecolorsec,colback=\titlecolor,boxrule=1pt,leftrule=0mm,arc=6mm,sharp corners,boxsep=0mm,left=0mm,right=0mm,top=8pt,bottom=8pt]{%
+    \hspace{\dimexpr 1in+\hoffset+\oddsidemargin}
+    \parbox[b]{\textwidth}{\color{white}{\fontsize{45}{45}\selectfont\textsf{\textbf{\thechapter}}}
+    \quad\quad\Huge\raisebox{0.4em}{#1}}}%
+  \else
+    \fcolorbox{\titlecolorsec}{\titlecolor}{%
+    \parbox[b][2em][c]{\dimexpr 1.3in+\hoffset+\oddsidemargin+\textwidth-2\fboxsep-2\fboxrule}
+    {%
+    \hspace{\dimexpr 1in+\hoffset+\oddsidemargin-4pt}
+    \Huge\color{white}#1}%
+    }
+  \fi%
+}
+
+% Chapter title format
+\titleformat{\chapter}[block]
+{\sffamily}
+{}
+{0pt}
+{\hspace{\dimexpr -1in-\hoffset-\oddsidemargin}\colorchapter}
+
+\titlespacing*{\chapter}{0pt}{0pt}{40pt}
+
+% Section colorbox definition
+\newcommand{\colorsection}[1]{%
+  \begin{tcolorbox}[width=\textwidth,colframe=\titlecolor,toprule=0pt,rightrule=0pt,leftrule=0pt,bottomrule=0mm,colback=white,arc=0mm,boxsep=0mm,left=0mm,right=0mm,bottom=0mm,top=0mm]
+    \fontsize{18}{18}\selectfont%\color{\titlecolor}
+    %\Large\color{\titlecolor}
+    \if\ttl@key@numberless
+      \thesection\quad
+    \fi
+    #1
+  \end{tcolorbox}}
+
+% Section title format
+\titleformat{\section}[block]
+{\sffamily}
+{}
+{0pt}
+{\ifodd\value{page}%
+   \hspace{0em}%
+ \else
+   \hspace{0em}%
+ \fi
+ \colorsection}
+
+\titlespacing*{\section}{0pt}{10pt}{-7pt}
+ 
+% Paragraph title format
+\newcommand{\adddot}[1]{#1.\hspace{-0.5em}}
+\titleformat{\paragraph}[runin]
+{\sffamily}
+{}
+{0pt}
+{\fontsize{13}{13}\selectfont\bfseries\adddot}
+[\hspace{-10em}]
+
+% -----------------------------------------------------------------------------
+% Headers and Footers
+% -----------------------------------------------------------------------------
+
+\RequirePackage{fancyhdr}
+
+\fancypagestyle{frontmatter}{%
+  \renewcommand{\headrulewidth}{0pt}% No header rule
+  \renewcommand{\footrulewidth}{0pt}% No footer rule
+  \fancyhf{}% Clear header/footer
+  \fancyfoot[C]{\textsf{\thepage}}%
+}
+
+\fancypagestyle{mainmatter}{%
+  \renewcommand{\headrulewidth}{0.4pt}% No header rule
+  \renewcommand{\footrulewidth}{0pt}% No footer rule
+  \fancyhf{} % clear all header fields
+  \fancyhead[LE]{\textsf{\thepage\quad\quad Sampling from Probabilistic Submodular Models}}
+  \fancyhead[RO]{\textsf{\leftmark\quad\quad\thepage}}
+  \fancyheadoffset[LE,RO]{2em}
+}
+
+\fancypagestyle{plain}{%
+\fancyhf{} % clear all header and footer fields
+\fancyfoot[C]{\textsf{\thepage}} % except the center
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}}
+
+% Omit headers/footers for empty pages between chapters
+\let\origdoublepage\cleardoublepage
+\newcommand{\clearemptydoublepage}{%
+  \clearpage
+  {\pagestyle{empty}\origdoublepage}%
+}
+\let\cleardoublepage\clearemptydoublepage
+
+
+% -----------------------------------------------------------------------------
+% Looser float parameters
+% -----------------------------------------------------------------------------
+
+\renewcommand{\topfraction}{1.0}	% max fraction of floats at top
+\renewcommand{\bottomfraction}{1.0}	% max fraction of floats at bottom
+%   Parameters for TEXT pages (not float pages):
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{10}     % 2 may work better
+\setcounter{dbltopnumber}{2}    % for 2-column pages
+\renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
+\renewcommand{\textfraction}{0}	% allow minimal text w. figs
+
+
+% -----------------------------------------------------------------------------
+% Algorithm related
+% -----------------------------------------------------------------------------
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand*\LNot{\textbf{not}\xspace}
+\newcommand*\LAnd{\textbf{and}\xspace}
+\newcommand*\LET[2]{\STATE #1 $\gets$ #2}
+\newcommand*\Fcall[1]{\textsc{#1}}
+\makeatletter
+\newcommand{\setalglineno}[1]{%
+	\setcounter{ALC@line}{\numexpr#1-1}}
+\makeatother
+\renewcommand{\algorithmiccomment}[1]{// #1}
+\newcommand{\LINEIF}[2]{%
+	\STATE\algorithmicif\ {#1}\ \algorithmicthen\ {#2}%
+}
+\newcommand{\LINEELSE}[1]{%
+	\STATE\algorithmicelse\ {#1}%
+}
+\newcommand{\LINEIFELSE}[3]{%
+	\STATE\algorithmicif\ {#1}\ \algorithmicthen\ {#2}\ \algorithmicelse\ {#3}%
+}
+
+% -----------------------------------------------------------------------------
+% Misc
+% -----------------------------------------------------------------------------
+
+\newcommand{\todo}[1]{\noindent\texttt{\color[rgb]{0.5,0.1,0.1} TODO: #1}}
+
+% Import external pdfs. Needs to be imported *after* xcolor!
+\usepackage{pdfpages}

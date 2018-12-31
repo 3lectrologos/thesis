@@ -1,0 +1,85 @@
+\documentclass[letterpaper,12pt,twoside]{book}
+
+\usepackage{fontspec}
+\usepackage{leading}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{adjustbox}         		% For trimming included graphics in xetex
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{wrapfig}
+\usepackage{mathtools}         		% For \vcentcolon
+\usepackage{dsfont}            		% Indicator function (mathbb for numbers)
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xspace}            		% Controls space after user-defined command
+\usepackage{enumitem}
+\usepackage{fixltx2e}          		% For subscripts in normal text
+\usepackage[nottoc]{tocbibind} 		% Include bibliography in TOC
+\usepackage{placeins}          		% \FloatBarrier
+\usepackage{float}             		% H option for floats
+\usepackage{thesis}
+
+% Fonts
+%\setmainfont[Mapping=tex-text]{Libre Baskerville}
+\setmainfont[Mapping=tex-text]{Linux Libertine}
+%\setsansfont{Myriad Pro}
+\setsansfont{Myriad Pro Condensed}
+\setmonofont[Scale=0.9]{Consolas}
+%\leading{9pt}
+
+% Hyphenations
+\hyphenation{su-per-modu-lar}
+
+% Misc
+\newcommand{\fb}{\mathop{\mathrm{fb}}}
+\newcommand{\trimlen}{0pt}
+
+% Math-related
+\newcommand{\defeq}{\vcentcolon=}
+\newcommand{\sdef}[2]{\left\{#1\smid#2\right\}}
+\renewcommand{\ss}{\mathcal{E}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\tm}{t_{\mathrm{mix}}}
+\newcommand{\tme}{\tm(\epsilon)}
+\newcommand{\smid}{\ \middle\vert\ }
+\newcommand{\ess}{\eta_{SS'}}
+\newcommand{\zf}{\zeta_F}
+\newcommand{\gf}{\gamma_{F,\beta}}
+\newcommand{\gsf}{\gamma_{f,\beta}}
+\newcommand{\D}{\Delta}
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,fit,backgrounds}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\newlength\figureheight
+\newlength\figurewidth
+
+
+\begin{document}
+%\includepdf[pages={1}]{title3.pdf}
+
+\frontmatter
+\pagestyle{frontmatter}
+\input{front.tex}
+\tableofcontents
+
+\mainmatter
+\pagestyle{mainmatter}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+%\renewcommand{\chaptermark}[1]{\markright{\thechapter #1}}
+
+\input{chapters/intro.tex}
+\input{chapters/gibbs.tex}
+\input{chapters/appendix_gibbs.tex}
+
+\backmatter
+\pagestyle{frontmatter}
+\bibliography{thesis}
+\bibliographystyle{icml2019}
+
+\end{document}

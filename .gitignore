@@ -1,0 +1,17 @@
+*~
+*.bak
+*.aux
+*.log
+*.synctex
+*.toc
+*.ind
+*.dpth
+/*
+!/.gitignore
+!/*.tex
+!/*.bib
+!/*.sty
+!/*.bst
+!/Makefile
+!/*/
+!title*.pdf

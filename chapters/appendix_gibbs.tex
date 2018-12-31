@@ -1,0 +1,153 @@
+\appendix
+\chapter{Detailed proofs}
+
+\section{Polynomial-time Mixing Proofs}
+For sets $A, B$, we denote $A \oplus B \defeq (A \setminus B)\cup(B \setminus A)$.
+
+\let\oldthelemma\thelemma
+\renewcommand{\thelemma}{A.1}
+\begin{lemma} \label{lem:inj}
+Define the maps $\ess : \mathcal{C}_{SS'} \to \ss$, for each pair $(S, S') \in \ss \times \ss$ with $S \sim S'$, as follows:
+\begin{align*}
+  \ess(A, B) = \twopartdefo{A \oplus B \oplus S}{F(S') \geq F(S)}{A \oplus B \oplus S'}.
+\end{align*}
+Then, each map $\ess$ is injective.
+\end{lemma}
+
+\begin{proof}
+  Assume that $F(S') \geq F(S)$, and $S' = S \cup \{r\}$, for some $r \in V$.
+  Assume that we are given $C \defeq A \oplus B \oplus S$, and we want to recover $A$ and $B$.
+  We will denote by $\prec$ the natural ordering of the ground set $V$.
+  First, we define
+  \begin{align*}
+    K^- &\defeq \sdef{v \in C \oplus S}{v \prec r}\\
+    K^+ &\defeq \sdef{v \in C \oplus S}{v \succ r}.
+  \end{align*}
+  Then, we can recover $A$ and $V$ as follows:
+  \begin{align*}
+    A &= S \oplus K^-\\
+    B &= S' \oplus K^+.
+  \end{align*}
+  The case $S' = S \setminus \{r\}$, as well as the two cases for $F(S') < F(S)$ are completely analogous.
+  Note that the distinction based on the value of the function has no effect on the proof here, but is technically needed for the next lemma.
+  The only thing that changes between the cases is whether the element $r$ that gets added or removed in the transition $(S, S')$ belongs to $A$ or $B$, which is always straightforward to determine from the type of the transition (for additions it belongs to $B$, and for removals to $A$).
+\end{proof}
+\let\thelemma\oldthelemma
+
+\setcounter{lemma}{0}
+\begin{lemma} \label{lem:poly_full}
+  For any $S \sim S'$, and any $A, B \in \ss$, it holds that
+  \begin{align*}
+    p(A)p(B) \leq 2n\exp(2 \beta \zf)Q(S, S')p(\ess(A, B)).
+  \end{align*}
+  
+  If $F$ is submodular or supermodular, then the bound is improved to
+  \begin{align*}
+  	p(A)p(B) \leq 2n\exp(\beta \zeta_f)Q(S, S')p(\ess(A, B)).
+  \end{align*}
+\end{lemma}
+
+\begin{proof}
+  We will consider the case $S' = S \cup \{r\}$, for some $r \in V$, with $F(S') \geq F(S)$.
+  Again, the other three cases are completely analogous by using $\ess$ as defined in \lemmaref{lem:inj}.
+  
+  We first compute
+  \begin{align*}
+    Q(S, S') &= p(S)P(S, S')\\
+             &= \frac{1}{n}\frac{p(S)p(S')}{p(S) + p(S')} \tag*{by definition of the Gibbs sampler}\\
+             &= \frac{1}{nZ}\frac{\exp(\beta F(S)) \exp(\beta F(S'))}{\exp(\beta F(S)) + \exp(\beta F(S'))} \tag*{by definition of our models}\\
+             &\geq \frac{1}{nZ}\frac{\exp(\beta F(S)) \exp(\beta F(S'))}{2\exp(\beta F(S'))} \tag*{by $F(S') \geq F(S)$}\\
+             &= \frac{\exp(\beta F(S))}{2nZ}.
+  \end{align*}
+  As a result, we get
+  \begin{align} \label{eq:ppq}
+    \frac{p(A)p(B)}{Q(S, S')} \leq \frac{2n}{Z}\exp(\beta (F(A) + F(B) - F(S))).
+  \end{align}
+  Let us denote $\zf(A, B) \defeq F(A) + F(B) - F(A \cup B) - F(A \cap B)$, for any $A, B \subseteq V$, so that $\zf = \max_{A, B \subseteq V}|\zf(A, B)|$.
+  Then, if we denote $C \defeq \ess(A, B) = A \oplus B \oplus S$, we have
+  \begin{align*}
+    &F(A) + F(B) - F(S)\\
+    &= (F(A) + F(B) - F(A \cup B) - F(A \cap B)) - (F(S) + F(C) - F(A \cup B) - F(A \cap B)) + F(C)\\
+    &= (F(A) + F(B) - F(A \cup B) - F(A \cap B)) - (F(S) + F(C) - F(S \cup C) - F(S \cap C)) + F(C)\\
+    &= \zf(A, B) - \zf(S, C) + F(C)\\
+    &\leq 2\zf + F(C).
+  \end{align*}
+  If $F$ is submodular, then $\zf(A, B)$ and $\zf(S, C)$ are both non-negative, therefore $\zf(A, B) - \zf(S, C) + F(C) \leq \zf + F(C) = \zeta_f + F(C)$.
+  Similarly, if $F$ is supermodular, then $\zf(A, B)$ and $\zf(S, C)$ are both non-positive, therefore $\zf(A, B) - \zf(S, C) + F(C) \leq \zf + F(C) = \zeta_f + F(C)$.
+  Substituting these bounds in \eqref{eq:ppq} gives us the result of the lemma.
+\end{proof}
+
+\section{Fast Mixing Proofs}
+
+\let\oldthelemma\thelemma
+\renewcommand{\thelemma}{B.1}
+\begin{lemma}
+For any $S, R \subseteq V$ with $R = S \cup \{r\}$, if we define
+\begin{align*}
+  p_{\mathrm{dif}}(v) \defeq \left|\frac{p(S \cup \{v\})}{p(S \cup \{v\}) + p(S \setminus \{v\})} - \frac{p(R \cup \{v\})}{p(R \cup \{v\}) + p(R \setminus \{v\})}\right|,
+\end{align*}
+then it holds that
+\begin{align*}
+  \sum_{v \neq r}p_{\mathrm{dif}}(v) \leq \gf.
+\end{align*}
+\end{lemma}
+\let\thelemma\oldthelemma
+
+\begin{proof}
+  For any $v \neq r$, we have
+  \begin{align*}
+    p_{\mathrm{dif}}(v) &= \left|\frac{\exp(\beta F(S \cup \{v\}))}{\exp(\beta F(S \cup \{v\})) + \exp(\beta F(S \setminus \{v\}))} - \frac{\exp(\beta F(R \cup \{v\}))}{\exp(\beta F(R \cup \{v\})) + \exp(\beta F(R \setminus \{v\}))}\right|\\
+    &= \left|\frac{\exp(\beta \D_F(v|S))}{1 + \exp(\beta \D_F(v|S))} - \frac{\exp(\beta \D_F(v|R))}{1 + \exp(\beta \D_F(v|R))}\right|\\
+    &= \left|\frac{\exp(\beta \D_F(v|S)) - \exp(\beta \D_F(v|R))}{(1 + \exp(\beta \D_F(v|S)))(1 + \exp(\beta \D_F(v|R)))}\right|\\
+    &\leq \left|\frac{\exp(\beta \D_F(v|S)) - \exp(\beta \D_F(v|R))}{\exp(\beta \D_F(v|S)) + \exp(\beta \D_F(v|R))}\right|\\
+    &= \left|\frac{\exp(\beta (\D_F(v|S) - \D_F(v|R))) - 1}{\exp(\beta (\D_F(v|S) - \D_F(v|R))) + 1}\right|\\
+    &= \tanh \left(\frac{\beta}{2}\big|(\D_F(v|S) - \D_F(v|R)) \big|\right).
+  \end{align*}
+  The lemma follows then by the definition of $\gf$, and the fact that $R = S \cup \{r\}$.
+\end{proof}
+
+\let\oldthelemma\thelemma
+\renewcommand{\thelemma}{B.2}
+\begin{lemma}
+  If $F$ is submodular or supermodular, and decomposed according to \eqref{eq:decomp}, then
+  \begin{align*}
+    \gf = \gsf.
+  \end{align*}
+\end{lemma}
+\let\thelemma\oldthelemma
+
+\begin{proof}
+  For any $S, R \subseteq V$ with $R = S \cup \{r\}$, and any $v \in V$, we have
+  \begin{align*}
+    \D_F(v|S) - \D_F(v|R) &= F(S \cup \{v\}) - F(S \setminus \{v\}) - F(R \cup \{v\}) + F(R \setminus \{v\})\\
+    &= f(S \cup \{v\}) - f(S \setminus \{v\}) - f(R \cup \{v\}) + f(R \setminus \{v\})\\
+    &= \D_f(v|S) - \D_f(v|R).
+  \end{align*}
+\end{proof}
+
+\begin{cor} \label{cor:fast_full}
+  For any submodular function $F$ that can be written in the form of \eqref{eq:fdec}, with $f$ being its monotone (also decomposable) part according to \eqref{eq:decomp}, if we define
+  \begin{align*}
+    \theta_f \defeq \max_{v \in V} \sum_{\ell \in [L]} \sqrt{f_{\ell}(v)} \hspace{1em}\textrm{and}\hspace{1em} \lambda_f \defeq \max_{\ell \in [L]} \sum_{v \in V} \sqrt{f_{\ell}(v)},
+  \end{align*}
+  then it holds that
+  \begin{align*}
+    \gsf \leq \frac{\beta}{2} \theta_f \lambda_f.
+  \end{align*}
+\end{cor}
+
+\begin{proof}
+  For any $S, R \subseteq V$ with $R = S \cup \{r\}$, we have
+  \begin{align*}
+  	&\sum_{v \neq r} \tanh \left(\frac{\beta}{2}\big|(\D_f(v|S) - \D_f(v|R)) \big|\right)\\
+    &\leq \sum_{v \neq r} \frac{\beta}{2}\big|(\D_f(v|S) - \D_f(v|R)) \big| \tag*{by $\tanh(x) \leq x$, for all $x \geq 0$}\\
+    &\leq \sum_{v \neq r} \frac{\beta}{2}(\D_f(v|S) - \D_f(v|R)) \tag*{by submodularity of $f$}\\
+    &= \frac{\beta}{2}\sum_{v \neq r}(f(S \cup \{v\}) - f(S \setminus \{v\}) - f(S \cup \{r\} \cup \{v\}) + f(S \cup \{r\} \setminus \{v\}))\\
+    &= \frac{\beta}{2}\sum_{v \neq r}\sum_{\ell \in [L]}(f_{\ell}(S \cup \{v\}) - f_{\ell}(S \setminus \{v\}) - f_{\ell}(S \cup \{r\} \cup \{v\}) + f_{\ell}(S \cup \{r\} \setminus \{v\}))\\
+    &\leq \frac{\beta}{2}\sum_{v \neq r}\sum_{\ell \in [L]}\min\big\{f_{\ell}(S \cup \{v\}) - f_{\ell}(S \setminus \{v\}), f_{\ell}(S \cup \{r\} \setminus \{v\}) - f_{\ell}(S \setminus \{v\})\big\} \tag*{by monotonicity of $f_{\ell}$}\\
+    &\leq \frac{\beta}{2}\sum_{v \neq r}\sum_{\ell \in [L]}\min\big\{f_{\ell}(v), f_{\ell}(r)\big\} \tag*{by submodularity of $f_{\ell}$}\\
+    &\leq \frac{\beta}{2}\sum_{v \neq r}\sum_{\ell \in [L]}\sqrt{f_{\ell}(v) f_{\ell}(r)}\\
+    &= \frac{\beta}{2}\sum_{\ell \in [L]}\sqrt{f_{\ell}(r)}\sum_{v \neq r}\sqrt{ f_{\ell}(v)}.
+  \end{align*}
+  The result follows by maximizing both sides over $S$ and $r$.
+\end{proof}
