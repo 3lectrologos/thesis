@@ -15,10 +15,10 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xspace}            		% Controls space after user-defined command
 \usepackage{enumitem}
-\usepackage{fixltx2e}          		% For subscripts in normal text
 \usepackage[nottoc]{tocbibind} 		% Include bibliography in TOC
 \usepackage{placeins}          		% \FloatBarrier
 \usepackage{float}             		% H option for floats
+\usepackage{setspace}
 \usepackage{thesis}
 
 % Fonts
@@ -51,6 +51,48 @@
 \newcommand{\gsf}{\gamma_{f,\beta}}
 \newcommand{\D}{\Delta}
 
+\newcommand{\Poin}{Poincar\'e}
+\newcommand{\Ms}{$\mathrm{M}^3$}
+\newcommand{\bO}{\mathcal{O}}
+\newcommand{\Pg}{P^{\mathrm{G}}}
+\newcommand{\Pm}{P^{\mathrm{M}}}
+\newcommand{\Pc}{P^{\mathrm{C}}}
+\newcommand{\bPg}{\bar{P}^{\mathrm{G}}}
+\newcommand{\bPm}{\bar{P}^{\mathrm{M}}}
+\newcommand{\bPc}{\bar{P}^{\mathrm{C}}}
+\newcommand{\pmin}{\pi_{\textrm{min}}}
+\newcommand{\Fi}{F_i}
+\newcommand{\wi}{w_i}
+\newcommand{\mi}{m_i}
+\newcommand{\ci}{c_i}
+\newcommand{\Zi}{Z_i}
+\newcommand{\dtv}[2]{d_{\textrm{TV}}\left( #1, #2 \right)}
+\newcommand{\pib}{\pi_{\beta}}
+\newcommand{\isingb}{$\textrm{\textsc{Ising}}_{\beta}$}
+\newcommand{\ising}{\textsc{Ising}}
+\newcommand{\dn}{d_n}
+\renewcommand{\gg}{\gamma^{\mathrm{G}}}
+\newcommand{\gc}{\gamma^{\mathrm{C}}}
+\newcommand{\bgm}{\bar{\gamma}^{\mathrm{M}}}
+\newcommand{\bgc}{\bar{\gamma}^{\mathrm{C}}}
+\newcommand{\Pmax}{P_{\textrm{max}}}
+
+% Like substack, but with alignment
+\makeatletter
+\newcommand{\subalign}[1]{%
+  \vcenter{%
+    \Let@ \restore@math@cr \default@tag
+    \baselineskip\fontdimen10 \scriptfont\tw@
+    \advance\baselineskip\fontdimen12 \scriptfont\tw@
+    \lineskip\thr@@\fontdimen8 \scriptfont\thr@@
+    \lineskiplimit\lineskip
+    \ialign{\hfil$\m@th\scriptstyle##$&$\m@th\scriptstyle{}##$\crcr
+      #1\crcr
+    }%
+  }
+}
+\makeatother
+
 % Tikz
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,fit,backgrounds}
@@ -74,8 +116,12 @@
 %\renewcommand{\chaptermark}[1]{\markright{\thechapter #1}}
 
 \input{chapters/intro.tex}
+\input{chapters/background.tex}
 \input{chapters/gibbs.tex}
+\input{chapters/m3.tex}
+\appendix
 \input{chapters/appendix_gibbs.tex}
+\input{chapters/appendix_m3.tex}
 
 \backmatter
 \pagestyle{frontmatter}
