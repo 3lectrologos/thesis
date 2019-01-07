@@ -1,4 +1,6 @@
-\chapter{Gibbs Sampling in PSMs} \label{ch:gibbs}
+\chapter{Gibbs Sampling in Prob. Submodular Models} \label{ch:gibbs}
+
+\section{Introduction}
 Modeling notions such as coverage, representativeness, or diversity is an important challenge in many machine learning problems.
 These notions are well captured by submodular set functions.
 Analogously, supermodular functions capture notions of smoothness, regularity, or cooperation. 
@@ -15,7 +17,18 @@ It is natural to ask to what degree the usual alternative to variational methods
 To this end, in this paper we consider a simple Markov chain Monte Carlo (MCMC) algorithm on log-submodular and log-supermodular models, and provide a first analysis of its performance.
 We present two theoretical conditions that respectively guarantee polynomial-time and fast ($\mathcal{O}(n \log n)$) mixing in such models, and experimentally compare against the variational approximations on three examples.
 
-\section{Problem Setup} \label{sect:setup}
+\paragraph{Related Work.}
+In contemporary work to ours, Rebeschini and Karbasi \cite{rebeschini15} analyzed the mixing times of log-submodular models.
+Using a method based on matrix norms, which was previously introduced by Dyer et al. \cite{dyer09}, and is closely related to path coupling, they arrive at a similar---though not directly comparable---condition to the one we presented in \theoremref{thm:fast}.
+
+Iyer and Bilmes \cite{iyer15} recently considered a different class of probabilistic models, called submodular point processes, which are also defined through submodular functions, and have the form $p(S) \propto F(S)$.
+They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
+
+The canonical path method for bounding mixing times has been previously used in applications, such as approximating the partition function of ferromagnetic Ising models \cite{jerrum93}, approximating matrix permanents \cite{jerrum89,jerrum04perm}, and counting matchings in graphs \cite{jerrum03}.
+The most prominent application of coupling-based methods is counting $k$-colorings in low-degree graphs \cite{jerrum95,bubley98,jerrum03}.
+Other applications include counting independent sets in graphs \cite{dyer00}, and approximating the partition function of various subclasses of Ising models at high temperatures \cite{levin08}.
+
+\section{The Gibbs Sampler} \label{sect:setup}
 We start by considering set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $|V| = n$.
 Without loss of generality, if not otherwise stated, we will hereafter assume that $V = [n] \defeq \{1, 2, \ldots,n\}$.
 The marginal gain obtained by adding element $v \in V$ to set $S \subseteq V$ is defined as $F(v|S) \defeq F(S \cup \{v\}) - F(S)$.
@@ -63,15 +76,15 @@ If $F$ is submodular, then its contractions and restrictions are also submodular
 Finally, it is easy to see that $p(S \mid C \subseteq S \subseteq D) \propto \exp(\beta (F_C)^D(S))$.
 In our experiments, we consider computing marginals of the form $p(v \in S \mid C \subseteq S \subseteq D)$, for some $v \in V$, which correspond to $A = \{v\}$, and $B = V$.
 
-\section{Sampling and Mixing Times}
-Performing exact inference in models defined by \eqref{eq:pdef} boils down to computing the partition function $Z$.
-Unfortunately, this is generally a \#P-hard problem, which was shown to be the case even for Ising models by Jerrum and Sinclair \cite{jerrum93}.
-However, they also proposed a sampling-based FPRAS for a class of ferromagnetic models, which gives us hope that it may be possible to efficiently perform approximate inference in more general models under suitable conditions.
-
-MCMC sampling \cite{levin08} approaches are based on performing randomly selected local moves in a state space $\ss$ to approximately compute quantities of interest.
-The visited states $(X_0, X_1,\ldots)$ form a Markov chain, which under mild conditions converges to a stationary distribution $\pi$.
-Crucially, the probabilities of transitioning from one state to another are carefully chosen to ensure that the stationary distribution is identical to the distribution of interest.
-In our case, the state space is the powerset of $V$ (equivalently, the space of all binary vectors of length $n$), and to approximate the marginal probabilities of $p$ we construct a chain over subsets of $V$ that has stationary distribution $p$.
+%\section{Sampling and Mixing Times}
+%Performing exact inference in models defined by \eqref{eq:pdef} boils down to computing the partition function $Z$.
+%Unfortunately, this is generally a \#P-hard problem, which was shown to be the case even for Ising models by Jerrum and Sinclair \cite{jerrum93}.
+%However, they also proposed a sampling-based FPRAS for a class of ferromagnetic models, which gives us hope that it may be possible to efficiently perform approximate inference in more general models under suitable conditions.
+%
+%MCMC sampling \cite{levin08} approaches are based on performing randomly selected local moves in a state space $\ss$ to approximately compute quantities of interest.
+%The visited states $(X_0, X_1,\ldots)$ form a Markov chain, which under mild conditions converges to a stationary distribution $\pi$.
+%Crucially, the probabilities of transitioning from one state to another are carefully chosen to ensure that the stationary distribution is identical to the distribution of interest.
+%In our case, the state space is the powerset of $V$ (equivalently, the space of all binary vectors of length $n$), and to approximate the marginal probabilities of $p$ we construct a chain over subsets of $V$ that has stationary distribution $p$.
 
 \paragraph{The Gibbs sampler}
 In this paper, we focus on one of the simplest and most commonly used chains, namely the Gibbs sampler, also known as the Glauber chain.
@@ -437,16 +450,6 @@ The latter gain an advantage when the posterior is concentrated around only a fe
   \label{fig:exp}
 \end{figure}
 
-\section{Further Related Work}
-In contemporary work to ours, Rebeschini and Karbasi \cite{rebeschini15} analyzed the mixing times of log-submodular models.
-Using a method based on matrix norms, which was previously introduced by Dyer et al. \cite{dyer09}, and is closely related to path coupling, they arrive at a similar---though not directly comparable---condition to the one we presented in \theoremref{thm:fast}.
-
-Iyer and Bilmes \cite{iyer15} recently considered a different class of probabilistic models, called submodular point processes, which are also defined through submodular functions, and have the form $p(S) \propto F(S)$.
-They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
-
-The canonical path method for bounding mixing times has been previously used in applications, such as approximating the partition function of ferromagnetic Ising models \cite{jerrum93}, approximating matrix permanents \cite{jerrum89,jerrum04perm}, and counting matchings in graphs \cite{jerrum03}.
-The most prominent application of coupling-based methods is counting $k$-colorings in low-degree graphs \cite{jerrum95,bubley98,jerrum03}.
-Other applications include counting independent sets in graphs \cite{dyer00}, and approximating the partition function of various subclasses of Ising models at high temperatures \cite{levin08}.
 
 \section{Conclusion}
 We considered the problem of performing marginal inference using MCMC sampling techniques in probabilistic models defined through submodular functions.

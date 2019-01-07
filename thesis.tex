@@ -108,7 +108,10 @@
 \frontmatter
 \pagestyle{frontmatter}
 \input{front.tex}
+{
+\hypersetup{linkcolor=black}
 \tableofcontents
+}
 
 \mainmatter
 \pagestyle{mainmatter}
@@ -119,6 +122,8 @@
 \input{chapters/background.tex}
 \input{chapters/gibbs.tex}
 \input{chapters/m3.tex}
+\input{chapters/genes.tex}
+\input{chapters/conclusion.tex}
 \appendix
 \input{chapters/appendix_gibbs.tex}
 \input{chapters/appendix_m3.tex}

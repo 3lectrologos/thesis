@@ -1,4 +1,6 @@
-\chapter{Sampling with Semigradients} \label{ch:m3}
+\chapter{Sampling using Semigradients} \label{ch:m3}
+
+\section{Introduction}
 Discrete probabilistic models have played a fundamental role in machine learning.
 Examples range from classic graphical models, such as Ising and Potts models \citep{koller09}, which have long been used in computer vision applications \citep{boykov01}, to determinantal point processes \citep{kulesza12} used in video summarization \citep{gong14}, and facility location diversity models used for product recommentation \citep{tschiatschek16}.
 Recently, there has been increased interest in general distributions over subsets of a finite ground set $V$; that is, given a set function $F : 2^V \to \mathbb{R}$, distributions of the form $\pi(S) \propto \exp(F(S))$, for all $S \subseteq V$.
@@ -41,59 +43,59 @@ Other (non-MCMC) approaches to discrete sampling include Perturb-and-MAP \citep{
 Semigradients of submodular set functions have recently been exploited for optimization \citep{iyer13, jegelka11} and variational inference \citep{djolonga16}, but, to our knowledge, no prior work  has used them for sampling.
 
 
-\section{Background}
-We consider set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $n$ that can be assumed to be $V = \{1, \ldots, n\}$ without loss of generality.
-In this paper, we focus on distributions over $\Omega \defeq 2^V$ of the form
-\begin{align} \label{eq:pdef}
-  \pi(S) = \frac{1}{Z} \exp\left( F(S) \right),
-\end{align}
-for all $S \in \Omega$.
-The partition function $Z \defeq \sum_{S \in \Omega} \exp(F(S))$ serves as the normalizer of the distribution.
-Alternatively, we can describe distributions of the above form via binary vectors $X \in \{0, 1\}^n$.
-If we define $V(X) \defeq \{v \in V \mid X_v = 1\}$, then the distribution $p_X(X) \propto \exp(F(V(X)))$ over binary vectors is isomorphic to the distribution \eqref{eq:pdef} over sets.
-
-Perhaps the simplest family of such models are log-modular distributions, which describe a collection of independent binary random variables.
-Equivalently, they are distributions of the form \eqref{eq:pdef} where $F$ is a modular function, that is, a function of the form $F(S) = c + \sum_{v \in S}m_v$, where $c, m_v \in \mathbb{R}$, for all $v \in V$.
-The partition function of a log-modular distribution can be derived in closed form as $Z_m = \exp(c) \prod_{v \in V} \left( 1 + \exp(m_v) \right)$.
-Consequently, the corresponding log-modular distribution is
-\begin{align*}
-  \pi_m(S) = \frac{\exp\big( \sum_{v \in S} m_v \big)}{\prod_{v \in V} \left( 1 + \exp(m_v) \right)}.
-\end{align*}
-
-\paragraph{Inference and sampling.}
-Performing exact inference in models of the form \eqref{eq:pdef}, that is, computing conditional probabilities such as $\pi(A \subseteq S \subseteq B \mid C \subseteq S \subseteq D)$, is known to be in general \#P-hard \citep{jerrum93}.
-As a result, we have to resort to approximate inference algorithms, such as Markov chain Monte Carlo sampling \citep{levin08book}, which is the primary focus of this paper.
-An MCMC algorithm for distribution $\pi$ simulates a Markov chain in state space $\Omega$ in such a way that the sequence of visited states $(X_0, X_1, \ldots) \in \Omega^{\mathbb{N}}$ ultimately converges to $\pi$.
-
-\paragraph{Gibbs sampler.}
-One of the most commonly used chains is the (single-site) Gibbs sampler, which adds or removes a single element %of the ground set
-at a time.
-It first selects uniformly at random an element $v \in V$; subsequently, it adds or removes $v$ to the current state $X_t$ according to the probability of the resulting state.
-We denote by $P : \Omega \times \Omega \to \mathbb{R}$ the transition matrix of a Markov chain, that is, for all $S, R \in \Omega$, $P(S, R) \defeq \P\left[ X_{t+1} = R \mid X_t = S \right]$.
-Then, if we define
-\begin{align*}
-p_{S \rightarrow R} = \displaystyle\frac{\exp(F(R))}{\exp(F(R)) + \exp(F(S))},
-\end{align*}
-and denote by $S \sim R$ states that differ by exactly one element (i.e., $\big||R| - |S|\big| = 1$),
-the transition matrix $\Pg$ of the Gibbs sampler is
-\begin{align*}
-  \Pg(S, R) = 
-  \threepartdefo{\displaystyle\frac{1}{n}p_{S \rightarrow R}}{R \sim S}{1 - \displaystyle\sum_{T \sim S} \displaystyle\frac{1}{n}p_{S \rightarrow T}}{R = S}{0}.
-\end{align*}
-
-\paragraph{Mixing.}
-The efficiency of a Markov chain in approximating its target distribution depends largely on the speed of convergence of the chain, which is quantified by the chain's mixing time.
-Most commonly, distance from stationarity is measured by the maximum total variation distance, over all starting states, between $X_t$ and the target distribution $\pi$, that is, $d(t) \defeq \max_{X_0 \in \Omega} \dtv{P^t(X_0, \cdot)}{\pi}$.
-Then, the mixing time denotes the minimum number of iterations required to get $\epsilon$-close to stationarity, $\tme \defeq \min \{ t \mid d(t) \leq \epsilon \}$.
-
-A common way to obtain an upper bound on the mixing time of a chain is by lower bounding its spectral gap, defined as $\gamma \defeq 1 - \lambda_2$, where $\lambda_2$ is the second largest eigenvalue of the transition matrix $P$.
-The following well-known theorem connects the spectral gap to mixing time.
-\begin{theorem}[cf. Theorems 12.3, 12.4 in \citep{levin08book}] \label{thm:spectral}
-  Let $P$ be the transition matrix of a lazy, irreducible, and reversible Markov chain, and let $\gamma$ be its spectral gap, and $\pmin \defeq \min_{S \in \Omega} \pi(S)$. Then,
-  \begin{align*}
-    \left( \frac{1}{\gamma} - 1 \right)\log\left( \frac{1}{2\epsilon} \right) \leq \tme \leq \frac{1}{\gamma} \log\left( \frac{1}{\epsilon\pmin} \right).
-  \end{align*}
-\end{theorem}
+%\section{Background}
+%We consider set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $n$ that can be assumed to be $V = \{1, \ldots, n\}$ without loss of generality.
+%In this paper, we focus on distributions over $\Omega \defeq 2^V$ of the form
+%\begin{align} \label{eq:pdef}
+%  \pi(S) = \frac{1}{Z} \exp\left( F(S) \right),
+%\end{align}
+%for all $S \in \Omega$.
+%The partition function $Z \defeq \sum_{S \in \Omega} \exp(F(S))$ serves as the normalizer of the distribution.
+%Alternatively, we can describe distributions of the above form via binary vectors $X \in \{0, 1\}^n$.
+%If we define $V(X) \defeq \{v \in V \mid X_v = 1\}$, then the distribution $p_X(X) \propto \exp(F(V(X)))$ over binary vectors is isomorphic to the distribution \eqref{eq:pdef} over sets.
+%
+%Perhaps the simplest family of such models are log-modular distributions, which describe a collection of independent binary random variables.
+%Equivalently, they are distributions of the form \eqref{eq:pdef} where $F$ is a modular function, that is, a function of the form $F(S) = c + \sum_{v \in S}m_v$, where $c, m_v \in \mathbb{R}$, for all $v \in V$.
+%The partition function of a log-modular distribution can be derived in closed form as $Z_m = \exp(c) \prod_{v \in V} \left( 1 + \exp(m_v) \right)$.
+%Consequently, the corresponding log-modular distribution is
+%\begin{align*}
+%  \pi_m(S) = \frac{\exp\big( \sum_{v \in S} m_v \big)}{\prod_{v \in V} \left( 1 + \exp(m_v) \right)}.
+%\end{align*}
+%
+%\paragraph{Inference and sampling.}
+%Performing exact inference in models of the form \eqref{eq:pdef}, that is, computing conditional probabilities such as $\pi(A \subseteq S \subseteq B \mid C \subseteq S \subseteq D)$, is known to be in general \#P-hard \citep{jerrum93}.
+%As a result, we have to resort to approximate inference algorithms, such as Markov chain Monte Carlo sampling \citep{levin08book}, which is the primary focus of this paper.
+%An MCMC algorithm for distribution $\pi$ simulates a Markov chain in state space $\Omega$ in such a way that the sequence of visited states $(X_0, X_1, \ldots) \in \Omega^{\mathbb{N}}$ ultimately converges to $\pi$.
+%
+%\paragraph{Gibbs sampler.}
+%One of the most commonly used chains is the (single-site) Gibbs sampler, which adds or removes a single element %of the ground set
+%at a time.
+%It first selects uniformly at random an element $v \in V$; subsequently, it adds or removes $v$ to the current state $X_t$ according to the probability of the resulting state.
+%We denote by $P : \Omega \times \Omega \to \mathbb{R}$ the transition matrix of a Markov chain, that is, for all $S, R \in \Omega$, $P(S, R) \defeq \P\left[ X_{t+1} = R \mid X_t = S \right]$.
+%Then, if we define
+%\begin{align*}
+%p_{S \rightarrow R} = \displaystyle\frac{\exp(F(R))}{\exp(F(R)) + \exp(F(S))},
+%\end{align*}
+%and denote by $S \sim R$ states that differ by exactly one element (i.e., $\big||R| - |S|\big| = 1$),
+%the transition matrix $\Pg$ of the Gibbs sampler is
+%\begin{align*}
+%  \Pg(S, R) = 
+%  \threepartdefo{\displaystyle\frac{1}{n}p_{S \rightarrow R}}{R \sim S}{1 - \displaystyle\sum_{T \sim S} \displaystyle\frac{1}{n}p_{S \rightarrow T}}{R = S}{0}.
+%\end{align*}
+%
+%\paragraph{Mixing.}
+%The efficiency of a Markov chain in approximating its target distribution depends largely on the speed of convergence of the chain, which is quantified by the chain's mixing time.
+%Most commonly, distance from stationarity is measured by the maximum total variation distance, over all starting states, between $X_t$ and the target distribution $\pi$, that is, $d(t) \defeq \max_{X_0 \in \Omega} \dtv{P^t(X_0, \cdot)}{\pi}$.
+%Then, the mixing time denotes the minimum number of iterations required to get $\epsilon$-close to stationarity, $\tme \defeq \min \{ t \mid d(t) \leq \epsilon \}$.
+%
+%A common way to obtain an upper bound on the mixing time of a chain is by lower bounding its spectral gap, defined as $\gamma \defeq 1 - \lambda_2$, where $\lambda_2$ is the second largest eigenvalue of the transition matrix $P$.
+%The following well-known theorem connects the spectral gap to mixing time.
+%\begin{theorem}[cf. Theorems 12.3, 12.4 in \citep{levin08book}] \label{thm:spectral}
+%  Let $P$ be the transition matrix of a lazy, irreducible, and reversible Markov chain, and let $\gamma$ be its spectral gap, and $\pmin \defeq \min_{S \in \Omega} \pi(S)$. Then,
+%  \begin{align*}
+%    \left( \frac{1}{\gamma} - 1 \right)\log\left( \frac{1}{2\epsilon} \right) \leq \tme \leq \frac{1}{\gamma} \log\left( \frac{1}{\epsilon\pmin} \right).
+%  \end{align*}
+%\end{theorem}
 
 \section{The Mixture Chain}
 Despite the simplicity and computational efficiency of the Gibbs sampler, the fact that it is constrained to performing local moves makes it susceptible to state-space bottlenecks, which hinder the movement of the chain around the state space.
@@ -166,7 +168,10 @@ The Gibbs sampler is known to experience poor mixing in this model; the followin
 \begin{cor}[cf. Theorem 15.3 in \citep{levin08book}]
   For $n \geq 3$, the Gibbs sampler on \ising{} has spectral gap $\gg = \bO\left(e^{-cn}\right)$, where $c > 0$ is a constant.
 \end{cor}
-From \theoremref{thm:spectral} it follows that the mixing time of Gibbs is $\tme = \Omega\left((e^{cn} - 1)\log(1/(2\epsilon)) \right)$.
+\noindent From \theoremref{thm:spectral} it follows that the mixing time of Gibbs is
+\begin{align*}
+    \tme = \Omega\left((e^{cn} - 1)\log\left(\frac{1}{2\epsilon}\right) \right).
+\end{align*}
 Yet, it has been shown that the only reason for this is a single bottleneck in the state space \citep{levin08}.
 To make this statement more formal, let us define a decomposition of $\Omega$ into two disjoint sets, $\Omega_0 \defeq \{S \in \Omega \mid |S| < n/2\}$, and $\Omega_1 \defeq \{S \in \Omega \mid |S| > n/2\}$ \citep{jerrum04poincare}.
 To keep things simple, we will assume for the remainder of this section that $n$ is odd; the analysis when $n$ is even follows from the same arguments with only a minor technical adjustment.
@@ -347,10 +352,10 @@ In practice, we can use \algoref{alg:mixture} regardless of whether $F$ is sub- 
 We have, however, noticed that subgradients give better results when $F$ is submodular, and the same goes for supergradients and supermodular functions.
 
 \section{Experiments}
-\setlength\figureheight{0.32\textwidth}
-\setlength\figurewidth{0.38\textwidth}
-\renewcommand{\subflen}{0.33\textwidth}
-\renewcommand{\scspacey}{-1.8em}
+\setlength\figureheight{0.33\textwidth}
+\setlength\figurewidth{0.35\textwidth}
+\renewcommand{\subflen}{0.328\textwidth}
+\renewcommand{\scspacey}{-0.5em}
 \renewcommand{\scspacex}{0.2em}
 \begin{figure*}[t!]
   \captionsetup[subfigure]{oneside,margin={2em,0em}}
@@ -372,7 +377,7 @@ We have, however, noticed that subgradients give better results when $F$ is subm
     \vspace{\scspacey}
     \caption{\hspace{\scspacex}\textsc{Ising} ($n = 8$)}
     \label{fig:ising8}
-  \end{subfigure}\\
+  \end{subfigure}\\[0.8em]
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/m3/water1.tex}
@@ -391,7 +396,7 @@ We have, however, noticed that subgradients give better results when $F$ is subm
     \vspace{\scspacey}
     \caption{\hspace{\scspacex}\textsc{Game}}
     \label{fig:hots1}
-  \end{subfigure}\\
+  \end{subfigure}\\[0.8em]
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/m3/water1-time.tex}
@@ -420,9 +425,9 @@ We have, however, noticed that subgradients give better results when $F$ is subm
   \label{fig:expising}
 \end{figure*}
 
-\setlength\figureheight{0.40\textwidth}
-\setlength\figurewidth{0.47\textwidth}
-\renewcommand{\subflen}{0.45\textwidth}
+\setlength\figureheight{0.44\textwidth}
+\setlength\figurewidth{0.48\textwidth}
+\renewcommand{\subflen}{0.46\textwidth}
 \renewcommand{\scspacey}{-0.3em}
 \renewcommand{\scspacex}{0.2em}
 \begin{figure*}[t!]
