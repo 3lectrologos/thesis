@@ -2,7 +2,7 @@
 *.bak
 *.aux
 *.log
-*.synctex
+*.synctex.gz
 *.toc
 *.ind
 *.dpth

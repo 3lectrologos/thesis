@@ -1,0 +1,34 @@
+
+\documentclass[border=10pt]{standalone}
+
+\usepackage{../../core}
+
+\begin{document}
+\begin{tikzpicture}[
+xscale=0.1,
+yscale=1
+]
+  \foreach \i/\j in {
+0/2,1/2,2/2,3/2,4/2,5/2,6/2,7/2,8/2,9/2,10/2,11/2,12/2,13/2,14/2,15/2,16/2,17/2,18/2,19/2,20/1,21/1,22/1,23/1,24/1,25/1,26/1,27/1,28/1,29/1,30/1,31/1,32/1,33/1,34/1,35/1,36/1,37/0,38/0,39/0,40/0,41/0,42/0,43/0,44/0,45/0,46/0,47/0,48/0,
+  } {
+    \fill[col1] (\i,\j) rectangle (\i+1,\j+1);
+  }
+
+  \foreach \i/\j in {
+} {
+    \fill[col2] (\i,\j) rectangle (\i+1,\j+1);
+  }
+  
+\draw[step=1cm,white,thin] (0,0) grid (200,3);
+
+
+\draw[draw=black,line width=0.4pt] (0,0) rectangle (200,3);
+
+\node[text=textcolor,anchor=east] at (-1,2.5) {\Large \sffamily IDH2};
+\node[text=textcolor,anchor=east] at (-1,1.5) {\Large \sffamily TET2};
+\node[text=textcolor,anchor=east] at (-1,0.5) {\Large \sffamily PTPs};
+\node[text=textcolor,anchor=center] at (100,3.5) {\LARGE \sffamily Coverage: 24.5\% \hspace{1em} \textbullet \hspace{1em} p\textsubscript{hg} = 0.0059 \hspace{1em} \textbullet \hspace{1em} p\textsubscript{ova} = 0.0397};
+
+
+\end{tikzpicture}
+\end{document}

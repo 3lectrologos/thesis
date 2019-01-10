@@ -1,5 +1,8 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{thesis}[2018/11/30 v0.1 PhD Thesis style]
+\ProvidesPackage{thesis}[2018/11/30 v0.1 PhD thesis style]
+
+
+\RequirePackage{core}
 
 % -----------------------------------------------------------------------------
 % Hyperrefs and citations
@@ -43,6 +46,7 @@
 
 
 % Modification to natbib citations (taken from ICML 2018)
+\RequirePackage{natbib}
 \newcommand{\yrcite}[1]{\citeyearpar{#1}}
 \renewcommand{\cite}[1]{\citep{#1}}
 \setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}
@@ -265,7 +269,9 @@
 % -----------------------------------------------------------------------------
 % Algorithm related
 % -----------------------------------------------------------------------------
-\newcommand{\theHalgorithm}{\arabic{algorithm}}
+\RequirePackage{algorithm}
+\RequirePackage{algorithmic}
+\renewcommand{\theHalgorithm}{\arabic{algorithm}}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 \newcommand*\LNot{\textbf{not}\xspace}
