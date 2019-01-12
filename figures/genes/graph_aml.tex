@@ -1,0 +1,31 @@
+\documentclass{standalone}
+
+\usepackage{../../core}
+
+
+\begin{document}
+\begin{tikzpicture}[
+  C/.style={circle,
+            draw=black,
+            line width=0.4pt,
+            text=textcolor,
+            inner sep=1.5pt
+            },
+  M/.style={anchor=south west,
+            draw=black,
+            line width=0.4pt,
+            inner sep=0.8pt
+            },
+  N/.style={text=textcolor,
+            anchor=south east,
+            inner sep=0pt,
+            xshift=-2.43in
+            }
+]
+
+\node[C] at (0,0) {\sffamily \strut NPM1};
+\node[C] at (5,-5) {\sffamily \strut PML-RARα};
+
+
+\end{tikzpicture}
+\end{document}
