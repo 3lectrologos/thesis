@@ -1,0 +1,35 @@
+
+\documentclass[border={1pt 1pt 1pt 1pt}]{standalone}
+
+\usepackage{../../core}
+
+\begin{document}
+\begin{tikzpicture}[
+xscale=0.044,
+yscale=1
+]
+  \foreach \i/\j in {
+0/2,1/2,2/2,3/2,4/2,5/2,6/2,7/2,8/2,9/2,10/2,11/2,12/2,13/2,14/2,15/2,16/2,17/2,18/2,19/2,20/2,21/2,22/2,23/2,24/2,25/2,26/2,27/2,28/2,29/2,30/2,31/2,32/2,33/2,34/2,35/2,36/2,37/2,43/1,44/1,45/1,48/0,49/0,50/0,51/0,
+  } {
+    \fill[col1] (\i,\j) rectangle (\i+1,\j+1);
+  }
+
+  \foreach \i/\j in {
+38/2,39/2,40/2,41/2,42/2,38/1,39/1,40/1,41/1,42/1,46/1,47/1,38/0,46/0,47/0,} {
+    \fill[col2] (\i,\j) rectangle (\i+1,\j+1);
+  }
+
+\draw[draw=white,line width=0.4pt] (0,0) rectangle (506,1);
+\draw[draw=white,line width=0.4pt] (0,1) rectangle (506,2);
+\draw[draw=white,line width=0.4pt] (0,2) rectangle (506,3);
+
+\draw[draw=black,line width=0.4pt] (0,0) rectangle (506,3);
+
+\node[text=textcolor,anchor=east] at (-1,2.5) {\Large \sffamily \strut LOC28305};
+\node[text=textcolor,anchor=east] at (-1,1.5) {\Large \sffamily \strut DNAH7};
+\node[text=textcolor,anchor=east] at (-1,0.5) {\Large \sffamily \strut SCN10A};
+\node[text=textcolor,anchor=center] at (253.0,3.5) {\LARGE \sffamily Coverage: 10.3\% \hspace{1em} \textbullet \hspace{1em} p\textsubscript{hg} = 0.0056 \hspace{1em} \textbullet \hspace{1em} p\textsubscript{ova} = 0.0117};
+
+
+\end{tikzpicture}
+\end{document}
