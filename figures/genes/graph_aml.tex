@@ -3,29 +3,84 @@
 \usepackage{../../core}
 
 
+\def\xd{5}
+\def\yd{5/1.4142}
+\def\nopoff{0}
+\def\opoff{0}
+
+\pgfdeclarelayer{bg}
+\pgfsetlayers{bg,main}
+
 \begin{document}
 \begin{tikzpicture}[
-  C/.style={circle,
-            draw=black,
-            line width=0.4pt,
-            text=textcolor,
-            inner sep=1.5pt
-            },
-  M/.style={anchor=south west,
-            draw=black,
-            line width=0.4pt,
-            inner sep=0.8pt
-            },
-  N/.style={text=textcolor,
-            anchor=south east,
-            inner sep=0pt,
-            xshift=-2.43in
-            }
+  C/.style={
+    circle,
+    draw=darkcolor!50!black,
+    fill=col3!20!white,
+    text=textcolor,
+    inner sep=1pt,
+    line width=1pt,
+    minimum width=45pt
+  },
+  D/.style={
+    draw=darkcolor!50!black,
+    fill=col1dark,
+    line width=1pt,
+    %fill opacity=0.5
+  },
+  DC/.style={
+    draw=col1,
+    line width=10pt,
+    %draw opacity=0.5
+  },
+  T/.style={
+    text=textcolor
+  }
 ]
 
-\node[C] at (0,0) {\sffamily \strut NPM1};
-\node[C] at (5,-5) {\sffamily \strut PML-RARα};
+\node[C,fill=col3!14!white] (MLL) at (0,2*\yd) {\sffamily MLL-PTD};
+\node[C,fill=col3!84!white] (DNMT) at (-2*\yd,2*\yd) {\sffamily DNMT3A};
 
+\node[C,fill=col3!26!white] (PML) at (-\yd,\yd) {\sffamily PML-RARα};
+\node[C,fill=col3!89!white] (NPM) at (\yd,\yd) {\sffamily NPM1};
+\node[C,fill=col3!18!white] (MLLf) at (\yd+\xd,\yd) {\sffamily MLL-fusions};
+
+\node[C,fill=col3!42!white] (COH) at (-2*\yd,0) {\small \sffamily Cohesin comp.};
+\node[C,fill=col3!31!white] (IDH1) at (-\yd,-\yd) {\sffamily IDH1};
+\node[C,fill=col3!33!white] (IDH2) at (0,-2*\yd) {\sffamily IDH2};
+
+\node[C,fill=col3!11!white] (RXT) at (2*\yd+\xd,0) {\scriptsize \sffamily RUNX1-RUNX1T1};
+\node[C,fill=col3!33!white] (RUNX) at (\yd+\xd,-\yd) {\sffamily RUNX1};
+\node[C,fill=col3!24!white] (TP) at (\yd,-\yd) {\sffamily TP53};
+\node[C,fill=col3!18!white] (MYH) at (0,0) {\small \sffamily MYH11-CBFβ};
+
+\node[C,fill=col3!92!white] (FLT) at (\yd+\xd,-\yd-\xd) {\sffamily FLT3};
+\node[C,fill=col3!37!white] (NRAS) at (\yd,-\yd-\xd) {\sffamily NRAS/KRAS};
+
+\node[C,fill=col3!41!white] (STK) at (\yd,-\yd-2*\xd) {\sffamily S./T. kinases};
+\node[C,fill=col3!14!white] (TYK) at (\yd+\xd,-\yd-2*\xd) {\sffamily Tyr. kinases};
+\node[C,fill=col3!44!white] (SPL) at (2*\yd+\xd,-\yd-1.5*\xd) {\sffamily Spliceosome};
+
+\begin{pgfonlayer}{bg}
+\draw[D,fill opacity=0.6+\opoff] (TP.center) -- (MYH.center) -- (PML.center) -- (NPM.center) -- (MLLf.center) -- (RXT.center) -- (RUNX.center) -- cycle;
+\draw[D,fill opacity=0.2+\opoff] (NRAS.center) -- (FLT.center) -- (TYK.center) -- (STK.center) -- cycle;
+\draw[D,fill opacity=0.8+\opoff] (PML.center) -- (MYH.center) -- (TP.center) -- (IDH2.center) -- (IDH1.center) -- (COH.center)-- cycle;
+\draw[D,fill opacity=0.2+\opoff] (TP.center) -- (FLT.center) -- (NRAS.center) -- cycle;
+\draw[D,fill opacity=0.25+\opoff] (FLT.center) -- (TYK.center) -- (SPL.center) -- cycle;
+\draw[D,fill opacity=0.2+\opoff] (PML.center) -- (MLL.center) -- (NPM.center) -- cycle;
+\draw[D,fill opacity=0.7+\opoff] (TP.center) -- (FLT.center) -- (RUNX.center) -- cycle;
+\draw[DC,draw opacity=0.25+\opoff] (PML.center) -- (DNMT.center);
+\draw[D] (PML.center) -- (DNMT.center);
+\end{pgfonlayer}
+
+\node[T] at (\yd+0.35*\xd,0) {\huge \sffamily \strut R\textsubscript{1}};
+\node[T] at (\yd+0.5*\xd,-\yd-1.5*\xd) {\huge \sffamily \strut R\textsubscript{2}};
+\node[T] at (-0.5*\yd,-0.5*\yd) {\huge \sffamily \strut R\textsubscript{3}};
+\node[T] at (\yd+0.32*\xd,-\yd-0.68*\xd) {\huge \sffamily \strut R\textsubscript{4}};
+\node[T] at (\yd+1.25*\xd,-\yd-1.5*\xd) {\huge \sffamily \strut R\textsubscript{5}};
+\node[T] at (0,1.35*\yd) {\huge \sffamily \strut R\textsubscript{6}};
+\node[T] at (\yd+0.68*\xd,-\yd-0.32*\xd) {\huge \sffamily \strut R\textsubscript{7}};
+\node[T] at (-1.3*\yd,1.7*\yd) {\huge \sffamily \strut R\textsubscript{8}};
 
 \end{tikzpicture}
 \end{document}
