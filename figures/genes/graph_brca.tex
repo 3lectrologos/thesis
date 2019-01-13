@@ -1,0 +1,104 @@
+\documentclass{standalone}
+
+\usepackage{../../core}
+
+
+\def\xd{5}
+\def\yd{5/1.4142}
+\def\nopoff{0}
+\def\opoff{0}
+
+\pgfdeclarelayer{bg}
+\pgfsetlayers{bg,main}
+
+\begin{document}
+\begin{tikzpicture}[
+  C/.style={
+    circle,
+    draw=darkcolor!50!black,
+    fill=col3!20!white,
+    text=textcolor,
+    inner sep=1pt,
+    line width=1pt,
+    minimum width=45pt
+  },
+  D/.style={
+    draw=darkcolor!50!black,
+    fill=col1dark,
+    line width=1pt,
+    %fill opacity=0.5
+  },
+  DC/.style={
+    draw=col1dark,
+    line width=10pt,
+    %draw opacity=0.5
+  },
+  T/.style={
+    text=textcolor
+  }
+]
+
+
+
+\node[C,fill=col3!33!white] (CDH) at (\yd,-\yd) {\large \sffamily CDH1};
+\node[C,fill=col3!92!white] (TP) at (\yd,\xd-\yd) {\large \sffamily TP53};
+\node[C,fill=col3!41!white] (GATA) at (\yd+\xd,-\yd) {\large \sffamily GATA3};
+\node[C,fill=col3!22!white] (CADPS) at (2*\yd+\xd,0.5*\xd-\yd) {\large \sffamily CADPS};
+\node[C,fill=col3!25!white] (CTCF) at (\yd+\xd,\xd-\yd) {\large \sffamily CTCF};
+\node[C,fill=col3!28!white] (MAP2) at (0,0.5*\xd-\yd) {\large \sffamily MAP2K4};
+\node[C,fill=col3!86!white] (PIK) at (\yd+\xd,-\yd-\xd) {\large \sffamily PIK3CA};
+\node[C,fill=col3!47!white] (ING5) at (2*\yd+\xd,-\yd-0.5*\xd) {\large \sffamily ING5(D)};
+\node[C,fill=col3!24!white] (AKT) at (\yd+\xd,-\yd-2*\xd) {\large \sffamily AKT1};
+\node[C,fill=col3!64!white] (MCL) at (\xd,-\yd-1.5*\xd) {\large \sffamily MCL1(A)};
+\node[C,fill=col3!48!white] (PTEN) at (2*\yd+\xd,-\yd-1.5*\xd) {\large \sffamily PTEN(D)};
+\node[C,fill=col3!35!white] (MAP3) at (\yd+0.5*\xd,\xd) {\large \sffamily MAP3K1};
+\node[C,fill=col3!23!white] (ENSG) at (\yd-0.5*\xd,\xd) {\footnotesize \sffamily ENSG\ldots247765};
+\node[C,fill=col3!78!white] (MYC) at (\yd+1.5*\xd,\xd) {\large \sffamily MYC(A)};
+\node[C,fill=col3!46!white] (ING1) at (\yd+2*\xd,-\yd-\xd) {\small \sffamily ING1,ERCC5(A)};
+\node[C,fill=col3!60!white] (STK) at (\yd+0.5*\xd,-2*\yd) {\small \sffamily STK11,TCF3(D)};
+\node[C,fill=col3!27!white] (RUNX) at (0,-\yd-0.5*\xd) {\large \sffamily RUNX1};
+\node[C,fill=col3!62!white] (PAX) at (0,-\yd-1.5*\xd) {\small \sffamily PAX7,SDHB(D)};
+
+\begin{pgfonlayer}{bg}
+\draw[D,fill opacity=0.86+\opoff,draw=none] (TP.center) -- (CDH.center) -- (GATA.center) -- (CTCF.center) -- cycle;
+\draw[D,draw=none,pattern=custom north east lines] (TP.center) -- (GATA.center) -- (CTCF.center) -- cycle;
+\draw[D] (TP.center) -- (CTCF.center);
+\draw[D] (CDH.center) -- (GATA.center);
+\draw[D,densely dashed,line width=1.2pt] (GATA.center) -- (CTCF.center);
+\draw[D,fill opacity=0.2+\opoff,draw=none] (GATA.center) -- (CADPS.center) -- (CTCF.center) -- cycle;
+\draw[D] (GATA.center) -- (CADPS.center);
+\draw[D] (CTCF.center) -- (CADPS.center);
+\draw[D,densely dashed] (TP.center) -- (GATA.center);
+
+\draw[D,fill opacity=0.25+\opoff] (TP.center) -- (CDH.center) -- (MAP2.center) -- cycle;
+\draw[D,fill opacity=0.79+\opoff] (GATA.center) -- (PIK.center) -- (ING5.center) -- cycle;
+
+\draw[D,fill opacity=0.65+\opoff] (PIK.center) -- (MCL.center) -- (AKT.center) -- cycle;
+\draw[D,fill opacity=0.19+\opoff] (TP.center) -- (MAP3.center) -- (ENSG.center) -- cycle;
+\draw[D,fill opacity=0.16+\opoff] (PIK.center) -- (PTEN.center) -- (AKT.center) -- cycle;
+\draw[D,fill opacity=0.48+\opoff] (CDH.center) -- (GATA.center) -- (STK.center) -- cycle;
+
+\draw[DC,draw opacity=0.73+\opoff] (MAP3.center) -- (MYC.center);
+\draw[D] (MAP3.center) -- (MYC.center);
+
+\draw[DC,draw opacity=0.88+\opoff] (PIK.center) -- (ING1.center);
+\draw[D] (PIK.center) -- (ING1.center);
+
+\draw[DC,draw opacity=0.16+\opoff] (RUNX.center) -- (PAX.center);
+\draw[D] (RUNX.center) -- (PAX.center);
+\end{pgfonlayer}
+
+\node[T] at (1.69*\yd,0.5*\xd-\yd) {\huge \sffamily \strut R\textsubscript{1}};
+\node[T] at (0.65*\yd+\xd,-\yd-1.5*\xd) {\huge \sffamily \strut R\textsubscript{2}};
+\node[T] at (1.33*\yd+\xd,-\yd-0.5*\xd) {\huge \sffamily \strut R\textsubscript{3}};
+\node[T] at (1.03*\yd+\xd,0.5*\xd-\yd) {\huge \sffamily \strut R\textsubscript{4}};
+\node[T] at (1.33*\yd+\xd,-\yd-1.5*\xd) {\huge \sffamily \strut R\textsubscript{5}};
+\node[T] at (0.65*\yd,0.5*\xd-\yd) {\huge \sffamily \strut R\textsubscript{6}};
+\node[T] at (\yd,0.5*\xd+0.33*\yd) {\huge \sffamily \strut R\textsubscript{7}};
+\node[T] at (\yd+1.5*\xd+0.2,-\yd-\xd+0.66) {\huge \sffamily \strut R\textsubscript{8}};
+\node[T] at (\yd+\xd,\xd-0.70) {\huge \sffamily \strut R\textsubscript{9}};
+\node[T] at (1.68*\yd,-1.37*\yd) {\huge \sffamily \strut R\textsubscript{10}};
+\node[T] at (0.7,-\yd-1.0*\xd) {\huge \sffamily \strut R\textsubscript{11}};
+
+\end{tikzpicture}
+\end{document}
