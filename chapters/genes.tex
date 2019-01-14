@@ -1,18 +1,12 @@
 \chapter{Learning Prob. Submodular Models} \label{ch:genes}
 
 \section{Introduction}
-\todo{Learning: one of the main motivations of thesis}
-
-\todo{Outline general approach and explain where sampling comes in}
-
-\subsection{Modeling interaction of gene alterations in cancer patients}
-\todo{Explain basic problem and why it is interesting for cancer research}
-
-\todo{Previous approaches}
-
-\todo{How we use PSMs for this}
-
-\todo{Contributions and advantages over previous work}
+As discussed at the very beginning of the thesis, learning probabilistic models from data in one of our main motivations.
+The probabilistic framework we employ suggests a principled way to estimate the model parameters given a data set, namely by maximizing the model likelihood under the data.
+Unfortunately, the maximum likelihood problem for the model class we consider is, in general, non-convex; even worse, evaluating the likelihood function or its gradient with respect to the model parameters boils down to computing expectations over the distribution at hand, which we have already seen to be a hard problem.
+We show in this chapter how we can use sampling to approximate the likelihood gradients, and, thus, perform an approximate gradient ascent procedure that converges to a local optimum of the model likelihood.
+Then, we focus on applying this learning procedure to the application of modeling the interactions between gene alterations in cancer patients.
+We evaluate our method on synthetic and real cancer data, visualize the results in several ways, and compare them to previously proposed statistical methods.
 
 
 \section{Approximate Maximum Likelihood Learning using Sampling}
@@ -98,6 +92,16 @@ u_i = \log\left( \frac{f_i}{1 - f_i} \right),
 where $f_i$ is the frequency of element $i \in V$ in the data set $\mathcal{D}$.
 We randomly initialize the entries of $\bw$ and $\bv$ by drawing from a uniform distribution $\mathcal{U}[0, 0.01]$.
 Finally, we use a fixed step size ($\gamma = 5e^{-4}$) for the first half of the iterations, and a geometrically decreasing step size ($\gamma_i = \gamma r^i$, $r = 0.999$) for the second half.
+
+
+\section{Modeling Gene Interactions in Cancer Patients}
+\todo{Explain basic problem and why it is interesting for cancer research}
+
+\todo{Previous approaches}
+
+\todo{How we use PSMs for this}
+
+\todo{Contributions and advantages over previous work}
 
 
 \section{Synthetic Data}
