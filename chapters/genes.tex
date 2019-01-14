@@ -91,11 +91,22 @@ u_i = \log\left( \frac{f_i}{1 - f_i} \right),
 \end{align*}
 where $f_i$ is the frequency of element $i \in V$ in the data set $\mathcal{D}$.
 We randomly initialize the entries of $\bw$ and $\bv$ by drawing from a uniform distribution $\mathcal{U}[0, 0.01]$.
-Finally, we use a fixed step size ($\gamma = 5e^{-4}$) for the first half of the iterations, and a geometrically decreasing step size ($\gamma_i = \gamma r^i$, $r = 0.999$) for the second half.
+Finally, we use a fixed step size ($\gamma = 5\times 10^{-4}$) for the first half of the iterations, and a geometrically decreasing step size ($\gamma_i = \gamma r^i$ with $r = 0.999$) for the second half.
 
 
-\section{Modeling Gene Interactions in Cancer Patients}
-\todo{Explain basic problem and why it is interesting for cancer research}
+\section{Modeling Gene Interactions in Cancer}
+One of the goals of cancer genomics research is identifying so-called driver mutations, that is, somatic mutations that are responsible for various forms of cancer, and distinguishing them from randomly occuring passenger mutations.
+While sequencing data from large-scale projects, such as The Cancer Genome Atlas \citep{tcga}, has been available in increasing quantities, analyzing the occurence combinations of mutations is a combinatorially daunting task.
+
+Driver mutations often occur in a limited number of key biological pathways, and it has been observed that multiple mutations involved in the same pathway tend to not occur together in the same patient \citep{yeang08}.
+As a result, it is of interest to discover groups of gene alterations that are (approximately) mutually exclusive.
+Finding such a group is then be indication that the participating mutations are part of the same cancer-related pathway.
+Since many existing pathway databases may not be detailed enough, there has been particular interest in \emph{de novo} methods, that is, methods that analyze the existing patient data without using any prior biological knowledge.
+For a general review of the topic, we refer to \cite{raphael14}.
+
+
+comet: \citep{leiserson15}
+
 
 \todo{Previous approaches}
 
