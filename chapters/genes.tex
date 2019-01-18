@@ -174,29 +174,40 @@ For the procedure's ``starting alpha-wealth'' parameter we use $W_0 = 0.8\alpha$
 For the real data experiments, in the absence of ground truth, we take a more exploratory approach, and do not employ multiple testing.
 Rather, we illustrate and discuss the most significant discovered groups, as indicated by their $p$-values according to both $T_{\mathrm{ova}}$ and $T_{\mathrm{gf}}$.
 
-\subsection{Synthetic Data}
+\subsection{Synthetic Data: Learning}
+To begin with, we want to illustrate how the gradient approximation via sampling affects the learning algorithm.
+We create a reduced version of one of the real cancer data sets (see next section), so that we are able to compute the exact log-likelihood during learning.
+Starting with the AML data set detailed in the next section, we only keep the 17 gene mutations shown in \figref{fig:graph_aml}, thus creating a data set of 17 mutations and 200 patients.
+We then learn a \fldc{} model with $L = 5$ latent dimensions for $n_{\mathrm{iter}} = 10^4$ gradient iterations.
+
+\figref{fig:syn_nsamples} shows the evolution of the log-likelihood for an increasing number of samples, while keeping the number of semigradients constant.
+As expected, using a larger number of samples leads to a more accurate gradient approximation, which results in faster learning.
+We also see that the benefit of increased samples plateaus after some point, e.g., we see minimal benefit by increasing the samples from 500 to 1000.
+
+Similar conclusions can be drawn from the results \figref{fig:syn_nsubg} about the effect of the number of semigradients used.
+Note that, in this case we get practically no benefit from adding more than 20 semigradients, but this number will likely need to be adjusted when learning from data with a larger ground set.
 
 \setlength\figureheight{0.65\textwidth}
 \setlength\figurewidth{0.9\textwidth}
 \renewcommand{\subflen}{\textwidth}
 \renewcommand{\scspacey}{-0.3em}
 \renewcommand{\scspacex}{0.2em}
-\begin{figure}[htb]
+\begin{figure}[htbp]
   \captionsetup[subfigure]{oneside,margin={2em,0em}}
   \centering
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/genes/syn_nsamples.tex}
     %\vspace{\scspacey}
-    \caption{Number of subgradients fixed to $r = 20$.}
-    \label{fig:syn_nsubg}
+    \caption{Number of semigradients fixed to $r = 20$.}
+    \label{fig:syn_nsamples}
   \end{subfigure}\\[2em]
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/genes/syn_nsubg.tex}
     %\vspace{\scspacey}
     \caption{Number of samples fixed to $M = 200$.}
-    \label{fig:syn_nsamples}
+    \label{fig:syn_nsubg}
   \end{subfigure}\\[1em]
   \caption{
     Learning curves on the reduced AML data set for (a) varying number of samples, and (b) varying number of subgradients.
@@ -204,40 +215,54 @@ Rather, we illustrate and discuss the most significant discovered groups, as ind
   \label{fig:syn1}
 \end{figure}
 
+\subsection{Synthetic Data: Single Mutually Exlusive Group}
+We focus now on extracting a single group of mutually exclusive mutations.
+We create synthetic data sets of 100 mutations and 500 patients, following the procedure outlined by \cite{comet}.
+First, we choose $k = 3$ mutations, which cover a fraction $\gamma$ of the patients, and have them be completely mutually exclusive, that is, only one of the three occurs in each of the $500\gamma$ patients.
+Furthermore, each of the three mutations appear in a fraction $0.5$, $0.35$, and $0.15$ of the $500\gamma$ patients, respectively.
+Second, we choose 5 mutations, which occur frequently (with fractions $0.67$, $0.49$, $0.29$, $0.29$, $0.2$ in the 500 patients), and completely independently of each other and of any other mutation, including the mutually exclusive ones.
+Finally, we add random noise by independently activating each mutation in each patient with probability $0.0028$.
 
-\setlength\figureheight{0.65\textwidth}
+\figref{fig:syn_mat} shows the learned $\bw$ matrix of the \fldc{} model for such a synthetic data set with $\gamma = 0.5$.
+Note how the mutually exclusive group $\{16, 23, 68\}$ is distinctly encoded in the last column of the matrix.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.55\textwidth]{figures/genes/mat_syn.pdf}\\[1em]
+\caption{The $\bw$ matrix of the learned \fldc{} model on a synthetic data set of 100 genes and 500 patients.
+The implanted mutually exclusive group of $k = 3$ mutations covers a fraction $\gamma = 0.5$ of the patients, and is distinctly encoded in the last column of the matrix.}
+\label{fig:syn_mat}
+\end{figure}
+
+\setlength\figureheight{0.7\textwidth}
 \setlength\figurewidth{0.95\textwidth}
-\renewcommand{\subflen}{\textwidth}
-\renewcommand{\scspacey}{-0.3em}
-\renewcommand{\scspacex}{0.2em}
 \begin{figure}[htb]
-  \captionsetup[subfigure]{oneside,margin={2em,0em}}
   \centering
-  \begin{subfigure}[b]{\subflen}
-    \centering
-    \input{figures/genes/syn_single.tex}
-    %\vspace{\scspacey}
-    \caption{}
-    \label{fig:syn_single}
-  \end{subfigure}\\[2em]
-  \begin{subfigure}[b]{\subflen}
-    \centering
-    \input{figures/genes/syn_multi.tex}
-    %\vspace{\scspacey}
-    \caption{Adjusted Rand index for $t$ groups of $k$ mutations.}
-    \label{fig:syn_multi}
-  \end{subfigure}\\[1em]
+  \input{figures/genes/syn_single.tex}
   \caption{
     \todo{}
   }
-  \label{fig:syn2}
+  \label{fig:syn_single}
 \end{figure}
+
+\setlength\figureheight{0.65\textwidth}
+\setlength\figurewidth{0.95\textwidth}
+\begin{figure}[htb]
+  \centering
+  \input{figures/genes/syn_multi.tex}
+  \caption{
+    \todo{}
+  }
+  \label{fig:syn_multi}
+\end{figure}
+
+\subsection{Synthetic Data: Multiple Mutually Exlusive Groups}
 
 \subsection{Real Cancer Data}
 
 \paragraph{Acute myeloid leukemia (AML)}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/mat_aml.pdf}\\[2em]
 \caption{Test}
@@ -264,7 +289,7 @@ Rather, we illustrate and discuss the most significant discovered groups, as ind
 \begin{figure}[htb]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/graph_aml.pdf}\\[2em]
-\caption{AML repulsive graph}
+\caption{AML repulsive graph} \label{fig:graph_aml}
 \end{figure}
 
 \begin{figure}[htb]

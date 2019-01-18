@@ -1,0 +1,50 @@
+\documentclass{standalone}
+
+\usepackage{../../core}
+
+\def\ystep{0.2223in}
+\def\yoff{0in}
+\def\yg{17.9}
+\def\xgstep{0.525}
+\def\xshift{5}
+
+\begin{document}
+\begin{tikzpicture}[
+  C/.style={circle,
+            draw=darkcolor,
+            line width=0.7pt,
+            text=textcolor,
+            inner sep=2pt
+            },
+  G/.style={anchor=south,
+            text=textcolor,
+            inner sep=0pt
+            },
+  M/.style={anchor=south west,
+            draw=darkcolor,
+            thin,
+            inner sep=1pt
+            },
+  N/.style={text=textcolor,
+            anchor=south east,
+            inner sep=0pt,
+            xshift=-2.43in
+            }
+]
+
+\node[C] at (2.65,13.5) {\strut $\*w$};
+
+\node[M] at (0,0) {\includegraphics[height=5in]{mat_syn_w.png}};
+
+\node[N,xshift=8,yshift=355] at (current page.south) {\small \sffamily \strut 1};
+\node[N,xshift=8,yshift=176] at (current page.south) {\small \sffamily \strut 50};
+\node[N,xshift=8,yshift=-4] at (current page.south) {\small \sffamily \strut 100};
+
+
+\node[M] at (0,-0.8) {\includegraphics[width=2.07in]{cbar_aml_w.png}};
+
+\node[text=textcolor] at (0,-1.1) {\sffamily 0};
+\node[text=textcolor] at (5.33,-1.1) {\sffamily 3};
+
+\end{tikzpicture}
+\end{document}
