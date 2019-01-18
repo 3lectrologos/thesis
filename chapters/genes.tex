@@ -234,29 +234,56 @@ The implanted mutually exclusive group of $k = 3$ mutations covers a fraction $\
 \label{fig:syn_mat}
 \end{figure}
 
+To evaluate the ability of our method to recover the true mutually exclusive group, we computed the $F$-measure of the union of the resulting extracted groups compared to the true group.
+\figref{fig:syn_single} shows the results across different values of the fraction $\gamma$ of patients covered by the mutually exclusive group, ranging from $0.1$ to $1.0$.
+For each value of $\gamma$, we repeat the experiment on $50$ randomly generated data sets.
+
+We show the results of our procedure for two different values of the considered hypothesis testing level $\alpha$, which trades off between false negatives and false positives.
+For $\alpha = 0.01$, we have practically perfect recovery when $\gamma \geq 0.4$, but are not able to extract statistically significant groups below $\gamma = 0.3$. 
+Using a much higher $\alpha = 0.3$ trades off some false positives to gain statistical power, and exceeds the performance of CoMEt for almost all values of $\gamma$.
+Either way, the results show that, in the majority of the cases, the learned \fldc{} model is able to encode the correct group, and propose it for further testing.
+We would also like to emphasize at this point that CoMEt takes the size $k = 3$ of the group as input, although it can still output groups of different size; our method, on the other hand, does not use any such information.
+
 \setlength\figureheight{0.7\textwidth}
 \setlength\figurewidth{0.95\textwidth}
 \begin{figure}[htb]
   \centering
   \input{figures/genes/syn_single.tex}
-  \caption{
-    \todo{}
+  \caption{Results on recovering a single group of $k = 3$ mutually exclusive mutations for different values of the fraction $\gamma$ of patients covered by that group.
+  The level $\alpha$ at which we test trades off statistical power at low $\gamma$ for false positives at high $\gamma$.
   }
   \label{fig:syn_single}
 \end{figure}
+
+\subsection{Synthetic Data: Multiple Mutually Exlusive Groups}
+We move now to the problem of extracting multiple groups of mutually exclusive mutations.
+Again, we create synthetic data sets following a procedure outlined by \cite{comet}.
+In this case, we start with $20,000$ mutations and $500$ patients, and select $t$ groups of $k$ mutually exclusive mutations.
+The number of groups $t$ range from $2$ to $4$, and the mutations per group $k$ from $3$ to $5$.
+Each group covers a fraction of patients ranging from $0.4$ to $0.7$, and the mutations of each group cover equal number of patients.
+As before, we add $5$ independently mutated genes with high frequencies, as well as random noise.
+Finally, we remove genes that are mutated in fewer than $5$ patients, which results in a final ground set of average size $|V| \approx 275$.
+To assess the quality of the recovered groups against the true ones, we use the adjusted Rand index \citep{ari}, which is a measure that compares the similarity of two clusterings of a set of elements.
+Thus, in our case, an adjusted Rand index of $1$ indicates that the recovered groups are identical to the true ones.
+
+For each combination of $t$ and $k$ we repeated the experiment on $20$ randomly generated data sets.
+We ran CoMEt with fixed values of $t = 3$ and $k = 4$, as was done in the original paper \citep{comet}.
+\figref{fig:syn_multi} shows the results, in which we see that our method significantly outperforms CoMEt, especially at the lower values of $t$ and $k$.
+This showcases the problems encountered by CoMEt (and shared with several other previous methods) when the number and size of the groups to be found is misspecified.
+In contrast, we see that our method performs consistently well across all different values of $t$ and $k$, without any knowledge of these parameters.
+\todo{Briefly discuss again the role of $\alpha$.}
+
 
 \setlength\figureheight{0.65\textwidth}
 \setlength\figurewidth{0.95\textwidth}
 \begin{figure}[htb]
   \centering
   \input{figures/genes/syn_multi.tex}
-  \caption{
-    \todo{}
+  \caption{Results on recovering $t$ groups of $k$ mutually exclusive mutations.
+Our method performs consistently well across all different $t$ and $k$, while CoMEt performs poorly when $t$ and $k$ are misspecified.
   }
   \label{fig:syn_multi}
 \end{figure}
-
-\subsection{Synthetic Data: Multiple Mutually Exlusive Groups}
 
 \subsection{Real Cancer Data}
 
@@ -268,7 +295,7 @@ The implanted mutually exclusive group of $k = 3$ mutations covers a fraction $\
 \caption{Test}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/aml_1.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_2.pdf}\\[2em]
@@ -277,7 +304,7 @@ The implanted mutually exclusive group of $k = 3$ mutations covers a fraction $\
 \caption{Test}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/aml_5.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_6.pdf}\\[2em]
@@ -286,20 +313,20 @@ The implanted mutually exclusive group of $k = 3$ mutations covers a fraction $\
 \caption{Test}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/graph_aml.pdf}\\[2em]
 \caption{AML repulsive graph} \label{fig:graph_aml}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/aml_comet1.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_comet2.pdf}\\[2em]
 \caption{CoMEt extra groups (probably appendix)}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/aml_2_a.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_1_a.pdf}\\[2em]
@@ -311,13 +338,13 @@ The implanted mutually exclusive group of $k = 3$ mutations covers a fraction $\
 
 \paragraph{Breast cancer (BRCA)}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/mat_brca.pdf}\\[2em]
 \caption{Test}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/brca_1.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/brca_6.pdf}\\[2em]
@@ -327,7 +354,7 @@ The implanted mutually exclusive group of $k = 3$ mutations covers a fraction $\
 \caption{BRCA repulsive (I)}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/brca_4.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/brca_3.pdf}\\[2em]
@@ -338,13 +365,13 @@ The implanted mutually exclusive group of $k = 3$ mutations covers a fraction $\
 \caption{BRCA repulsive (II)}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/graph_brca.pdf}\\[2em]
 \caption{BRCA repulsive graph}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/brca_1_a.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/brca_11_a.pdf}\\[2em]
@@ -355,7 +382,7 @@ The implanted mutually exclusive group of $k = 3$ mutations covers a fraction $\
 \caption{BRCA attractive}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/brca_9_a.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/brca_13_a.pdf}\\[2em]
@@ -365,7 +392,7 @@ The implanted mutually exclusive group of $k = 3$ mutations covers a fraction $\
 \caption{BRCA attractive (appendix I)}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/brca_3_a.pdf}\\[2em]
 %\includegraphics[width=\textwidth]{figures/genes/brca_15_a.pdf}\\[2em]
