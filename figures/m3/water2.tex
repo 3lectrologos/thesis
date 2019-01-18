@@ -1,11 +1,11 @@
 \begin{tikzpicture}
 
-\colorlet{col1}{blue!50!black}
-\colorlet{col2}{red!10!darkgray}
-\colorlet{col3}{red!30!darkgray}
-\colorlet{col4}{red!50!darkgray}
-\colorlet{col5}{red!70!darkgray}
-\colorlet{col6}{red!90!darkgray}
+\colorlet{col1t}{col1dark}
+\colorlet{col2t}{col2!10!darkgray}
+\colorlet{col3t}{col2!30!darkgray}
+\colorlet{col4t}{col2!50!darkgray}
+\colorlet{col5t}{col2!70!darkgray}
+\colorlet{col6t}{col2!90!darkgray}
 
 
 \begin{axis}[%
@@ -36,7 +36,7 @@ legend style={at={(1.05,1.05)},draw=none,row sep=-0.35em}]
 mark=none,
 mark size=1.0pt,
 mark options={solid},
-color=col1,
+color=col1t,
 densely dashed,
 line width=1pt,
 opacity=0.7,
@@ -54,7 +54,7 @@ coordinates{
 \addplot [
 mark=none,
 mark size=1.0pt,
-color=col2,
+color=col2t,
 line width=1pt,
 opacity=0.7,
 %error bars/.cd,
@@ -71,7 +71,7 @@ coordinates{
 \addplot [
 mark=none,
 mark size=1.0pt,
-color=col3,
+color=col3t,
 line width=1pt,
 opacity=0.7,
 %error bars/.cd,
@@ -88,7 +88,7 @@ coordinates{
 \addplot [
 mark=none,
 mark size=1.0pt,
-color=col4,
+color=col4t,
 line width=1pt,
 opacity=0.7,
 %error bars/.cd,
@@ -105,7 +105,7 @@ coordinates{
 \addplot [
 mark=none,
 mark size=1.0pt,
-color=col5,
+color=col5t,
 line width=1pt,
 opacity=0.7,
 %error bars/.cd,
@@ -122,7 +122,7 @@ coordinates{
 \addplot [
 mark=none,
 mark size=1.0pt,
-color=col6,
+color=col6t,
 line width=1pt,
 opacity=0.7,
 %error bars/.cd,

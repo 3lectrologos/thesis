@@ -1,0 +1,70 @@
+\begin{tikzpicture}
+
+
+\colorlet{col1t}{gcol1}
+\colorlet{col2t}{gcol2}
+\colorlet{col3t}{gcol3}
+\colorlet{col4t}{gcol4}
+\colorlet{col5t}{gcol5}
+
+\begin{axis}[%
+tick label style={font=\sffamily\normalsize},
+label style={font=\sffamily\normalsize},
+legend style={font=\sffamily\normalsize},
+view={0}{90},
+width=\figurewidth,
+height=\figureheight,
+xmin=0, xmax=1.05,
+xtick={0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0},
+xticklabels={0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1},
+scaled x ticks=false,
+xlabel={Fraction of mutated samples},
+xlabel shift=0em,
+ymin=0, ymax=1.05,
+ytick={0, 0.2, 0.4, 0.6, 0.8, 1},
+yticklabels={0, 0.2, 0.4, 0.6, 0.8, 1},
+ylabel={F-measure},
+ylabel shift=0em,
+tick label style={/pgf/number format/fixed},
+major tick length=2pt,
+axis lines*=left,
+legend cell align=left,
+clip marker paths=true,
+legend style={at={(1.0,0.05)},draw=none,row sep=0,anchor=south east},
+reverse legend,
+every axis plot/.append style={
+  mark=*,
+  mark size=3,
+  line width=2pt,
+  opacity=1,
+}
+]
+
+\addplot [
+color=col2t,
+]
+coordinates{
+(0.10,0.023)(0.20,0.631)(0.30,0.829)(0.40,0.932)(0.50,0.938)(0.60,0.949)(0.70,0.955)(0.80,0.950)(0.90,0.974)(1.00,0.962)
+};
+\addlegendentry{CoMEt}
+
+\addplot [
+color=col3t,
+]
+coordinates{
+(0.10,0.060)(0.15,0.101)(0.20,0.551)(0.25,0.886)(0.30,0.957)(0.40,0.978)(0.50,0.
+978)(0.60,0.957)(0.70,0.994)(0.80,0.973)(0.90,0.973)(1.00,1.000)
+};
+\addlegendentry{Ours (α = 0.3)}
+
+\addplot [
+color=col1t,
+]
+coordinates{
+(0.10,0.000)(0.15,0.000)(0.20,0.000)(0.25,0.000)(0.30,0.800)(0.40,1.000)(0.50,1.
+000)(0.60,1.000)(0.70,1.000)(0.80,1.000)(0.90,1.000)(1.00,1.000)
+};
+\addlegendentry{Ours (α = 0.01)}
+
+\end{axis}
+\end{tikzpicture}

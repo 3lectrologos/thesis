@@ -9,7 +9,7 @@ Then, we focus on applying this learning procedure to the application of modelin
 We evaluate our method on synthetic and real cancer data, visualize the results in several ways, and compare them to previously proposed statistical methods.
 
 
-\section{Approximate Maximum Likelihood Learning using Sampling}
+\section{Approximate Maximum Likelihood Learning using Sampling} \label{sect:ml}
 
 As before, we consider a model of the form
 \begin{align*}
@@ -78,23 +78,6 @@ In particular, for all $i \in V$, $j \in [L]$, we have
 We have noticed that our choice often results in slightly improved learning performance in practice.
 
 
-\paragraph{Implementation details.}
-By definition of the \fldc{} model, the elements of matrices $\bw$ and $\bv$ must be non-negative.
-To achieve this during learning, we project the entries of $\bw$ and $\bv$ to the positive orthant after each gradient step.
-
-Furthermore, we have found it beneficial in practice to induce sparsity on these matrices, in order to reduce the effect of noisy data on the learned models, and obtain more interpretable solutions.
-To this end, we employ an $L_1$ regularization to both $\bw$ and $\bv$ by projecting each row and column of this matrices to the corresponding $L_1$-ball after each gradient step.
-
-We initialize the entries of $\bu$ to the maximum likelihood estimates of the respective product distribution, that is,
-\begin{align*}
-u_i = \log\left( \frac{f_i}{1 - f_i} \right),
-\end{align*}
-where $f_i$ is the frequency of element $i \in V$ in the data set $\mathcal{D}$.
-We randomly initialize the entries of $\bw$ and $\bv$ by drawing from a uniform distribution $\mathcal{U}[0, 0.01]$.
-To avoid duplicate latent dimensions in the two matrices, we check the columns of $\bw$ and $\bv$ after each gradient step, and reinitialize a column when we detect that its $L_1$ distance to another column of the same matrix is smaller than a predefined threshold.
-Finally, we use a fixed step size ($\gamma = 5\times 10^{-4}$) for the first half of the iterations, and a geometrically decreasing step size ($\gamma_i = \gamma r^i$ with $r = 0.999$) for the second half.
-
-
 \section{Modeling Gene Interactions in Cancer}
 One of the goals of cancer genomics research is identifying so-called driver mutations, that is, somatic mutations that are responsible for various forms of cancer, and distinguishing them from randomly occuring passenger mutations.
 While sequencing data from large-scale projects, such as The Cancer Genome Atlas \citep{tcga}, has been available in increasing quantities, analyzing the occurence combinations of mutations is a combinatorially daunting task.
@@ -121,13 +104,13 @@ Our goal is to discover groups of mutations $M_1, M_2, \ldots$, $M_i \subseteq V
 \centering
 \includegraphics[width=\textwidth]{figures/genes/example1.pdf}\\[1em]
 \includegraphics[width=\textwidth]{figures/genes/example1_rep.pdf}\\[1em]
-\caption{(top) An example binary alteration matrix, where each shaded entry denotes that a mutation occured in a patient. (bottom) The same matrix with rows and columns permuted to illustrate the high degree of mutual exclusivity of the highlighted group of four mutations.}
+\caption{(top) An example binary alteration matrix, where each shaded entry $(i, j)$ indicates that mutation $i$ occured in patient $j$. (bottom) The same matrix with permuted rows and columns to illustrate the high degree of mutual exclusivity of the highlighted group of four mutations.}
 \label{fig:bamats}
 \end{figure}
 
 We propose using the patient data $\mathcal{D}$ to learn an \fldc{} model over the mutation space $V$.
-Based on the definiton of the \fldc{} potential, we expect the columns of the $w$ and $v$ matrices to encode groups of repulsive and attractive mutations respectively.
-For the purposes of this thesis, we propose extracting potential groups by thesholding each matrix at a specified level; these groups can then be further assessed using some of the previously proposed statistical tests.
+Based on the definiton of the \fldc{} potential, we expect the columns of the $\bw$ and $\bv$ matrices to encode groups of repulsive and attractive mutations respectively.
+For the purposes of this thesis, we propose extracting potential groups by thesholding each matrix at a specified level; these groups can then be further assessed for mutual exclusivity or co-occurence using some of the previously proposed statistical tests.
 More generally, one can perform marginal/conditional inference in the learned model to compute arbitrary probabilistic quantities that may be useful in specific biological applications.
 
 Our approach offers several advantages over previous work.
@@ -137,12 +120,122 @@ Finally, in terms of computational complexity, the only potentially super-linear
 As we have previously seen, proving general bounds on the mixing time is a hard endeavour, but practical experience shows that our algorithm only takes a few minutes to run on data sets of hundreds of mutations.
 
 
-\section{Synthetic Data}
-\todo{Show learning curve for small example}
+\section{Experiments}
+In this section, we practically apply our learning algorithm to the problem of modeling gene interactions outlined above.
+We begin with providing some more details about each step of the procedure we use to discover mutually exclusive groups of mutations.
+The steps for discovering co-occuring groups are completely analogous.
 
-\section{Real Cancer Data}
+\paragraph{Step 1: Learning the \fldc{} model.}
+We use the approximate maximum likelihood method described in \sectref{sect:ml}.
+By definition of the \fldc{} model, the elements of matrices $\bw$ and $\bv$ must be non-negative.
+To achieve this during learning, we project the entries of $\bw$ and $\bv$ to the positive orthant after each gradient step.
+Furthermore, we have found it beneficial in practice to induce sparsity on these matrices, in order to reduce the effect of noisy data on the learned models, and obtain more interpretable solutions.
+To this end, we employ an $L_1$ regularization to both $\bw$ and $\bv$ by projecting each row and column of this matrices to the corresponding $L_1$-ball after each gradient step.
 
-\subsection{Acute myeloid leukemia (AML)}
+We initialize the entries of $\bu$ to the maximum likelihood estimates of the respective product distribution, that is,
+\begin{align*}
+u_i = \log\left( \frac{f_i}{1 - f_i} \right),
+\end{align*}
+where $f_i$ is the frequency of element $i \in V$ in the data set $\mathcal{D}$.
+We randomly initialize the entries of $\bw$ and $\bv$ by drawing from a uniform distribution $\mathcal{U}[0, 0.01]$.
+To avoid duplicate latent dimensions in the two matrices, for the first half of the iterations, we check the columns of $\bw$ and $\bv$ after each gradient step, and reinitialize a column when we detect that its $L_1$ distance to another column of the same matrix is smaller than a predefined threshold.
+
+Unless otherwise stated, we use $n_{\mathrm{iter}} = 2\cdot10^4$ gradient iterations, and $M = 100|V|$ samples per iteration.
+We use the combined sampler detailed in \chapref{ch:m3} with a mix of $100$ random sub- and supergradients, and a combination weight of $\alpha_c = 0.5$.
+Finally, we use a fixed step size ($\gamma = 5\cdot10^{-4}$) for the first half of the iterations, and a geometrically decreasing step size ($\gamma_i = \gamma r^i$ with $r = 10^{-3/n_{\mathrm{iter}}}$) for the second half.
+
+\paragraph{Step 2: Extracting proposed mutation sets.}
+We start by thresholding each column of the learned $\bw$ matrix at a fixed level $w_{\mathrm{th}} = 1.5$.
+We then proceed to create a graph that contains one clique of nodes for each group extracted in the previous step.
+Our proposed mutation sets consists of all maximal cliques in this constructed graph.
+Creating the graph, rather than directly proposing the groups extracted from the matrix columns, can be useful for merging smaller groups of genes that have been encoded in separate columns of $\bw$ during learning.
+
+\paragraph{Step 3: Testing mutual exclusivity.}
+We make use of two statistical tests for testing the degree of mutual exclusivity of a mutation group.
+
+The first was proposed by \cite{mutex}, and used as part of the Mutex algorithm.
+For each gene in a proposed mutation group, we run Fisher's exact test on the contingency table that results from examining the occurences of that gene in the data set versus the union of all other genes in the group.
+This results in one $p$-value per gene in the mutation group, and the output of the test is the maximum of these $p$-values.
+We will call this the ``one vs. all'' test, denote it by $T_{\mathrm{ova}}$, and its output by $p_{\mathrm{ova}}$.
+
+The second was proposed by \cite{comet}, and used as part of the CoMEt algorithm.
+It generalizes Fisher's exact test to higher-dimensional contingency tables.
+In particular, it consists of a null hypothesis of independent hypergeometric distributions, one for each mutation in the group, and uses as a test statistic the sum of patients in which exactly one mutation from the group occurs.
+We will call this the ``generalized Fisher'' test, denote it by $T_{\mathrm{gf}}$, and its output by $p_{\mathrm{gf}}$.
+
+\paragraph{Step 4: FDR control.}
+For the synthetic experiments, we will want to make a final decision of whether a proposed group is significantly mutually exclusive or not, in order to compare to the ground truth.
+For that purpose, we employ the one vs. all test discussed above, and correct for multiple testing by using an online FDR control procedure known as LORD++ \citep{lordpp,lord}.
+In contrast to classic offline methods, such as the BH step-up procedure \citep{bh}, online methods can be applied to settings where the hypotheses to be tested are not necessarily known in advance, and my arrive in an arbitrary order.
+This is useful in our case, because we want to output maximal mutually exclusive groups, which means that the decision of whether to test a group or not will depend on whether a supergroup has already been rejected or not.
+The LORD++ procedure takes as input the significance level $\alpha$ at which we are testing.
+For the procedure's ``starting alpha-wealth'' parameter we use $W_0 = 0.8\alpha$.
+
+For the real data experiments, in the absence of ground truth, we take a more exploratory approach, and do not employ multiple testing.
+Rather, we illustrate and discuss the most significant discovered groups, as indicated by their $p$-values according to both $T_{\mathrm{ova}}$ and $T_{\mathrm{gf}}$.
+
+\subsection{Synthetic Data}
+
+\setlength\figureheight{0.65\textwidth}
+\setlength\figurewidth{0.9\textwidth}
+\renewcommand{\subflen}{\textwidth}
+\renewcommand{\scspacey}{-0.3em}
+\renewcommand{\scspacex}{0.2em}
+\begin{figure}[htb]
+  \captionsetup[subfigure]{oneside,margin={2em,0em}}
+  \centering
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/genes/syn_nsamples.tex}
+    %\vspace{\scspacey}
+    \caption{Number of subgradients fixed to $r = 20$.}
+    \label{fig:syn_nsubg}
+  \end{subfigure}\\[2em]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/genes/syn_nsubg.tex}
+    %\vspace{\scspacey}
+    \caption{Number of samples fixed to $M = 200$.}
+    \label{fig:syn_nsamples}
+  \end{subfigure}\\[1em]
+  \caption{
+    Learning curves on the reduced AML data set for (a) varying number of samples, and (b) varying number of subgradients.
+  }
+  \label{fig:syn1}
+\end{figure}
+
+
+\setlength\figureheight{0.65\textwidth}
+\setlength\figurewidth{0.95\textwidth}
+\renewcommand{\subflen}{\textwidth}
+\renewcommand{\scspacey}{-0.3em}
+\renewcommand{\scspacex}{0.2em}
+\begin{figure}[htb]
+  \captionsetup[subfigure]{oneside,margin={2em,0em}}
+  \centering
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/genes/syn_single.tex}
+    %\vspace{\scspacey}
+    \caption{}
+    \label{fig:syn_single}
+  \end{subfigure}\\[2em]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/genes/syn_multi.tex}
+    %\vspace{\scspacey}
+    \caption{Adjusted Rand index for $t$ groups of $k$ mutations.}
+    \label{fig:syn_multi}
+  \end{subfigure}\\[1em]
+  \caption{
+    \todo{}
+  }
+  \label{fig:syn2}
+\end{figure}
+
+\subsection{Real Cancer Data}
+
+\paragraph{Acute myeloid leukemia (AML)}
 
 \begin{figure}[htb]
 \centering
@@ -191,7 +284,8 @@ As we have previously seen, proving general bounds on the mixing time is a hard 
 \caption{Test}
 \end{figure}
 
-\subsection{Breast cancer (BRCA)}
+\paragraph{Breast cancer (BRCA)}
+
 \begin{figure}[htb]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/mat_brca.pdf}\\[2em]

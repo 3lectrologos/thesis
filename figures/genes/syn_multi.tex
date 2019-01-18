@@ -1,0 +1,63 @@
+\begin{tikzpicture}
+
+\colorlet{col1t}{gcol1}
+\colorlet{col2t}{gcol2}
+\colorlet{col3t}{gcol3}
+\colorlet{col4t}{gcol4}
+\colorlet{col5t}{gcol5}
+
+\begin{axis}[%
+tick label style={font=\sffamily\normalsize},
+label style={font=\sffamily\normalsize},
+legend style={font=\sffamily\normalsize},
+view={0}{90},
+width=\figurewidth,
+height=\figureheight,
+xmin=-0.5, xmax=8.5,
+xtick={0, 1, 2, 3, 4, 5, 6, 7, 8},
+xticklabels={(2,3), (2,4), (2,5), (3,3), (3,4), (3,5), (4,3), (4,4), (4,5)},
+scaled x ticks=false,
+xlabel={(t, k)},
+xlabel shift=0em,
+ymin=0, ymax=1.02,
+ytick={0, 0.2, 0.4, 0.6, 0.8, 1},
+yticklabels={0, 0.2, 0.4, 0.6, 0.8, 1},
+ylabel={Adjusted Rand index},
+ylabel shift=0em,
+%tick label style={/pgf/number format/fixed},
+major tick length=2pt,
+axis lines*=left,
+legend cell align=left,
+clip marker paths=true,
+legend style={at={(1.0,0.05)},draw=none,row sep=0,anchor=south east},
+ybar,
+bar width=12pt
+%every axis plot/.append style={
+%  mark=none,
+%  line width=1.7pt,
+%  opacity=0.9,
+%}
+]
+
+\addplot [
+color=col1t,
+fill=col1t
+]
+coordinates{
+(0,0.99)(1,0.99)(2,0.99)(3,0.99)(4,0.99)(5,0.99)(6,0.99)(7,0.99)(8,0.99)
+};
+\addlegendentry{Ours}
+
+
+\addplot [
+color=col2t,
+fill=col2t
+]
+coordinates{
+(0,0.53)(1,0.51)(2,0.74)(3,0.68)(4,0.88)(5,0.94)(6,0.8)(7,0.92)(8,0.83)
+};
+\addlegendentry{CoMEt}
+
+
+\end{axis}
+\end{tikzpicture}
