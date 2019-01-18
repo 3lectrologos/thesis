@@ -31,7 +31,7 @@ legend cell align=left,
 clip marker paths=true,
 legend style={at={(1.0,0.05)},draw=none,row sep=0,anchor=south east},
 ybar,
-bar width=12pt
+bar width=8pt
 %every axis plot/.append style={
 %  mark=none,
 %  line width=1.7pt,
@@ -47,8 +47,17 @@ coordinates{
 (0.00,0.949)(1.00,0.942)(2.00,0.965)(3.00,1.000)(4.00,1.000)(5.00,0.968)(6.00,0.
 925)(7.00,0.981)(8.00,0.984)
 };
-\addlegendentry{Ours}
+\addlegendentry{Ours (α = 0.01)}
 
+
+\addplot [
+color=col3t,
+fill=col3t
+]
+coordinates{
+(0,0.774)(1,0.907)(2,0.904)(3,0.806)(4,0.947)(5,0.911)(6,0.777)(7,0.918)(8,0.951)
+};
+\addlegendentry{Ours (α = 0.3)}
 
 \addplot [
 color=col2t,
