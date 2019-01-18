@@ -286,13 +286,26 @@ Our method performs consistently well across all different $t$ and $k$, while Co
 \end{figure}
 
 \subsection{Real Cancer Data}
+We analyzed two real cancer data sets from TCGA, the first pertaining to acute myeloid leukemia \citep{tcga_aml}, and the second to breast cancer \citep{tcga_brca}.
+For both data sets, we used the preprocessed versions by \cite{comet} available on GitHub\footnote{\url{https://github.com/raphael-group/comet}}.
 
 \paragraph{Acute myeloid leukemia (AML)}
+The AML data set consists of 51 mutations and 200 patients.
+The learned \fldc{} model ($L = 10$) is shown in \figref{fig:mat_aml}.
+We have annotated on the two matrices the discovered mutually exclusive and co-occuring groups that have (uncorrected) $p$-values $\leq 0.01$ for both $T_{\mathrm{gf}}$ and $T_{\mathrm{ova}}$.
+(We have also decided to include group $R_2$, even though its $p_{\mathrm{ova}}$ is barely above $0.01$.)
+
+\figsref{fig:rep_aml_1} and \ref{fig:rep_aml_2} illustrate in detail each of the mutually exclusive groups $R_1$--$R_8$ by showing the corresponding permuted data rows, as well as the computed $p$-values for each group.
+\figref{fig:graph_aml} summarizes these eight groups into a graphical structure.
+Each node represents a mutation, with darker nodes corresponding to higher marginal frequency in the data set.
+The mutually exclusive groups are shown shaded, with darker groups corresponding to lower $p_{\mathrm{ova}}$.
+\figref{fig:att_aml} shows the five discovered groups $A_1$--$A_5$ of co-occuring mutations.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/genes/mat_aml.pdf}\\[2em]
+\includegraphics[width=\textwidth]{figures/genes/mat_aml.pdf}\\[1em]
 \caption{Test}
+\label{fig:mat_aml}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -302,6 +315,7 @@ Our method performs consistently well across all different $t$ and $k$, while Co
 \includegraphics[width=\textwidth]{figures/genes/aml_3.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_4.pdf}\\[2em]
 \caption{Test}
+\label{fig:rep_aml_1}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -311,19 +325,14 @@ Our method performs consistently well across all different $t$ and $k$, while Co
 \includegraphics[width=\textwidth]{figures/genes/aml_7.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_8.pdf}\\[2em]
 \caption{Test}
+\label{fig:rep_aml_2}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/graph_aml.pdf}\\[2em]
-\caption{AML repulsive graph} \label{fig:graph_aml}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figures/genes/aml_comet1.pdf}\\[2em]
-\includegraphics[width=\textwidth]{figures/genes/aml_comet2.pdf}\\[2em]
-\caption{CoMEt extra groups (probably appendix)}
+\caption{AML repulsive graph}
+\label{fig:graph_aml}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -334,7 +343,14 @@ Our method performs consistently well across all different $t$ and $k$, while Co
 \includegraphics[width=\textwidth]{figures/genes/aml_5_a.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_4_a.pdf}\\[2em]
 \caption{Test}
+\label{fig:att_aml}
 \end{figure}
+
+It is notable that CoMEt detects groups $R_1$ (without the last mutation RUNX1-RUNX1T1) and $R_2$, but fails to detect any of the other six groups, even though almost all of them have particularly low $p_{\mathrm{gf}}$.
+We suspect that this is caused by the combination of CoMEt using as input a fixed number of groups and sizes thereof, as well as the fact that their searching procedure based on sampling works on a particularly slow-mixing landscape.
+As an example, although they are searching for a group of size $6$, they never discover our group $R_3$, because their sampler get stuck on group $R_1$, which has a few orders of magnitude lower $p_{\mathrm{gf}}$ compared to $R_3$.
+On the other hand, CoMEt detects two other groups (see \figref{fig:comet_aml}), which have $p_{\mathrm{ova}}$ significantly above our cutoff, and furthermore, also have $p_{\mathrm{gf}}$ significantly higher than all our discovered groups, except for $R_8$.
+For a comparison of the discovered mutation interactions, we also refer to \citep[Figure S8]{tcga_aml}, which confirms many of our findings, although it only illustrates pairwise interactions.
 
 \paragraph{Breast cancer (BRCA)}
 
