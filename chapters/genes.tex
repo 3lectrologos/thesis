@@ -1,12 +1,12 @@
 \chapter{Learning Prob. Submodular Models} \label{ch:genes}
 
 \section{Introduction}
-As discussed at the very beginning of the thesis, learning probabilistic models from data in one of our main motivations.
+As discussed at the very beginning of the thesis, learning probabilistic models from data is one of the main motivations of our work
 The probabilistic framework we employ suggests a principled way to estimate the model parameters given a data set, namely by maximizing the model likelihood under the data.
 Unfortunately, the maximum likelihood problem for the model class we consider is, in general, non-convex; even worse, evaluating the likelihood function or its gradient with respect to the model parameters boils down to computing expectations over the distribution at hand, which we have already seen to be a hard problem.
-We show in this chapter how we can use sampling to approximate the likelihood gradients, and, thus, perform an approximate gradient ascent procedure that converges to a local optimum of the model likelihood.
-Then, we focus on applying this learning procedure to the application of modeling the interactions between gene alterations in cancer patients.
-We evaluate our method on synthetic and real cancer data, visualize the results in several ways, and compare them to previously proposed statistical methods.
+We show in this chapter how we can use sampling to approximate the likelihood gradient, and, thus, perform an approximate gradient ascent procedure that converges to a local optimum of the model likelihood.
+Then, we focus on applying this learning procedure to the application of modeling the interactions between gene mutations in cancer patients.
+We evaluate our method on synthetic and real cancer data, visualize the results in several ways, and compare them to the state of the art.
 
 
 \section{Approximate Maximum Likelihood Learning using Sampling} \label{sect:ml}
@@ -79,7 +79,7 @@ We have noticed that our choice often results in slightly improved learning perf
 
 
 \section{Modeling Gene Interactions in Cancer}
-One of the goals of cancer genomics research is identifying so-called driver mutations, that is, somatic mutations that are responsible for various forms of cancer, and distinguishing them from randomly occuring passenger mutations.
+One of the goals of cancer genomics research is identifying so-called driver mutations, that is, somatic mutations that are responsible for various forms of cancer, and distinguishing them from randomly occurring passenger mutations.
 While sequencing data from large-scale projects, such as The Cancer Genome Atlas \citep{tcga}, has been available in increasing quantities, analyzing the occurence combinations of mutations is a combinatorially daunting task.
 
 Driver mutations often occur in a limited number of key biological pathways, and it has been observed that multiple mutations involved in the same pathway tend to not occur together in the same patient \citep{yeang08}.
@@ -123,7 +123,7 @@ As we have previously seen, proving general bounds on the mixing time is a hard 
 \section{Experiments}
 In this section, we practically apply our learning algorithm to the problem of modeling gene interactions outlined above.
 We begin with providing some more details about each step of the procedure we use to discover mutually exclusive groups of mutations.
-The steps for discovering co-occuring groups are completely analogous.
+The steps for discovering co-occurring groups are analogous.
 
 \paragraph{Step 1: Learning the \fldc{} model.}
 We use the approximate maximum likelihood method described in \sectref{sect:ml}.
@@ -154,14 +154,14 @@ Creating the graph, rather than directly proposing the groups extracted from the
 We make use of two statistical tests for testing the degree of mutual exclusivity of a mutation group.
 
 The first was proposed by \cite{mutex}, and used as part of the Mutex algorithm.
-For each gene in a proposed mutation group, we run Fisher's exact test on the contingency table that results from examining the occurences of that gene in the data set versus the union of all other genes in the group.
+For each gene in a proposed mutation group, we run Fisher's one-tailed exact test on the contingency table that results from examining the occurences of that gene in the data set versus the union of all other genes in the group.
 This results in one $p$-value per gene in the mutation group, and the output of the test is the maximum of these $p$-values.
-We will call this the ``one vs. all'' test, denote it by $T_{\mathrm{ova}}$, and its output by $p_{\mathrm{ova}}$.
+We will call this the ``one vs. all'' test, and denote its output $p$-value by $p_{\mathrm{ova}}$.
 
 The second was proposed by \cite{comet}, and used as part of the CoMEt algorithm.
 It generalizes Fisher's exact test to higher-dimensional contingency tables.
 In particular, it consists of a null hypothesis of independent hypergeometric distributions, one for each mutation in the group, and uses as a test statistic the sum of patients in which exactly one mutation from the group occurs.
-We will call this the ``generalized Fisher'' test, denote it by $T_{\mathrm{gf}}$, and its output by $p_{\mathrm{gf}}$.
+We will call this the ``generalized Fisher'' test, and denote its output $p$-value by $p_{\mathrm{gf}}$.
 
 \paragraph{Step 4: FDR control.}
 For the synthetic experiments, we will want to make a final decision of whether a proposed group is significantly mutually exclusive or not, in order to compare to the ground truth.
@@ -172,7 +172,12 @@ The LORD++ procedure takes as input the significance level $\alpha$ at which we 
 For the procedure's ``starting alpha-wealth'' parameter we use $W_0 = 0.8\alpha$.
 
 For the real data experiments, in the absence of ground truth, we take a more exploratory approach, and do not employ multiple testing.
-Rather, we illustrate and discuss the most significant discovered groups, as indicated by their $p$-values according to both $T_{\mathrm{ova}}$ and $T_{\mathrm{gf}}$.
+Rather, we illustrate and discuss the most significant discovered groups, as indicated by their $p$-values according to both statistical tests described above.
+
+\paragraph{Co-occurence tests.}
+For assessing co-occurence, we define a version of the ``one vs. all'' test that is completely analogous to the one described above, except that we use the opposite tail of the null distribution in Fisher's test compared to the mutually exclusive case.
+To define a ``generalized Fisher'' test for co-occurence, we use as a test statistic the sum of patients in which all mutations from the corresponding group occur simultaneously.
+
 
 \subsection{Synthetic Data: Learning}
 To begin with, we want to illustrate how the gradient approximation via sampling affects the learning algorithm.
@@ -226,9 +231,9 @@ Finally, we add random noise by independently activating each mutation in each p
 \figref{fig:syn_mat} shows the learned $\bw$ matrix of the \fldc{} model for such a synthetic data set with $\gamma = 0.5$.
 Note how the mutually exclusive group $\{16, 23, 68\}$ is distinctly encoded in the last column of the matrix.
 
-\begin{figure}[htbp]
+\begin{figure}[p]
 \centering
-\includegraphics[width=0.55\textwidth]{figures/genes/mat_syn.pdf}\\[1em]
+\includegraphics[width=0.6\textwidth]{figures/genes/mat_syn.pdf}\\[1em]
 \caption{The $\bw$ matrix of the learned \fldc{} model on a synthetic data set of 100 genes and 500 patients.
 The implanted mutually exclusive group of $k = 3$ mutations covers a fraction $\gamma = 0.5$ of the patients, and is distinctly encoded in the last column of the matrix.}
 \label{fig:syn_mat}
@@ -289,22 +294,25 @@ Our method performs consistently well across all different $t$ and $k$, while Co
 We analyzed two real cancer data sets from TCGA, the first pertaining to acute myeloid leukemia \citep{tcga_aml}, and the second to breast cancer \citep{tcga_brca}.
 For both data sets, we used the preprocessed versions by \cite{comet} available on GitHub\footnote{\url{https://github.com/raphael-group/comet}}.
 
-\paragraph{Acute myeloid leukemia (AML)}
-The AML data set consists of 51 mutations and 200 patients.
+\paragraph{Acute myeloid leukemia (AML).}
+The data set consists of 51 mutations and 200 patients.
 The learned \fldc{} model ($L = 10$) is shown in \figref{fig:mat_aml}.
-We have annotated on the two matrices the discovered mutually exclusive and co-occuring groups that have (uncorrected) $p$-values $\leq 0.01$ for both $T_{\mathrm{gf}}$ and $T_{\mathrm{ova}}$.
+We have annotated on the two matrices the discovered mutually exclusive and co-occurring groups that have (uncorrected) $p$-values $\leq 0.01$ for both $p_{\mathrm{gf}}$ and $p_{\mathrm{ova}}$.
 (We have also decided to include group $R_2$, even though its $p_{\mathrm{ova}}$ is barely above $0.01$.)
 
 \figsref{fig:rep_aml_1} and \ref{fig:rep_aml_2} illustrate in detail each of the mutually exclusive groups $R_1$--$R_8$ by showing the corresponding permuted data rows, as well as the computed $p$-values for each group.
 \figref{fig:graph_aml} summarizes these eight groups into a graphical structure.
 Each node represents a mutation, with darker nodes corresponding to higher marginal frequency in the data set.
 The mutually exclusive groups are shown shaded, with darker groups corresponding to lower $p_{\mathrm{ova}}$.
-\figref{fig:att_aml} shows the five discovered groups $A_1$--$A_5$ of co-occuring mutations.
+\figref{fig:att_aml} shows the five discovered groups $A_1$--$A_5$ of co-occurring mutations.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/mat_aml.pdf}\\[1em]
-\caption{Test}
+\caption{The learned utility ($\bu$), repulsive ($\bw$), and attractive ($\bv$) matrices of the \fldc{} model ($L = 10$) on the TCGA AML data set.
+We have permuted the rows and columns to bring the discovered groups towards the upper left of the matrices.
+Groups $R_1$--$R_8$ are mutually exclusive, while groups $A_1$--$A_5$ are co-occurring.
+}
 \label{fig:mat_aml}
 \end{figure}
 
@@ -314,7 +322,9 @@ The mutually exclusive groups are shown shaded, with darker groups corresponding
 \includegraphics[width=\textwidth]{figures/genes/aml_2.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_3.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_4.pdf}\\[2em]
-\caption{Test}
+\caption{The first four mutually exclusive groups extracted from the TCGA AML data set.
+Each row corresponds to a mutation, and each column to a patient.
+The highlighted entries represent co-occurring mutations.}
 \label{fig:rep_aml_1}
 \end{figure}
 
@@ -324,14 +334,16 @@ The mutually exclusive groups are shown shaded, with darker groups corresponding
 \includegraphics[width=\textwidth]{figures/genes/aml_6.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_7.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_8.pdf}\\[2em]
-\caption{Test}
-\label{fig:rep_aml_2}
+\caption{The next four mutually exclusive groups extracted from the TCGA AML data set.
+Each row corresponds to a mutation, and each column to a patient.
+The highlighted entries represent co-occurring mutations.}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/graph_aml.pdf}\\[2em]
-\caption{AML repulsive graph}
+\caption{A graphical representation of the eight discovered mutually exclusive groups in the TCGA AML data set.
+Darker nodes correspond to more frequent mutations, and darker shaded polygons correspond to more significant (that is, lower $p_{\mathrm{ova}}$) groups.}
 \label{fig:graph_aml}
 \end{figure}
 
@@ -342,22 +354,36 @@ The mutually exclusive groups are shown shaded, with darker groups corresponding
 \includegraphics[width=\textwidth]{figures/genes/aml_3_a.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_5_a.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/aml_4_a.pdf}\\[2em]
-\caption{Test}
+\caption{The five co-occurring groups extracted from the TCGA AML data set.
+Each row corresponds to a mutation, and each column to a patient.
+The highlighted entries represent co-occurring mutations.}
 \label{fig:att_aml}
 \end{figure}
 
-It is notable that CoMEt detects groups $R_1$ (without the last mutation RUNX1-RUNX1T1) and $R_2$, but fails to detect any of the other six groups, even though almost all of them have particularly low $p_{\mathrm{gf}}$.
+It is notable that CoMEt detects groups $R_1$ (without the last mutation, \textsf{RUNX1-RUNX1T1}) and $R_2$, but fails to detect any of the other six groups, even though almost all of them have particularly low $p_{\mathrm{gf}}$.
 We suspect that this is caused by the combination of CoMEt using as input a fixed number of groups and sizes thereof, as well as the fact that their searching procedure based on sampling works on a particularly slow-mixing landscape.
-As an example, although they are searching for a group of size $6$, they never discover our group $R_3$, because their sampler get stuck on group $R_1$, which has a few orders of magnitude lower $p_{\mathrm{gf}}$ compared to $R_3$.
+As an example, although they are searching for a group of size $6$, they never discover our group $R_3$, because their sampler presumably gets stuck on group $R_1$, which has a few orders of magnitude lower $p_{\mathrm{gf}}$ compared to $R_3$.
 On the other hand, CoMEt detects two other groups (see \figref{fig:comet_aml}), which have $p_{\mathrm{ova}}$ significantly above our cutoff, and furthermore, also have $p_{\mathrm{gf}}$ significantly higher than all our discovered groups, except for $R_8$.
 For a comparison of the discovered mutation interactions, we also refer to \citep[Figure S8]{tcga_aml}, which confirms many of our findings, although it only illustrates pairwise interactions.
 
-\paragraph{Breast cancer (BRCA)}
+\paragraph{Breast cancer (BRCA).}
+The data set consists of 375 mutations and 507 patients.
+We show the resulting learned \fldc{} model ($L = 15$) in \figref{fig:mat_brca}, the extracted mutually exclusive groups $R_1$--$R_{11}$ in \figsref{fig:rep_brca_1} and \ref{fig:rep_brca_2}, and a graphical summarization of all these groups in \figref{fig:graph_brca}.
+In \figref{fig:att_brca_1} we show the six extracted co-ocurring groups with the highest coverage; groups $A_7$--$A_{14}$ can be found in \figref{fig:att_brca_2} in the appendix.
+
+The CoMEt results on BRCA take into account additional information about the classification of each patient into four different subtypes of breast cancer.
+While this means that we cannot directly compare our results to theirs, we still recover some of their findings (e.g., the first three mutations in $R_1$), but also extract significant groups that were not found by CoMEt, even when constrained to a specific subtype (e.g., $R_3$ for the ``Luminal-A'' subtype).
+Furthermore, we observe that the co-occurring groups $A_1$--$A_6$ are particularly significant, with $p$-values of order $10^{-5}$ or less.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/mat_brca.pdf}\\[2em]
-\caption{Test}
+\caption{The learned utility ($\bu$), repulsive ($\bw$), and attractive ($\bv$) matrices of the \fldc{} model ($L = 15$) on the TCGA BRCA data set.
+For illustration purposes, we only show the submatrices corresponding to the $39$ mutations that participate in the extracted groups.
+We have also permuted the rows and columns to bring these groups towards the upper left of the matrices.
+Groups $R_1$--$R_{11}$ are mutually exclusive, while groups $A_1$--$A_{14}$ are co-occurring.
+}
+\label{fig:mat_brca}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -367,7 +393,10 @@ For a comparison of the discovered mutation interactions, we also refer to \cite
 \includegraphics[width=\textwidth]{figures/genes/brca_8.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/brca_2.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/brca_5.pdf}\\[2em]
-\caption{BRCA repulsive (I)}
+\caption{The first five mutually exclusive groups extracted from the TCGA BRCA data set.
+Each row corresponds to a mutation, and each column to a patient.
+The highlighted entries represent co-occurring mutations.}
+\label{fig:rep_brca_1}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -378,13 +407,18 @@ For a comparison of the discovered mutation interactions, we also refer to \cite
 \includegraphics[width=\textwidth]{figures/genes/brca_10.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/brca_7.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/brca_9.pdf}\\[2em]
-\caption{BRCA repulsive (II)}
+\caption{The next six mutually exclusive groups extracted from the TCGA BRCA data set.
+Each row corresponds to a mutation, and each column to a patient.
+The highlighted entries represent co-occurring mutations.}
+\label{fig:rep_brca_2}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/genes/graph_brca.pdf}\\[2em]
-\caption{BRCA repulsive graph}
+\caption{A graphical representation of the $11$ discovered mutually exclusive groups in the TCGA BRCA data set.
+Darker nodes correspond to more frequent mutations, and darker shaded polygons correspond to more significant (that is, lower $p_{\mathrm{ova}}$) groups.}
+\label{fig:graph_brca}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -395,26 +429,14 @@ For a comparison of the discovered mutation interactions, we also refer to \cite
 \includegraphics[width=\textwidth]{figures/genes/brca_8_a.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/brca_14_a.pdf}\\[2em]
 \includegraphics[width=\textwidth]{figures/genes/brca_4_a.pdf}\\[2em]
-\caption{BRCA attractive}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figures/genes/brca_9_a.pdf}\\[2em]
-\includegraphics[width=\textwidth]{figures/genes/brca_13_a.pdf}\\[2em]
-\includegraphics[width=\textwidth]{figures/genes/brca_5_a.pdf}\\[2em]
-\includegraphics[width=\textwidth]{figures/genes/brca_10_a.pdf}\\[2em]
-\includegraphics[width=\textwidth]{figures/genes/brca_12_a.pdf}\\[2em]
-\caption{BRCA attractive (appendix I)}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figures/genes/brca_3_a.pdf}\\[2em]
-%\includegraphics[width=\textwidth]{figures/genes/brca_15_a.pdf}\\[2em]
-\includegraphics[width=\textwidth]{figures/genes/brca_2_a.pdf}\\[2em]
-\includegraphics[width=\textwidth]{figures/genes/brca_6_a.pdf}\\[2em]
-\caption{BRCA attractive (appendix II)}
+\caption{The first six co-occurring groups extracted from the TCGA BRCA data set.
+Each row corresponds to a mutation, and each column to a patient.
+The highlighted entries represent co-occurring mutations.}
+\label{fig:att_brca_1}
 \end{figure}
 
 \section{Conclusion}
+In this chapter, we have seen how sampling can be effectively used to obtain estimates of the gradient of a probabilistic submodular model with respect to its parameters.
+It, thus, facilitates applying an approximate maximum likelihood maximization procedure to learn such models from data.
+We have applied this learning procedure to the problem of modeling interactions of genetic mutations in cancer patients, with the particular goal of discovering groups of mutually exlusive and co-occurring mutations.
+We have shown that our method often outperforms the state of the art for this task by naturally capturing these higher-order interactions without the need to prespecify the number or size of groups to be found.
