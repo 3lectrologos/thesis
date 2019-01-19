@@ -1,7 +1,7 @@
 \chapter{Learning Prob. Submodular Models} \label{ch:genes}
 
 \section{Introduction}
-As discussed at the very beginning of the thesis, learning probabilistic models from data is one of the main motivations of our work
+As discussed at the very beginning of the thesis, learning probabilistic models from data is one of the main motivations of our work.
 The probabilistic framework we employ suggests a principled way to estimate the model parameters given a data set, namely by maximizing the model likelihood under the data.
 Unfortunately, the maximum likelihood problem for the model class we consider is, in general, non-convex; even worse, evaluating the likelihood function or its gradient with respect to the model parameters boils down to computing expectations over the distribution at hand, which we have already seen to be a hard problem.
 We show in this chapter how we can use sampling to approximate the likelihood gradient, and, thus, perform an approximate gradient ascent procedure that converges to a local optimum of the model likelihood.

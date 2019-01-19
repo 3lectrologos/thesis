@@ -1,1 +1,66 @@
 \chapter{Introduction} \label{ch:intro}
+To introduce the main concepts of this thesis, we begin with a motivation application from the field of cancer genomics.
+One of the major undertakings in large-scale cancer genomics research projects, such as The Cancer Genome Atlas \citep{tcga}, is obtaining and analyzing genetic data from cancer patients.
+Beyond investigating the occurrence of genetic mutations one by one, it is of particular interest to discover meaningful interactions between groups of mutations.
+
+For example, it has been observed that, depending on the type of cancer, there are groups of specific mutations that are (approximately) mutually exclusive, that is, most of the time no more than one mutation from a particular group occurs in the same patient \citep{yeang08}.
+Biologically this is explained by the fact that so-called driver mutations, i.e., mutations that are crucial in cancer development, often occur in a limited number of biological pathways, and mutations that affect a specific pathway tend to not occur in the same patient.
+Taking this in the opposite direction, discovering groups of mutually exclusive mutations may be helpful in uncovering the structure of cancer-related pathways, and identifying important groups of driver mutations.
+
+More concretely, assume that we are given a data set of $n$ mutations and $m$ patients.
+In the simplest case, the data set contains only binary information about whether or not each mutation $i \in [n]$ occurs in each patient $j \in [m]$.
+Equivalently, this can be encoded using a binary matrix, as shown in \figref{fig:bamat_1}.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/intro/example1.pdf}\\[1em]
+\caption{An example binary mutation matrix, in which each shaded entry $(i, j)$ indicates that mutation $i$ occured in patient $j$.}
+\label{fig:bamat_1}
+\end{figure}
+
+In \figref{fig:bamat_2} we show a permuted version of the previous matrix, which illustrates that the first four mutations are approximately mutually exclusive.
+Searching for such groups in data sets containing hundreds or thousands of mutations is a combinatorially daunting task.
+Crucially, the available data is quite limited---TCGA data sets range from a few hundred to a couple of thousand patients---, and contains significant noise introduced by the employed measurement and preprocessing procedures.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/intro/example1_rep.pdf}\\[1em]
+\caption{The binary mutation matrix of the previous figure with permuted rows and columns to illustrate the mutual exclusivity between the first four mutations.}
+\label{fig:bamat_2}
+\end{figure}
+
+Discrete probabilistic models are an ideal fit for such a setting.
+Constraining ourselves to specific model classes offers a way to incorporate prior assumptions about the data structure, and alleviate the scarce data issue.
+Furthermore, the probabilistic nature of such models offers a way to deal with noise, and provides a flexible framework to robustly answer queries pertaining to the data (e.g., given that mutation $A$ is present, what is the probability that mutations $B$ and $C$ are also present).
+More importantly, it suggests a principled approach for succinctly encoding the interactions present in the data, namely learning such a probabilistic model by maximizing the likelihood of its parameters.
+
+\section{Probabilistic Submodular Models}
+Past research on discrete probabilistic models has primarily focused on such models defined by pairwise interactions, such as Markov random fields \cite{koller09}.
+In many applications, however, it is of importance to directly capture higher-order dependencies between larger groups of variables.
+For example, in our aforementioned application, being able to directly encode larger groups of mutually exclusive mutations, provides a potentially sparser and easier to interpret representation, while at the same time allowing for a richer structure of interactions.
+
+On the other hand, in the context of discrete optimization, there has been extensive research on submodular set functions.
+Submodularity is a diminishing returns property that has been used to encode repulsiveness or diversity; it can, thus, be applied to model mutual exlusivity between mutations in our application.
+Analogously, its counterpart, supermodularity, has been used to encode attractiveness or cooperation, and can be used to model co-occurence of mutations in our application.
+Notably, there exist well-known efficient algorithms for both approximate submodular maximization, as well as submodular minimization.
+
+The preceding discussion naturally leads us to consider \emph{probabilistic submodular models} \citep{djolonga14,gotovos15}, a class of discrete probabilistic models defined by submodular (or supermodular) functions.
+More concretely, given a ground set $V = \{1,\ldots n\}$, a probabilistic submodular model is a distribution over subset of $V$ of the form
+\begin{align*}
+p(S; \btheta) = \frac{1}{Z(\btheta)} \exp\left( F(S; \btheta) \right),
+\end{align*}
+for all $S \subseteq V$, where $F$ is a submodular or supermodular function parameterized by $\btheta$, and $Z(\btheta)$ is the normalizer of the distribution.
+Distributions of this form generalize some well-studied model classes, such as Ising models, and determinantal point processes.
+
+\paragraph{Thesis topic.} Both learning the parameters $\btheta$ from data, as well as quantifying uncertainty and making decisions with the learned distribution, boil down to being able to perform probabilistic inference, that is, compute marginal and conditional probabilities, a problem that is known to be, in general, computationally hard.
+The main topic of this thesis is to use sampling as a means of performing approximate inference in probabilistic submodular models.
+
+\paragraph{Contributions.} The primary contributions of this thesis are as follows:
+\begin{itemize}
+\item We analyze the Gibbs sampler in probabilistic submodular models, and show sufficient theoretical conditions for rapid mixing.
+\item We propose a novel sampler that makes use of semigradients to perform efficient global moves in the state space to avoid bottlenecks, thus leading to improved mixing.
+\item We use sampling to learn probabilistic submodular models, and apply this procedure to modeling interactions between genetic mutations in cancer patients; many of our results demonstrate considerable improvement over the state of the art.
+\end{itemize}
+
+%\section{Thesis Outline}
+%\section{Collaborators}
