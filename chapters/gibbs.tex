@@ -95,8 +95,8 @@ Finally, it is easy to show that the stationary distribution of the chain constr
 
 \section{Theoretical Results}
 Performing exact inference in probabilistic submodular models is, in general, computationally infeasible.
-Only for very few exceptions, such as determinantal point processes, is exact inference possible in polynomial time \cite{kulesza12}.
-As we mentioned before, even approximating the partition function of general Ising models---a subclass of PSMs---is a hard problem; in particular, there is no FPRAS for this problem, unless RP = NP \cite{jerrum93}.
+Only for very few exceptions, such as determinantal point processes, is exact inference possible in polynomial time \citep{kulesza12}.
+As we mentioned before, even approximating the partition function of general Ising models---a subclass of PSMs---is a hard problem; in particular, there is no FPRAS for this problem, unless RP = NP \citep{jerrum93}.
 This implies that the mixing time of any Markov chain with such a stationary distribution will, in general, be exponential in $n$.
 
 \subsection{Example: Log-submodular Grid}
@@ -184,7 +184,7 @@ Note that, by an analogous derivation, we get $\pi(\hcn \setminus \{V\}) = \pi(\
   \Phi(\htn) &\leq \frac{1}{2^{n/2} - 1}\left(\frac{1}{2} + \frac{(2^{n/2} - 1) e^{-4\beta/n^2}}{2n}\right)\\
           &= \frac{1}{2(2^{n/2} - 1)} + \frac{e^{-4\beta/n^2}}{2n}.
 \end{align*}
-Using \citep[Theorem 7.3]{levin08book}, it follows that
+Using Theorem 7.3 \citep{levin08book}, it follows that
 \begin{align*}
   \tm(1/4) \geq \frac{1}{4\Phi(\htn)} = \Omega(2^{n/2}).
 \end{align*}
