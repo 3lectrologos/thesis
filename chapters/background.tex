@@ -1,6 +1,14 @@
 \chapter{Background} \label{ch:background}
 
 \section{Submodularity and Submodular Optimization}
+We start by considering set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $|V| = n$.
+Without loss of generality, if not otherwise stated, we will hereafter assume that $V = [n] \defeq \{1, 2, \ldots,n\}$.
+The marginal gain obtained by adding element $v \in V$ to set $S \subseteq V$ is defined as $F(v|S) \defeq F(S \cup \{v\}) - F(S)$.
+Intuitively, submodularity expresses a notion of diminishing returns; that is, adding an element to a larger set provides less benefit than adding it to a smaller one.
+More formally, $F$ is submodular if, for any $S \subseteq T \subseteq V$, and any $v \in V \setminus T$, it holds that $F(v|T) \leq F(v|S)$.
+Supermodularity is defined analogously by reversing the sign of this inequality.
+In particular, if a function $F$ is submodular, then the function $-F$ is supermodular.
+If a function $m$ is both submodular and supermodular, then it is called modular, and may be written in the form $m(S) = c + \sum_{v \in S} m_v$, where $c \in \mathbb{R}$, and $m_v \in \mathbb{R}$, for all $v \in V$.
 
 \section{Probabilistic Models, Inference, and Learning}
 \todo{Exponential family}
@@ -23,6 +31,10 @@ It is natural to ask to what degree the usual alternative to variational methods
 To this end, in this paper we consider a simple Markov chain Monte Carlo (MCMC) algorithm on log-submodular and log-supermodular models, and provide a first analysis of its performance.
 We present two theoretical conditions that respectively guarantee polynomial-time and fast ($\mathcal{O}(n \log n)$) mixing in such models, and experimentally compare against the variational approximations on three examples.
 
+An alternative and equivalent way of defining distributions of the above form is via binary random vectors $X \in \{0, 1\}^n$.
+If we define $V(X) \defeq \sdef{v \in V}{X_v = 1}$, it is easy to see that the distribution $p_X(X) \propto \exp(\beta F(V(X)))$ over binary vectors is isomorphic to the distribution over sets of \eqref{eq:pdef}.
+With a slight abuse of notation, we will use $F(X)$ to denote $F(V(X))$, and use $p$ to refer to both distributions.
+
 \paragraph{Example models}
 The (ferromagnetic) Ising model is an example of a log-supermodular model.
 In its simplest form, it is defined through an undirected graph $(V, E)$, and a set of pairwise potentials $\sigma_{v,w}(S) \defeq 4(\mathds{1}_{\{v \in S\}}-0.5)(\mathds{1}_{\{w \in S\}}-0.5)$.
@@ -40,3 +52,14 @@ F(S) = \sum_{\ell \in [L]} F_{\ell}(S).
 \end{align}
 
 \section{Sampling and Mixing Times}
+
+\paragraph{Mixing times.}
+Approximating quantities of interest using MCMC methods is based on using time averages to estimate expectations over the desired distribution.
+In particular, we estimate the expected value of function $f : \ss \to \mathbb{R}$ by $\E_p[f(X)] \approx (1/T)\sum_{r=1}^{T} f(X_{s + r})$.
+For example, to estimate the marginal $p(v \in S)$, for some $v \in V$, we would define $f(x) = \mathds{1}_{\{x_v = 1\}}$, for all $x \in \ss$.
+The choice of burn-in time $s$ and number of samples $T$ in the above expression presents a tradeoff between computational efficiency and approximation accuracy.
+It turns out that the effect of both $s$ and $T$ is largely dependent on a fundamental quantity of the chain called \emph{mixing time} \cite{levin08}.
+
+The mixing time of a chain quantifies the number of iterations $t$ required for the distribution of $X_t$ to be close to the stationary distribution $\pi$.
+More formally, it is defined as $\tme \defeq \min \sdef{t}{d(t) \leq \epsilon}$, where $d(t)$ denotes the worst-case (over the starting state $X_0$ of the chain) total variation distance between the distribution of $X_t$ and $\pi$.
+Establishing upper bounds on the mixing time of our Gibbs sampler is, therefore, sufficient to guarantee efficient approximate marginal inference (e.g., see Theorem 12.19 of \citet{levin08}).

@@ -1,0 +1,42 @@
+\documentclass{standalone}
+
+\usepackage{../../core}
+
+\begin{document}
+
+\begin{tikzpicture}[
+  scale=1.7,
+  >=latex,
+  line join=bevel,
+  NN/.style={circle,draw=textcolor!50!white,fill=textcolor,text=textcolor,line width=0.2em,fill opacity=0.3,minimum size=3.5em},
+  NS/.style={draw=col2,fill=col2,text=textcolor,text opacity=1,fill opacity=0.6,circle,line width=0.2em,minimum size=3.5em},
+  NC/.style={draw=col1,fill=col1,text=textcolor,text opacity=1,fill opacity=0.6,circle,line width=0.2em,minimum size=3.5em},
+  LL/.style={draw=textcolor!50!white,line width=0.2em},
+  LS/.style={draw=col1,line width=0.2em}
+  ]
+  \node[NC] (S0) at (0,0) {\large$\varnothing$};
+  \node[NN] (S1) at (-50bp,40bp) {$\{1\}$};
+  \node[NS] (S2) at (0,40bp) {$\{2\}$};
+  \node[NN] (S3) at (50bp,40bp) {$\{3\}$};
+  \node[NC] (S12) at (-50bp,80bp) {$\{1, 2\}$};
+  \node[NN] (S13) at (0,80bp) {$\{1, 3\}$};
+  \node[NC] (S23) at (50bp,80bp) {$\{2, 3\}$};
+  \node[NN] (S123) at (0,120bp) {$V$};
+  
+  \draw [LL] (S0) -- (S1);
+  \draw [LS] (S0) -- (S2);
+  \draw [LL] (S0) -- (S3);
+  \draw [LL] (S1) -- (S12);
+  \draw [LL] (S1) -- (S13);
+  \draw [LS] (S2) -- (S12);
+  \draw [LS] (S2) -- (S23);
+  \draw [LL] (S3) -- (S13);
+  \draw [LL] (S3) -- (S23);
+  \draw [LL] (S12) -- (S123);
+  \draw [LL] (S13) -- (S123);
+  \draw [LL] (S23) -- (S123);
+  
+  \node (T) at (17bp,35bp) {\Large$X_t$};
+\end{tikzpicture}
+
+\end{document}
