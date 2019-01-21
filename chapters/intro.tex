@@ -29,7 +29,7 @@ Crucially, the available data is quite limited---TCGA data sets range from a few
 \label{fig:bamat_2}
 \end{figure}
 
-Discrete probabilistic models are an ideal fit for such a setting.
+Discrete probabilistic models are an ideal fit for this setting.
 Constraining ourselves to specific model classes offers a way to incorporate prior assumptions about the data structure, and alleviate the scarce data issue.
 Furthermore, the probabilistic nature of such models offers a way to deal with noise, and provides a flexible framework to robustly answer queries pertaining to the data (e.g., given that mutation $A$ is present, what is the probability that mutations $B$ and $C$ are also present).
 More importantly, it suggests a principled approach for succinctly encoding the interactions present in the data, namely learning such a probabilistic model by maximizing the likelihood of its parameters.
@@ -55,11 +55,11 @@ Distributions of this form generalize some well-studied model classes, such as I
 \paragraph{Thesis topic.} Both learning the parameters $\btheta$ from data, as well as quantifying uncertainty and making decisions with the learned distribution, boil down to being able to perform probabilistic inference, that is, compute marginal and conditional probabilities, a problem that is known to be, in general, computationally hard.
 The main topic of this thesis is to use sampling as a means of performing approximate inference in probabilistic submodular models.
 
-\paragraph{Contributions.} The primary contributions of this thesis are as follows:
-\begin{itemize}
-\item We analyze the Gibbs sampler in probabilistic submodular models, and show sufficient theoretical conditions for rapid mixing.
-\item We propose a novel sampler that makes use of semigradients to perform efficient global moves in the state space to avoid bottlenecks, thus leading to improved mixing.
-\item We use sampling to learn probabilistic submodular models, and apply this procedure to modeling interactions between genetic mutations in cancer patients; many of our results demonstrate considerable improvement over the state of the art.
+\paragraph{Contributions.} The primary contributions of this thesis are as follows.
+\begin{itemize}[leftmargin=3.5em]
+\item[\textsf{Chapter 3}] We analyze the Gibbs sampler in probabilistic submodular models, and show sufficient theoretical conditions for rapid mixing.
+\item[\textsf{Chapter 4}] We propose a novel sampler that makes use of semigradients to perform efficient global moves in the state space to avoid bottlenecks, thus leading to improved mixing.
+\item[\textsf{Chapter 5}] We use sampling to learn probabilistic submodular models, and apply this procedure to modeling interactions between genetic mutations in cancer patients; many of our results demonstrate considerable improvement over the state of the art.
 \end{itemize}
 
 %\section{Thesis Outline}

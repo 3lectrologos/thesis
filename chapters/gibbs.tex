@@ -3,32 +3,7 @@
 \emph{The majority of the content of this chapter has already been published in conference proceedings \citep{gotovos15}.}
 
 \section{Introduction}
-Modeling notions such as coverage, representativeness, or diversity is an important challenge in many machine learning problems.
-These notions are well captured by submodular set functions.
-Analogously, supermodular functions capture notions of smoothness, regularity, or cooperation. 
-As a result, submodularity and supermodularity, akin to concavity and convexity, have found numerous applications in machine learning.
-The majority of previous work has focused on optimizing such functions, including the development and analysis of algorithms for minimization \cite{fujishige05} and maximization \cite{nemhauser78,feige07}, as well as the investigation of practical applications, such as sensor placement \cite{krause06}, active learning \cite{golovin11}, influence maximization \cite{kempe03}, and document summarization \cite{lin11}.
 
-Beyond optimization, though, it is of interest to consider probabilistic models defined via submodular functions, that is, distributions over finite sets (or, equivalently, binary random vectors) defined as $p(S) \propto \exp(\beta F(S)),$ where $F : 2^V \to \mathbb{R}$ is a submodular or supermodular function (equivalently, either $F$ or $-F$ is submodular), and $\beta \geq 0$ is a scaling parameter.
-Finding most likely sets in such models captures classical submodular optimization.
-However, going beyond point estimates, that is, performing general probabilistic (e.g., marginal) inference in them, allows us to quantify uncertainty given some observations, as well as learn such models from data.
-Only few special cases belonging to this class of models have been extensively studied in the past; most notably, Ising models \cite{koller09}, which are log-supermodular in the usual case of attractive (ferromagnetic) potentials, or log-submodular under repulsive (anti-ferromagnetic) potentials, and determinantal point processes \cite{kulesza12}, which are log-submodular.
-
-Recently, \citet{djolonga14} considered a more general treatment of such models, and proposed a variational approach for performing approximate probabilistic inference for them.
-It is natural to ask to what degree the usual alternative to variational methods, namely Monte Carlo sampling, is applicable to these models, and how it performs in comparison.
-To this end, in this paper we consider a simple Markov chain Monte Carlo (MCMC) algorithm on log-submodular and log-supermodular models, and provide a first analysis of its performance.
-We present two theoretical conditions that respectively guarantee polynomial-time and fast ($\mathcal{O}(n \log n)$) mixing in such models, and experimentally compare against the variational approximations on three examples.
-
-\paragraph{Related Work.}
-In contemporary work to ours, Rebeschini and Karbasi \cite{rebeschini15} analyzed the mixing times of log-submodular models.
-Using a method based on matrix norms, which was previously introduced by Dyer et al. \cite{dyer09}, and is closely related to path coupling, they arrive at a similar---though not directly comparable---condition to the one we presented in \theoremref{thm:fast}.
-
-Iyer and Bilmes \cite{iyer15} recently considered a different class of probabilistic models, called submodular point processes, which are also defined through submodular functions, and have the form $p(S) \propto F(S)$.
-They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
-
-The canonical path method for bounding mixing times has been previously used in applications, such as approximating the partition function of ferromagnetic Ising models \cite{jerrum93}, approximating matrix permanents \cite{jerrum89,jerrum04perm}, and counting matchings in graphs \cite{jerrum03}.
-The most prominent application of coupling-based methods is counting $k$-colorings in low-degree graphs \cite{jerrum95,bubley98,jerrum03}.
-Other applications include counting independent sets in graphs \cite{dyer00}, and approximating the partition function of various subclasses of Ising models at high temperatures \cite{levin08}.
 
 \section{The Gibbs Sampler} \label{sect:setup}
 We start by considering set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $|V| = n$.
@@ -50,22 +25,6 @@ The constant denominator $Z \defeq Z(\beta) \defeq \sum_{S \subseteq V} \exp(\be
 An alternative and equivalent way of defining distributions of the above form is via binary random vectors $X \in \{0, 1\}^n$.
 If we define $V(X) \defeq \sdef{v \in V}{X_v = 1}$, it is easy to see that the distribution $p_X(X) \propto \exp(\beta F(V(X)))$ over binary vectors is isomorphic to the distribution over sets of \eqref{eq:pdef}.
 With a slight abuse of notation, we will use $F(X)$ to denote $F(V(X))$, and use $p$ to refer to both distributions.
-
-\paragraph{Example models}
-The (ferromagnetic) Ising model is an example of a log-supermodular model.
-In its simplest form, it is defined through an undirected graph $(V, E)$, and a set of pairwise potentials $\sigma_{v,w}(S) \defeq 4(\mathds{1}_{\{v \in S\}}-0.5)(\mathds{1}_{\{w \in S\}}-0.5)$.
-Its distribution has the form $p(S) \propto \exp(\beta\sum_{\{v,w\} \in E} \sigma_{v,w}(S))$, and is log-supermodular, because $F(S) = \sum_{\{v,w\} \in E} \sigma_{v,w}(S)$ is supermodular. (Each $\sigma_{v,w}$ is supermodular, and supermodular functions are closed under addition.)
-
-Determinantal point processes (DPPs) are examples of log-submodular models.
-A DPP is defined via a positive semidefinite matrix $K \in \mathbb{R}^{n \times n}$, and has a distribution of the form $p(S) \propto \det(K_S)$, where $K_S$ denotes the square submatrix indexed by $S$.
-Since $F(S) = \ln \det(K_S)$ is a submodular function, $p$ is log-submodular.
-Another example of log-submodular models are those defined through facility location functions, which have the form $F(S) = \sum_{\ell \in [L]} \max_{v \in S}w_{v,\ell}$, where $w_{v,\ell} \geq 0$, and are submodular.
-If $w_{v,\ell} \in \{0, 1\}$, then $F$ represents a set cover function.
-
-Note that, both the facility location model and the Ising model use decomposable functions, that is, functions that can be written as a sum of simpler submodular (resp. supermodular) functions $F_{\ell}$:
-\begin{align} \label{eq:fdec}
-F(S) = \sum_{\ell \in [L]} F_{\ell}(S).
-\end{align}
 
 \paragraph{Marginal inference}
 Our goal is to perform marginal inference for the distributions described above.
@@ -95,21 +54,20 @@ We also define an adjacency relation $x \sim y$ on the elements of the state spa
 It follows that each $x \in \ss$ has exactly $n$ neighbors.
 
 \begin{algorithm}[tb]
+    \setstretch{1.2}
 	\caption{Gibbs sampler}
 	\label{alg:gibbs}
-	\small{
-		\begin{algorithmic}[1]
-			\REQUIRE Ground set $V$, distribution $p(S) \propto \exp(\beta F(S))$
-			\LET{$X_0$}{random subset of $V$}
-			\FOR{$t = 0$ \TO $N_{\mathrm{iter}}$}
-			\LET{$v$}{$\mathrm{Unif}(V)$}
-			\LET{$\Delta_F(v | X_t)$}{$F(X_t \cup \{v\}) - F(X_t \setminus \{v\})$}
-			\LET{$p_{\mathrm{add}}$}{$\exp(\beta\Delta_F(v | X_t))/(1 + \exp(\beta\Delta_F(v | X_t)))$}
-			\LET{$z$}{$\mathrm{Unif}([0,1])$}
-			\LINEIFELSE{$z \leq p_{\mathrm{add}}$}{$X_{t+1} \gets X_t \cup \{v\}$}{$X_{t+1} \gets X_t \setminus \{v\}$}
-			\ENDFOR
-		\end{algorithmic}
-	}
+	\begin{algorithmic}[1]
+		\REQUIRE Ground set $V$, distribution $p(S) \propto \exp(\beta F(S))$
+		\LET{$X_0$}{random subset of $V$}
+		\FOR{$t = 0$ \TO $N_{\mathrm{iter}}$}
+		\LET{$v$}{$\mathrm{Unif}(V)$}
+		\LET{$\Delta_F(v | X_t)$}{$F(X_t \cup \{v\}) - F(X_t \setminus \{v\})$}
+		\LET{$p_{\mathrm{add}}$}{$\exp(\beta\Delta_F(v | X_t))/(1 + \exp(\beta\Delta_F(v | X_t)))$}
+		\LET{$z$}{$\mathrm{Unif}([0,1])$}
+		\LINEIFELSE{$z \leq p_{\mathrm{add}}$}{$X_{t+1} \gets X_t \cup \{v\}$}{$X_{t+1} \gets X_t \setminus \{v\}$}
+		\ENDFOR
+	\end{algorithmic}
 \end{algorithm}
 
 The Gibbs sampler is defined by an iterative two-step procedure, as shown in \algoref{alg:gibbs}.
@@ -143,79 +101,127 @@ In some of our results we will use the fact that any submodular function $F$ can
 where $c \in \mathbb{R}$ is a constant that has no effect on distributions defined by \eqref{eq:pdef}; $m$ is a normalized ($m(\varnothing) = 0$) modular function; and $f$ is a normalized ($f(\varnothing) = 0$) monotone submodular function, that is, it additionally satisfies the monotonicity property $f(v|S) \geq 0$, for all $v \in V$, and all $S \subseteq V$.
 A similar decomposition is possible for any supermodular function as well.
 
-%To further highlight the hardness of inference in the general models we consider, we show that even for distributions defined through a seemingly benign subclass of submodular functions, mixing times can be exponential in $n$.
-%We say that a set function $F : 2^V \to \mathbb{R}$ is monotone, if $F(v|S) \geq 0$, for all $v \in V$, and all $S \subseteq V$.
-%Intuitively, adding elements to our set always leads to higher values.
-%\begin{lemma}
-%There is a family of monotone submodular functions $F_n$, such that, for the corresponding log-submodular family of distributions $p_n$ defined as in \eqref{eq:pdef}, the Metropolis chain has mixing time
-%\begin{align*}
-%  \tm  = \Omega(2^{n/2}),
-%\end{align*}
-%\end{lemma}
-%for any value of $\beta$.
-%
-%The functions used to prove the above lemma are based on the following construction.
-%For any even $n \geq 2$, let $V_n = \{1,\ldots,n\}$, $R_n = \{1,\ldots,n/2\}$, and $C_n = \{n/2+1,\ldots,n\}$.
-%To define function $F_n : 2^{V_n} \to \mathbb{R}$, we conceptually use a $n/2 \times n/2$ square grid, whose rows are indexed by $R$ and columns by $C$.
-%Each cell $(i, j)$ of the grid is considered to be covered if either row $i \in R$ or column $j \in C$ is selected.
-%Formally, we define $F_n$ by
-%\begin{align*}
-%  F_n(S) = \frac{4}{n^2}\big\vert \sdef{(i, j) \in R \times C}{i \in S \lor j \in S}\big\vert,
-%\end{align*}
-%for any $S \subseteq V_n$, which results in $F_n(V_n) = 1$.
-%
-%Assume a Metropolis chain with transition matrix $P$, and stationary distribution $p_n(S) \propto \exp(\beta F_n(S))$.
-%
-%\newcommand{\subflen}{0.49\textwidth}
-%\newcommand{\scspacey}{0em}
-%\newcommand{\scspacex}{0em}
-%\begin{figure}[tb]
-%  \captionsetup[subfigure]{oneside,margin={2em,0em}}
-%  \begin{subfigure}[b]{\subflen}
-%	\centering
-%	\begin{tikzpicture}[
-%	%baseline,
-%	scale=1
-%	]
-%	\fill[blue!40!white] (-2,1) rectangle (2,2);
-%	\fill[blue!40!white] (-2,-1) rectangle (2,0);
-%	\fill[blue!40!white] (0,-2) rectangle (1,2);
-%	\draw[step=1cm,gray!80!black,line width=0.15em,line join=miter] (-2.01,-2.01) grid (2.01,2.01);
-%	
-%	\node at (-2.5,1.5) {\normalsize$1$};
-%	\node at (-2.5,0.5) {\normalsize$2$};
-%	\node at (-2.5,-0.5) {\normalsize$3$};
-%	\node at (-2.5,-1.5) {\normalsize$4$};
-%	\node at (-1.5,2.5) {\normalsize$5$};
-%	\node at (-0.5,2.5) {\normalsize$6$};
-%	\node at (0.5,2.5) {\normalsize$7$};
-%	\node at (1.5,2.5) {\normalsize$8$};
-%	\end{tikzpicture}
-%	%\caption{}
-%	\label{fig:grid}
-%  \end{subfigure}
-%  \begin{subfigure}[b]{\subflen}
-%  	\centering
-%    \trimbox{3em 6em 3em 6em}{
-%  	\begin{tikzpicture}[
-%  	%baseline,
-%  	scale=1,
-%    VN/.style={fill=white,draw=gray!80!black,circle,line width=0.15em,minimum size=1.5em},
-%    LL/.style={draw=gray!80!black,line width=0.1em}
-%    ]
-%    %\clip (-6,-4) rectangle (-6, -4);
-%    \draw [LL,fill=gray!30!white] (0,0) .. controls (4,4) and (4,-4) .. (0,0);
-%    \draw [LL,fill=gray!30!white] (0,0) .. controls (-4,4) and (-4,-4) .. (0,0);
-%    \node [VN] (V) at (0,0) {$V$};
-%    \node (R) at (-1.8, 0) {$\mathcal{R}$};
-%    \node (C) at (1.8, 0) {$\mathcal{C}$};
-%  	\end{tikzpicture}}
-%  	%\caption{}
-%  	\label{fig:ss}
-%  \end{subfigure}
-%  \caption{\emph{Left.} Example grid for $n = 8$ with the cells corresponding to $F_8(\{1,3,7\})$ shown shaded. \emph{Right.} Illustration of the state space and the bottleneck at $V$.}
-%\end{figure}
-%
+
+\subsection{Example: Log-submodular Grid}
+To further highlight the hardness of inference in the general models we consider, we show that even for distributions defined through a seemingly benign subclass of submodular functions, mixing times can be exponential in $n$.
+We say that a set function $F : 2^V \to \mathbb{R}$ is monotone, if $F(v|S) \geq 0$, for all $v \in V$, and all $S \subseteq V$.
+Intuitively, adding elements to our set always leads to higher values.
+\begin{lemma}
+There is a family of monotone submodular functions $F_n$, such that, for the corresponding log-submodular family of distributions $p_n$ defined as in \eqref{eq:pdef}, the Metropolis chain has mixing time
+\begin{align*}
+  \tm  = \Omega(2^{n/2}),
+\end{align*}
+for any value of $\beta$.
+\end{lemma}
+
+\begin{proof}
+The functions used to prove the above lemma are based on the following construction.
+For any even $n \geq 2$, let $V_n = \{1,\ldots,n\}$, $R_n = \{1,\ldots,n/2\}$, and $C_n = \{n/2+1,\ldots,n\}$.
+To define function $F_n : 2^{V_n} \to \mathbb{R}$, we conceptually use a $n/2 \times n/2$ square grid, whose rows are indexed by $R$ and columns by $C$.
+Each cell $(i, j)$ of the grid is considered to be covered if either row $i \in R$ or column $j \in C$ is selected.
+Formally, we define $F_n$ by
+\begin{align*}
+  F_n(S) = \frac{4}{n^2}\big\vert \sdef{(i, j) \in R \times C}{i \in S \lor j \in S}\big\vert,
+\end{align*}
+for any $S \subseteq V_n$, which results in $F_n(V_n) = 1$.
+
+Assume a Metropolis chain with transition matrix $P$, and stationary distribution $p_n(S) \propto \exp(\beta F_n(S))$.
+To prove a lower bound on the mixing time of this chain, we are going to upper bound the bottleneck ratio of set $T = \hat{R} \setminus \{V\}$, defined as
+\begin{align*}
+  \Phi(T) = \frac{Q(T, T^c)}{\pi(T)} = \frac{Q(T, \hat{C}) + Q(T, \hat{K})}{\pi(T)}.
+\end{align*}
+
+\begin{itemize}
+  \item Computing $\pi(T)$:
+    \begin{align*}
+      \pi(T) &= |T| \frac{e^{\beta}}{Z} \tag*{by \eqref{eq:prop3}} \\
+             &= (2^{n/2} - 1) \frac{e^{\beta}}{Z}. \tag*{by \eqref{eq:prop1}}
+    \end{align*}
+    Note that, by an analogous derivation, we get $\pi(\hat{C} \setminus \{V\}) = \pi(T)$ and, by \eqref{eq:prop2},
+    \begin{align*}
+      &\pi(T) + \pi(\hat{C} \setminus \{V\}) < 1 \\
+      \Rightarrow\ \ &\pi(T) < 0.5.
+    \end{align*}
+  
+  \item Computing $Q(T, \hat{C})$:
+    \begin{align*}
+      Q(T, \hat{C}) &= \sum_{x \in T} Q(x, \hat{C}) \\
+                    &= \sum_{x \in T} Q(x, \{V\}) \tag*{by \eqref{eq:prop2}} \\
+                    &= \sum_{x \in T} \frac{1}{2n} \frac{e^{\beta}}{Z} \tag*{by \eqref{eq:prop3}} \\
+                    &= n \frac{1}{2n} \frac{e^{\beta}}{Z} = \frac{e^{\beta}}{2Z}.
+    \end{align*}
+    
+  \item Computing $Q(T, \hat{K})$:
+    \begin{align*}
+      Q(T, \hat{K}) &= \sum_{x \in T} Q(x, \hat{K}) \\
+                    &\leq \sum_{x \in T} \frac{1}{2n} \frac{e^{\beta - 4\beta/n^2}}{Z} \tag*{by \eqref{eq:prop4}} \\
+                    &= \frac{2^{n/2} - 1}{2n} \frac{e^{\beta - 4\beta/n^2}}{Z}. \tag*{by \eqref{eq:prop1}}
+    \end{align*}
+\end{itemize}
+
+Therefore, the bottleneck ratio can be bounded as follows:
+\begin{align*}
+  \Phi(T) &\leq \frac{1}{2^{n/2} - 1}\left(\frac{1}{2} + \frac{(2^{n/2} - 1) e^{-4\beta/n^2}}{2n}\right)\\
+          &= \frac{1}{2(2^{n/2} - 1)} + \frac{e^{-4\beta/n^2}}{2n}.
+\end{align*}
+
+Using \citep[Theorem 7.3]{levin08book}, it follows that
+\begin{align*}
+  t_{mix}(1/4) \geq \frac{1}{4\Phi(T)} = \Omega(2^{n/2}).
+\end{align*}
+
+\newcommand{\subflen}{0.49\textwidth}
+\newcommand{\scspacey}{0em}
+\newcommand{\scspacex}{0em}
+\begin{figure}[tb]
+  \captionsetup[subfigure]{oneside,margin={2em,0em}}
+  \begin{subfigure}[b]{\subflen}
+	\centering
+	\begin{tikzpicture}[
+	%baseline,
+	scale=1
+	]
+	\fill[blue!40!white] (-2,1) rectangle (2,2);
+	\fill[blue!40!white] (-2,-1) rectangle (2,0);
+	\fill[blue!40!white] (0,-2) rectangle (1,2);
+	\draw[step=1cm,gray!80!black,line width=0.15em,line join=miter] (-2.01,-2.01) grid (2.01,2.01);
+	
+	\node at (-2.5,1.5) {\normalsize$1$};
+	\node at (-2.5,0.5) {\normalsize$2$};
+	\node at (-2.5,-0.5) {\normalsize$3$};
+	\node at (-2.5,-1.5) {\normalsize$4$};
+	\node at (-1.5,2.5) {\normalsize$5$};
+	\node at (-0.5,2.5) {\normalsize$6$};
+	\node at (0.5,2.5) {\normalsize$7$};
+	\node at (1.5,2.5) {\normalsize$8$};
+	\end{tikzpicture}
+	%\caption{}
+	\label{fig:grid}
+  \end{subfigure}
+  \begin{subfigure}[b]{\subflen}
+  	\centering
+    \trimbox{3em 6em 3em 6em}{
+  	\begin{tikzpicture}[
+  	%baseline,
+  	scale=1,
+    VN/.style={fill=white,draw=gray!80!black,circle,line width=0.15em,minimum size=1.5em},
+    LL/.style={draw=gray!80!black,line width=0.1em}
+    ]
+    %\clip (-6,-4) rectangle (-6, -4);
+    \draw [LL,fill=gray!30!white] (0,0) .. controls (4,4) and (4,-4) .. (0,0);
+    \draw [LL,fill=gray!30!white] (0,0) .. controls (-4,4) and (-4,-4) .. (0,0);
+    \node [VN] (V) at (0,0) {$V$};
+    \node (R) at (-1.8, 0) {$\mathcal{R}$};
+    \node (C) at (1.8, 0) {$\mathcal{C}$};
+  	\end{tikzpicture}}
+  	%\caption{}
+  	\label{fig:ss}
+  \end{subfigure}
+  \caption{\emph{Left.} Example grid for $n = 8$ with the cells corresponding to $F_8(\{1,3,7\})$ shown shaded. \emph{Right.} Illustration of the state space and the bottleneck at $V$.}
+\end{figure}
+
+\end{proof}
+
 \subsection{Polynomial-time mixing} \label{sect:poly}
 Our guarantee for mixing times that are polynomial in $n$ depends crucially on the following quantity, which is defined for any set function $F : 2^V \to \mathbb{R}$:
 \begin{align*}
@@ -421,36 +427,48 @@ We notice a similar trend on all three models.
 For the regimes that correspond to less ``peaked'' posterior distributions (small number of conditioned variables, small $\mu$), even $100$ Gibbs iterations outperform both variational approximations.
 The latter gain an advantage when the posterior is concentrated around only a few states, which happens after having conditioned on almost all variables in the first two models, or for $\mu$ close to $1$ in the third model.
 
-\setlength\figureheight{0.285\textwidth}
-\setlength\figurewidth{0.4\textwidth}
-\newcommand{\subflen}{0.33\textwidth}
-\newcommand{\scspacey}{-1.55em}
-\newcommand{\scspacex}{0em}
+\setlength\figureheight{0.45\textwidth}
+\setlength\figurewidth{0.7\textwidth}
+\newcommand{\subflen}{\textwidth}
 \begin{figure}[tb]
   \captionsetup[subfigure]{oneside,margin={2em,0em}}
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/gibbs/floc.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}Facility location}
+    \caption{Facility location}
     \label{fig:exp1}
-  \end{subfigure}
+  \end{subfigure}\\[1em]
   \begin{subfigure}[b]{\subflen}
+    \centering
     \input{figures/gibbs/gmm.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}Pairwise MRF}
+    \caption{Pairwise MRF}
     \label{fig:exp2}
-  \end{subfigure}
+  \end{subfigure}\\[1em]
   \begin{subfigure}[b]{\subflen}
+    \centering
     \input{figures/gibbs/ic.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}Higher-order MRF}
+    \caption{Higher-order MRF}
     \label{fig:exp3}
   \end{subfigure}
   \caption{Absolute error of the marginals computed by the Gibbs sampler compared to variational inference \cite{djolonga14}.
   	A modest $500$ Gibbs iterations outperform the variational method for the most part.}
   \label{fig:exp}
 \end{figure}
+
+
+\paragraph{Related Work.}
+In contemporary work to ours, Rebeschini and Karbasi \cite{rebeschini15} analyzed the mixing times of log-submodular models.
+Using a method based on matrix norms, which was previously introduced by Dyer et al. \cite{dyer09}, and is closely related to path coupling, they arrive at a similar---though not directly comparable---condition to the one we presented in \theoremref{thm:fast}.
+
+Iyer and Bilmes \cite{iyer15} recently considered a different class of probabilistic models, called submodular point processes, which are also defined through submodular functions, and have the form $p(S) \propto F(S)$.
+They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
+
+The canonical path method for bounding mixing times has been previously used in applications, such as approximating the partition function of ferromagnetic Ising models \cite{jerrum93}, approximating matrix permanents \cite{jerrum89,jerrum04perm}, and counting matchings in graphs \cite{jerrum03}.
+The most prominent application of coupling-based methods is counting $k$-colorings in low-degree graphs \cite{jerrum95,bubley98,jerrum03}.
+Other applications include counting independent sets in graphs \cite{dyer00}, and approximating the partition function of various subclasses of Ising models at high temperatures \cite{levin08}.
+
+\todo{Add Chengtao constrained etc. paper}
+\todo{Add DPP -- Rayleigh papers}
 
 
 \section{Conclusion}

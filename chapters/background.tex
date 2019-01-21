@@ -7,4 +7,36 @@
 
 \todo{Contrastive divergence}
 
+Modeling notions such as coverage, representativeness, or diversity is an important challenge in many machine learning problems.
+These notions are well captured by submodular set functions.
+Analogously, supermodular functions capture notions of smoothness, regularity, or cooperation. 
+As a result, submodularity and supermodularity, akin to concavity and convexity, have found numerous applications in machine learning.
+The majority of previous work has focused on optimizing such functions, including the development and analysis of algorithms for minimization \cite{fujishige05} and maximization \cite{nemhauser78,feige07}, as well as the investigation of practical applications, such as sensor placement \cite{krause06}, active learning \cite{golovin11}, influence maximization \cite{kempe03}, and document summarization \cite{lin11}.
+
+Beyond optimization, though, it is of interest to consider probabilistic models defined via submodular functions, that is, distributions over finite sets (or, equivalently, binary random vectors) defined as $p(S) \propto \exp(\beta F(S)),$ where $F : 2^V \to \mathbb{R}$ is a submodular or supermodular function (equivalently, either $F$ or $-F$ is submodular), and $\beta \geq 0$ is a scaling parameter.
+Finding most likely sets in such models captures classical submodular optimization.
+However, going beyond point estimates, that is, performing general probabilistic (e.g., marginal) inference in them, allows us to quantify uncertainty given some observations, as well as learn such models from data.
+Only few special cases belonging to this class of models have been extensively studied in the past; most notably, Ising models \cite{koller09}, which are log-supermodular in the usual case of attractive (ferromagnetic) potentials, or log-submodular under repulsive (anti-ferromagnetic) potentials and determinantal point processes \cite{kulesza12}, which are log-submodular.
+
+Recently, \citet{djolonga14} considered a more general treatment of such models, and proposed a variational approach for performing approximate probabilistic inference for them.
+It is natural to ask to what degree the usual alternative to variational methods, namely Monte Carlo sampling, is applicable to these models, and how it performs in comparison.
+To this end, in this paper we consider a simple Markov chain Monte Carlo (MCMC) algorithm on log-submodular and log-supermodular models, and provide a first analysis of its performance.
+We present two theoretical conditions that respectively guarantee polynomial-time and fast ($\mathcal{O}(n \log n)$) mixing in such models, and experimentally compare against the variational approximations on three examples.
+
+\paragraph{Example models}
+The (ferromagnetic) Ising model is an example of a log-supermodular model.
+In its simplest form, it is defined through an undirected graph $(V, E)$, and a set of pairwise potentials $\sigma_{v,w}(S) \defeq 4(\mathds{1}_{\{v \in S\}}-0.5)(\mathds{1}_{\{w \in S\}}-0.5)$.
+Its distribution has the form $p(S) \propto \exp(\beta\sum_{\{v,w\} \in E} \sigma_{v,w}(S))$, and is log-supermodular, because $F(S) = \sum_{\{v,w\} \in E} \sigma_{v,w}(S)$ is supermodular. (Each $\sigma_{v,w}$ is supermodular, and supermodular functions are closed under addition.)
+
+Determinantal point processes (DPPs) are examples of log-submodular models.
+A DPP is defined via a positive semidefinite matrix $K \in \mathbb{R}^{n \times n}$, and has a distribution of the form $p(S) \propto \det(K_S)$, where $K_S$ denotes the square submatrix indexed by $S$.
+Since $F(S) = \ln \det(K_S)$ is a submodular function, $p$ is log-submodular.
+Another example of log-submodular models are those defined through facility location functions, which have the form $F(S) = \sum_{\ell \in [L]} \max_{v \in S}w_{v,\ell}$, where $w_{v,\ell} \geq 0$, and are submodular.
+If $w_{v,\ell} \in \{0, 1\}$, then $F$ represents a set cover function.
+
+Note that, both the facility location model and the Ising model use decomposable functions, that is, functions that can be written as a sum of simpler submodular (resp. supermodular) functions $F_{\ell}$:
+\begin{align} \label{eq:fdec}
+F(S) = \sum_{\ell \in [L]} F_{\ell}(S).
+\end{align}
+
 \section{Sampling and Mixing Times}

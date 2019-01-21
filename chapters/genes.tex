@@ -70,9 +70,9 @@ $F$ is differentiable almost everywhere, due to the presence of the two ``$\max$
 For the points where it is not differentiable, we define subgradients that give equal contribution to all elements that belong to the corresponding ``$\argmax$''.
 In particular, for all $i \in V$, $j \in [L]$, we have
 \begin{align*}
-\nabla_{u_i} F(S; \bu, \bw, \bv) &= \ind[i \in S]\\
-\nabla_{w_{ij}} F(S; \bu, \bw, \bv) &= \frac{\ind[i \in \argmax_{r \in S} w_{rj}]}{|\argmax_{r \in S} w_{rj}|} - \ind[i \in S]\\
-\nabla_{v_{ij}} F(S; \bu, \bw, \bv) &= -\frac{\ind[i \in \argmax_{r \in S} v_{rj}]}{|\argmax_{r \in S} v_{rj}|} + \ind[i \in S].
+\nabla_{u_i} F(S; \bu, \bw, \bv) &= \llbracket i \in S\rrbracket\\
+\nabla_{w_{ij}} F(S; \bu, \bw, \bv) &= \frac{\llbracket i \in \argmax_{r \in S} w_{rj}\rrbracket}{|\argmax_{r \in S} w_{rj}|} - \llbracket i \in S\rrbracket\\
+\nabla_{v_{ij}} F(S; \bu, \bw, \bv) &= -\frac{\llbracket i \in \argmax_{r \in S} v_{rj}\rrbracket}{|\argmax_{r \in S} v_{rj}|} + \llbracket i \in S\rrbracket.
 \end{align*}
 \citet{tschiatschek16} used an alternative set of subgradients, involving randomization over the choice of the ``$\argmax$'' at each gradient step.
 We have noticed that our choice often results in slightly improved learning performance in practice.
