@@ -33,6 +33,14 @@ If $F$ is submodular, then its contractions and restrictions are also submodular
 Finally, it is easy to see that $p(S \mid C \subseteq S \subseteq D) \propto \exp(\beta (F_C)^D(S))$.
 In our experiments, we consider computing marginals of the form $p(v \in S \mid C \subseteq S \subseteq D)$, for some $v \in V$, which correspond to $A = \{v\}$, and $B = V$.
 
+\paragraph{Submodular decomposition.}
+In some of our following results we will use the fact that any submodular function $F$ can be written as
+\begin{align} \label{eq:decomp}
+  F = c + m + f,
+\end{align}
+where $c \in \mathbb{R}$ is a constant that has no effect on distributions defined by \eqref{eq:pdef}; $m$ is a normalized ($m(\varnothing) = 0$) modular function; and $f$ is a normalized ($f(\varnothing) = 0$) monotone submodular function, that is, it additionally satisfies the monotonicity property $f(v|S) \geq 0$, for all $v \in V$, and all $S \subseteq V$.
+A similar decomposition is possible for any supermodular function as well.
+
 \paragraph{The Gibbs sampler.}
 We first set up some notation that is used throughout this chapter.
 We denote by $\ss \defeq 2^V$ the state space, and by $P$ the transition matrix of the chain.
@@ -46,9 +54,11 @@ In \figref{fig:gibbs} we illustrate one step of the Gibbs sampler on a small gro
 Assuming that the current state is $X_t = \{2\}$, there are three potential new next states, namely $\varnothing$, $\{1, 2\}$, or $\{2, 3\}$, which are the three neighbors of $X_t$ in the state space.
 The Gibbs sampler first selects one of the neighbors uniformly at random, and then either stays at $X_t$ or moves to that neighbor according to the corresponding conditional probability.
 
+%\RestyleAlgo{ruled,vlined,linesnumbered}
 \begin{algorithm}[tb]
     \setstretch{1.3}
     \DontPrintSemicolon
+    \vspace{0.5em}
     \SetKwInOut{Input}{Input}
     \Input{Ground set $V$, distribution $p(S) \propto \exp(\beta F(S))$}
 	$X_0$ $\gets$ random subset of $V$\\
@@ -61,9 +71,8 @@ The Gibbs sampler first selects one of the neighbors uniformly at random, and th
         $X_{t+1} \gets X_t \cup \{v\}$\;
       } \Else{
         $X_{t+1} \gets X_t \setminus \{v\}$\;
-      }
-    }
-    \vspace{1em}
+      }}
+    %\vspace{1em}
 	\caption{The Gibbs sampler for probabilistic submodular models.}
 	\label{alg:gibbs}
 \end{algorithm}
@@ -85,137 +94,100 @@ Therefore, the sampler only requires a black box for the marginal gains of $F$, 
 Finally, it is easy to show that the stationary distribution of the chain constructed this way is $p$.
 
 \section{Theoretical Results}
-In the previous section we mentioned that exact computation of the partition function for the class of models we consider here is, in general, infeasible.
-Only for very few exceptions, such as DPPs, is exact inference possible in polynomial time \cite{kulesza12}.
-Even worse, it has been shown that the partition function of general Ising models is hard to approximate; in particular, there is no FPRAS for these models, unless RP = NP \cite{jerrum93}.
+Performing exact inference in probabilistic submodular models is, in general, computationally infeasible.
+Only for very few exceptions, such as determinantal point processes, is exact inference possible in polynomial time \cite{kulesza12}.
+As we mentioned before, even approximating the partition function of general Ising models---a subclass of PSMs---is a hard problem; in particular, there is no FPRAS for this problem, unless RP = NP \cite{jerrum93}.
 This implies that the mixing time of any Markov chain with such a stationary distribution will, in general, be exponential in $n$.
-It is, therefore, our aim to derive sufficient conditions that guarantee sub-exponential mixing times for the general class of models.
-
-In some of our results we will use the fact that any submodular function $F$ can be written as
-\begin{align} \label{eq:decomp}
-  F = c + m + f,
-\end{align}
-where $c \in \mathbb{R}$ is a constant that has no effect on distributions defined by \eqref{eq:pdef}; $m$ is a normalized ($m(\varnothing) = 0$) modular function; and $f$ is a normalized ($f(\varnothing) = 0$) monotone submodular function, that is, it additionally satisfies the monotonicity property $f(v|S) \geq 0$, for all $v \in V$, and all $S \subseteq V$.
-A similar decomposition is possible for any supermodular function as well.
-
 
 \subsection{Example: Log-submodular Grid}
 To further highlight the hardness of inference in the general models we consider, we show that even for distributions defined through a seemingly benign subclass of submodular functions, mixing times can be exponential in $n$.
-We say that a set function $F : 2^V \to \mathbb{R}$ is monotone, if $F(v|S) \geq 0$, for all $v \in V$, and all $S \subseteq V$.
+We say that a set function $F : 2^V \to \mathbb{R}$ is monotone, if $F(v \mid S) \geq 0$, for all $v \in V$, and all $S \subseteq V$.
 Intuitively, adding elements to our set always leads to higher values.
-\begin{lemma}
-There is a family of monotone submodular functions $F_n$, such that, for the corresponding log-submodular family of distributions $p_n$ defined as in \eqref{eq:pdef}, the Metropolis chain has mixing time
+
+\todo{Introduce Metropolis either here or in the background chapter.}
+For the purposes of the following proposition, we will use a Metropolis chain, rather than a Gibbs chain, to simplify the exposition.
+While the two chains are not identical, they share the same principle of making local moves by considering ratios of probabilities of neighboring states.
+\begin{prop}
+There is a family of monotone submodular functions $(F_n)_n$, such that, for the corresponding log-submodular family of distributions $(p_n)_n$ defined as in \eqref{eq:pdef}, the Metropolis chain has mixing time
 \begin{align*}
   \tm  = \Omega(2^{n/2}),
 \end{align*}
 for any value of $\beta$.
-\end{lemma}
+\end{prop}
 
 \begin{proof}
 The functions used to prove the above lemma are based on the following construction.
 For any even $n \geq 2$, let $V_n = \{1,\ldots,n\}$, $R_n = \{1,\ldots,n/2\}$, and $C_n = \{n/2+1,\ldots,n\}$.
 To define function $F_n : 2^{V_n} \to \mathbb{R}$, we conceptually use a $n/2 \times n/2$ square grid, whose rows are indexed by $R$ and columns by $C$.
-Each cell $(i, j)$ of the grid is considered to be covered if either row $i \in R$ or column $j \in C$ is selected.
+Each cell $(i, j)$ of the grid is considered to be covered, if either row $i \in R$ or column $j \in C$ is selected.
 Formally, we define $F_n$ by
 \begin{align*}
   F_n(S) = \frac{4}{n^2}\big\vert \sdef{(i, j) \in R \times C}{i \in S \lor j \in S}\big\vert,
 \end{align*}
 for any $S \subseteq V_n$, which results in $F_n(V_n) = 1$.
+\figref{fig:submod_grid} shows an example of such a grid construction.
 
+\begin{figure}[htb]
+  \centering
+  \input{figures/gibbs/grid.tex}\\[1em]
+  \caption{Example grid for $n = 8$ with the cells corresponding to $F_8(\{1,3,7\}) = 10/16$ shown shaded.}
+  \label{fig:submod_grid}
+\end{figure}
+
+\newcommand{\hrn}{\mathcal{R}_n}
+\newcommand{\hcn}{\mathcal{C}_n}
+\newcommand{\hkn}{\mathcal{K}_n}
+\newcommand{\htn}{\mathcal{T}_n}
+
+Furthermore, if we define $\hrn = \{S \subseteq V \mid R \subseteq S\}$, $\hcn = \{S \mid C \subseteq S \subseteq V\}$, and $\hkn = 2^V \setminus (\hrn \cup \hcn)$, then the following properties hold.
+\begin{align}
+  &|\hrn| = |\hcn| = 2^{n/2} \label{eq:prop1} \\
+  &\hrn \cap \hcn = \{V\} \label{eq:prop2} \\
+  &\forall S \in \hrn\cup\hcn,\ f(S) = 1 \label{eq:prop3} \\
+  &\forall S \in \hkn,\ f(S) \leq 1 - 4/n^2 \label{eq:prop4}.
+\end{align}
 Assume a Metropolis chain with transition matrix $P$, and stationary distribution $p_n(S) \propto \exp(\beta F_n(S))$.
-To prove a lower bound on the mixing time of this chain, we are going to upper bound the bottleneck ratio of set $T = \hat{R} \setminus \{V\}$, defined as
+To prove a lower bound on the mixing time of this chain, we are going to upper bound the bottleneck ratio \citep[Ch. 7]{levin08} of set $\htn = \hrn \setminus \{V\}$, defined as
 \begin{align*}
-  \Phi(T) = \frac{Q(T, T^c)}{\pi(T)} = \frac{Q(T, \hat{C}) + Q(T, \hat{K})}{\pi(T)}.
+  \Phi(\htn) = \frac{Q(\htn, \htn^c)}{\pi(\htn)} = \frac{Q(\htn, \hcn) + Q(\htn, \hkn)}{\pi(\htn)},
+\end{align*}
+where $\htn^c = 2^V \setminus \htn$ is the complement of $\htn$. We now compute or bound each of the terms $\pi(\htn)$, $Q(\htn, \hcn)$, and $Q(\htn, \hkn)$.
+
+\paragraph{Computing $\pi(\htn)$.}
+\begin{align*}
+  \pi(\htn) &= |\htn| \frac{e^{\beta}}{Z} \tag*{by \eqref{eq:prop3}} \\
+         &= (2^{n/2} - 1) \frac{e^{\beta}}{Z}. \tag*{by \eqref{eq:prop1}}
+\end{align*}
+Note that, by an analogous derivation, we get $\pi(\hcn \setminus \{V\}) = \pi(\htn)$ and, by \eqref{eq:prop2},
+\begin{align*}
+  &\pi(\htn) + \pi(\hcn \setminus \{V\}) < 1 \\
+  \Rightarrow\ \ &\pi(\htn) < 0.5.
+\end{align*}
+  
+\paragraph{Computing $Q(\htn, \hcn)$.}
+\begin{align*}
+  Q(\htn, \hcn) &= \sum_{x \in \htn} Q(x, \hcn) \\
+                &= \sum_{x \in \htn} Q(x, \{V\}) \tag*{by \eqref{eq:prop2}} \\
+                &= \sum_{x \in \htn} \frac{1}{2n} \frac{e^{\beta}}{Z} \tag*{by \eqref{eq:prop3}} \\
+                &= n \frac{1}{2n} \frac{e^{\beta}}{Z} = \frac{e^{\beta}}{2Z}.
+\end{align*}
+    
+\paragraph{Bounding $Q(\htn, \hkn)$.}
+\begin{align*}
+  Q(\htn, \hkn) &= \sum_{x \in \htn} Q(x, \hkn) \\
+                &\leq \sum_{x \in \htn} \frac{1}{2n} \frac{e^{\beta - 4\beta/n^2}}{Z} \tag*{by \eqref{eq:prop4}} \\
+                &= \frac{2^{n/2} - 1}{2n} \frac{e^{\beta - 4\beta/n^2}}{Z}. \tag*{by \eqref{eq:prop1}}
 \end{align*}
 
-\begin{itemize}
-  \item Computing $\pi(T)$:
-    \begin{align*}
-      \pi(T) &= |T| \frac{e^{\beta}}{Z} \tag*{by \eqref{eq:prop3}} \\
-             &= (2^{n/2} - 1) \frac{e^{\beta}}{Z}. \tag*{by \eqref{eq:prop1}}
-    \end{align*}
-    Note that, by an analogous derivation, we get $\pi(\hat{C} \setminus \{V\}) = \pi(T)$ and, by \eqref{eq:prop2},
-    \begin{align*}
-      &\pi(T) + \pi(\hat{C} \setminus \{V\}) < 1 \\
-      \Rightarrow\ \ &\pi(T) < 0.5.
-    \end{align*}
-  
-  \item Computing $Q(T, \hat{C})$:
-    \begin{align*}
-      Q(T, \hat{C}) &= \sum_{x \in T} Q(x, \hat{C}) \\
-                    &= \sum_{x \in T} Q(x, \{V\}) \tag*{by \eqref{eq:prop2}} \\
-                    &= \sum_{x \in T} \frac{1}{2n} \frac{e^{\beta}}{Z} \tag*{by \eqref{eq:prop3}} \\
-                    &= n \frac{1}{2n} \frac{e^{\beta}}{Z} = \frac{e^{\beta}}{2Z}.
-    \end{align*}
-    
-  \item Computing $Q(T, \hat{K})$:
-    \begin{align*}
-      Q(T, \hat{K}) &= \sum_{x \in T} Q(x, \hat{K}) \\
-                    &\leq \sum_{x \in T} \frac{1}{2n} \frac{e^{\beta - 4\beta/n^2}}{Z} \tag*{by \eqref{eq:prop4}} \\
-                    &= \frac{2^{n/2} - 1}{2n} \frac{e^{\beta - 4\beta/n^2}}{Z}. \tag*{by \eqref{eq:prop1}}
-    \end{align*}
-\end{itemize}
-
-Therefore, the bottleneck ratio can be bounded as follows:
+\paragraph{Bounding $\Phi(\htn)$.}
 \begin{align*}
-  \Phi(T) &\leq \frac{1}{2^{n/2} - 1}\left(\frac{1}{2} + \frac{(2^{n/2} - 1) e^{-4\beta/n^2}}{2n}\right)\\
+  \Phi(\htn) &\leq \frac{1}{2^{n/2} - 1}\left(\frac{1}{2} + \frac{(2^{n/2} - 1) e^{-4\beta/n^2}}{2n}\right)\\
           &= \frac{1}{2(2^{n/2} - 1)} + \frac{e^{-4\beta/n^2}}{2n}.
 \end{align*}
-
 Using \citep[Theorem 7.3]{levin08book}, it follows that
 \begin{align*}
-  t_{mix}(1/4) \geq \frac{1}{4\Phi(T)} = \Omega(2^{n/2}).
+  \tm(1/4) \geq \frac{1}{4\Phi(\htn)} = \Omega(2^{n/2}).
 \end{align*}
-
-\newcommand{\subflen}{0.49\textwidth}
-\newcommand{\scspacey}{0em}
-\newcommand{\scspacex}{0em}
-\begin{figure}[tb]
-  \captionsetup[subfigure]{oneside,margin={2em,0em}}
-  \begin{subfigure}[b]{\subflen}
-	\centering
-	\begin{tikzpicture}[
-	%baseline,
-	scale=1
-	]
-	\fill[blue!40!white] (-2,1) rectangle (2,2);
-	\fill[blue!40!white] (-2,-1) rectangle (2,0);
-	\fill[blue!40!white] (0,-2) rectangle (1,2);
-	\draw[step=1cm,gray!80!black,line width=0.15em,line join=miter] (-2.01,-2.01) grid (2.01,2.01);
-	
-	\node at (-2.5,1.5) {\normalsize$1$};
-	\node at (-2.5,0.5) {\normalsize$2$};
-	\node at (-2.5,-0.5) {\normalsize$3$};
-	\node at (-2.5,-1.5) {\normalsize$4$};
-	\node at (-1.5,2.5) {\normalsize$5$};
-	\node at (-0.5,2.5) {\normalsize$6$};
-	\node at (0.5,2.5) {\normalsize$7$};
-	\node at (1.5,2.5) {\normalsize$8$};
-	\end{tikzpicture}
-	%\caption{}
-	\label{fig:grid}
-  \end{subfigure}
-  \begin{subfigure}[b]{\subflen}
-  	\centering
-    \trimbox{3em 6em 3em 6em}{
-  	\begin{tikzpicture}[
-  	%baseline,
-  	scale=1,
-    VN/.style={fill=white,draw=gray!80!black,circle,line width=0.15em,minimum size=1.5em},
-    LL/.style={draw=gray!80!black,line width=0.1em}
-    ]
-    %\clip (-6,-4) rectangle (-6, -4);
-    \draw [LL,fill=gray!30!white] (0,0) .. controls (4,4) and (4,-4) .. (0,0);
-    \draw [LL,fill=gray!30!white] (0,0) .. controls (-4,4) and (-4,-4) .. (0,0);
-    \node [VN] (V) at (0,0) {$V$};
-    \node (R) at (-1.8, 0) {$\mathcal{R}$};
-    \node (C) at (1.8, 0) {$\mathcal{C}$};
-  	\end{tikzpicture}}
-  	%\caption{}
-  	\label{fig:ss}
-  \end{subfigure}
-  \caption{\emph{Left.} Example grid for $n = 8$ with the cells corresponding to $F_8(\{1,3,7\})$ shown shaded. \emph{Right.} Illustration of the state space and the bottleneck at $V$.}
-\end{figure}
 
 \end{proof}
 
