@@ -19,6 +19,9 @@
 \usepackage{thesis}
 
 
+% Allow equations to split across pages
+\allowdisplaybreaks
+
 % Hyphenations
 \hyphenation{su-per-modu-lar}
 
@@ -76,6 +79,7 @@
 
 % Names
 \newcommand{\fldc}{\textsf{FLDC}}
+\newcommand{\flid}{\textsf{FLiD}}
 
 % Like substack, but with alignment
 \makeatletter
@@ -125,7 +129,6 @@
 \input{chapters/genes.tex}
 \input{chapters/conclusion.tex}
 \appendix
-\input{chapters/appendix_gibbs.tex}
 \input{chapters/appendix_m3.tex}
 \input{chapters/appendix_genes.tex}
 

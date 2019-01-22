@@ -31,14 +31,14 @@ For any $C \subseteq V$, define the contraction of $F$ on $C$, $F_C : 2^{V \setm
 Also, for any $D \subseteq V$, define the restriction of $F$ to $D$, $F^D : 2^D \to \mathbb{R}$, by $F^D(S) = F(S)$, for all $S \subseteq D$.
 If $F$ is submodular, then its contractions and restrictions are also submodular, and, thus, $(F_C)^D$ is submodular.
 Finally, it is easy to see that $p(S \mid C \subseteq S \subseteq D) \propto \exp(\beta (F_C)^D(S))$.
-In our experiments, we consider computing marginals of the form $p(v \in S \mid C \subseteq S \subseteq D)$, for some $v \in V$, which correspond to $A = \{v\}$, and $B = V$.
+In our experiments, we consider computing marginals of the form $p(i \in S \mid C \subseteq S \subseteq D)$, for some $i \in V$, which correspond to $A = \{i\}$, and $B = V$.
 
 \paragraph{Submodular decomposition.}
 In some of our following results we will use the fact that any submodular function $F$ can be written as
 \begin{align} \label{eq:decomp}
   F = c + m + f,
 \end{align}
-where $c \in \mathbb{R}$ is a constant that has no effect on distributions defined by \eqref{eq:pdef}; $m$ is a normalized ($m(\varnothing) = 0$) modular function; and $f$ is a normalized ($f(\varnothing) = 0$) monotone submodular function, that is, it additionally satisfies the monotonicity property $f(v|S) \geq 0$, for all $v \in V$, and all $S \subseteq V$.
+where $c \in \mathbb{R}$ is a constant that has no effect on distributions defined by \eqref{eq:pdef}; $m$ is a normalized ($m(\varnothing) = 0$) modular function; and $f$ is a normalized ($f(\varnothing) = 0$) monotone submodular function, that is, it additionally satisfies the monotonicity property $f(i\mid S) \geq 0$, for all $i \in V$, and all $S \subseteq V$.
 A similar decomposition is possible for any supermodular function as well.
 
 \paragraph{The Gibbs sampler.}
@@ -49,7 +49,7 @@ We also define an adjacency relation $x \sim y$ on the elements of the state spa
 It follows that each $x \in \ss$ has exactly $n$ neighbors.
 
 We define the Gibbs sampler by an iterative two-step procedure, as shown in \algoref{alg:gibbs}.
-First, we select an element $v \in V$ uniformly at random; then, we add or removes $v$ to the current state $X_t$ according to the conditional probability of the resulting state.
+First, we select an element $i \in V$ uniformly at random; then, we add or removes $i$ to the current state $X_t$ according to the conditional probability of the resulting state.
 In \figref{fig:gibbs} we illustrate one step of the Gibbs sampler on a small ground set $V = \{1, 2, 3\}$.
 Assuming that the current state is $X_t = \{2\}$, there are three potential new next states, namely $\varnothing$, $\{1, 2\}$, or $\{2, 3\}$, which are the three neighbors of $X_t$ in the state space.
 The Gibbs sampler first selects one of the neighbors uniformly at random, and then either stays at $X_t$ or moves to that neighbor according to the corresponding conditional probability.
@@ -63,14 +63,14 @@ The Gibbs sampler first selects one of the neighbors uniformly at random, and th
     \Input{Ground set $V$, distribution $p(S) \propto \exp(\beta F(S))$}
 	$X_0$ $\gets$ random subset of $V$\\
 	\For{$t = 0$ \KwTo $N_{\mathrm{iter}}$}{
-	  $v$ $\gets$ $\mathrm{Unif}(V)$\;
-	  $\Delta_F(v \mid X_t)$ $\gets$ $F(X_t \cup \{v\}) - F(X_t \setminus \{v\})$\;
-	  $p_{\mathrm{add}}$ $\gets$ $\exp(\beta\Delta_F(v | X_t))/(1 + \exp(\beta\Delta_F(v | X_t)))$\;
+	  $i$ $\gets$ $\mathrm{Unif}(V)$\;
+	  $\Delta_F(i \mid X_t)$ $\gets$ $F(X_t \cup \{i\}) - F(X_t \setminus \{i\})$\;
+	  $p_{\mathrm{add}}$ $\gets$ $\exp(\beta\Delta_F(i \mid X_t))/(1 + \exp(\beta\Delta_F(i \mid X_t)))$\;
 	  $z$ $\gets$ $\mathrm{Unif}([0,1])$\;
 	  \uIf{$z \leq p_{\mathrm{add}}$}{
-        $X_{t+1} \gets X_t \cup \{v\}$\;
+        $X_{t+1} \gets X_t \cup \{i\}$\;
       } \Else{
-        $X_{t+1} \gets X_t \setminus \{v\}$\;
+        $X_{t+1} \gets X_t \setminus \{i\}$\;
       }}
     %\vspace{1em}
 	\caption{The Gibbs sampler for probabilistic submodular models.}
@@ -88,12 +88,12 @@ We first choose one of the neighbors of $X_t$ uniformly at random, and then eith
 The important thing to note here is that the computed conditional probabilities do not depend on the partition function $Z$, thus the chain can be simulated efficiently, even though $Z$ is unknown and hard to compute.
 Moreover, it is easy to see that
 \begin{align*}
-\Delta_F(v \mid X_t) = \llbracket v\not\in X_t\rrbracket F(v \mid X_t) + \llbracket v\in X_t\rrbracket F(v \mid X_t\setminus\{v\}).
+\Delta_F(i \mid X_t) = \llbracket i\not\in X_t\rrbracket F(i \mid X_t) + \llbracket i\in X_t\rrbracket F(i \mid X_t\setminus\{i\}).
 \end{align*}
 Therefore, the sampler only requires a black box for the marginal gains of $F$, which are often faster to compute in practice than the values of $F$ itself.
 Finally, it is easy to show that the stationary distribution of the chain constructed this way is $p$.
 
-\section{Theoretical Results}
+\section{Hardness of Inference}
 Performing exact inference in probabilistic submodular models is, in general, computationally infeasible.
 Only for very few exceptions, such as determinantal point processes, is exact inference possible in polynomial time \citep{kulesza12}.
 As we mentioned before, even approximating the partition function of general Ising models---a subclass of PSMs---is a hard problem; in particular, there is no FPRAS for this problem, unless RP = NP \citep{jerrum93}.
@@ -101,7 +101,7 @@ This implies that the mixing time of any Markov chain with such a stationary dis
 
 \subsection{Example: Log-submodular Grid}
 To further highlight the hardness of inference in the general models we consider, we show that even for distributions defined through a seemingly benign subclass of submodular functions, mixing times can be exponential in $n$.
-We say that a set function $F : 2^V \to \mathbb{R}$ is monotone, if $F(v \mid S) \geq 0$, for all $v \in V$, and all $S \subseteq V$.
+We say that a set function $F : 2^V \to \mathbb{R}$ is monotone, if $F(i \mid S) \geq 0$, for all $i \in V$, and all $S \subseteq V$.
 Intuitively, adding elements to our set always leads to higher values.
 
 \todo{Introduce Metropolis either here or in the background chapter.}
@@ -191,8 +191,9 @@ Using Theorem 7.3 \citep{levin08book}, it follows that
 
 \end{proof}
 
-\subsection{Polynomial-time mixing} \label{sect:poly}
-Our guarantee for mixing times that are polynomial in $n$ depends crucially on the following quantity, which is defined for any set function $F : 2^V \to \mathbb{R}$:
+\section{Polynomial-time mixing} \label{sect:poly}
+Our first result provides conditions that guarantee polynomial mixing times in the size of the ground set $n$.
+As we will see, the conditions depend crucially on the following quantity, which is defined for any set function $F : 2^V \to \mathbb{R}$:
 \begin{align*}
   \zf \defeq \max_{A, B \subseteq V} \left|F(A) + F(B) - F(A \cup B) - F(A \cap B) \right|.
 \end{align*}
@@ -204,14 +205,24 @@ Similarly, $F$ is supermodular if the above holds with the sign reversed.
 It follows that for submodular and supermodular functions, $\zf$ represents the worst-case amount by which $F$ violates the modular equality.
 It is also important to note that, for submodular and supermodular functions, $\zf$ depends only on the monotone part of $F$; if we decompose $F$ according to \eqref{eq:decomp}, then it is easy to see that $\zf = \zeta_f$.
 A trivial upper bound on $\zf$, therefore, is $\zf \leq f(V)$.
-Another quantity that has been used in the past to quantify the deviation of a submodular function from modularity is the curvature \cite{conforti84}, defined as $\kappa_F \defeq 1 - \min_{v \in V} \left(F(v|V\setminus\{v\}) / F(v)\right)$.
+Another quantity that has been used in the past to quantify the deviation of a submodular function from modularity is the curvature \cite{conforti84}, defined as $\kappa_F \defeq 1 - \min_{i \in V} \left(F(i\mid V\setminus\{i\}) / F(i)\right)$.
 Although of similar intuitive meaning, the multiplicative nature of its definition makes it significantly different from $\zf$, which is defined additively.
 
-As an example of a function class with $\zf$ that do not depend on $n$, assume a ground set $V = \bigcup_{\ell = 1}^L V_{\ell}$, and consider functions $F(S) = \sum_{\ell = 1}^L \phi(|S \cap V_{\ell}|)$, where $\phi : \mathbb{R} \to \mathbb{R}$ is a bounded concave function, for example, $\phi(x) = \min\{\phi_{\max}, x\}$.
-Functions of this form are submodular, and have been used in applications such as document summarization to encourage diversity \cite{lin11}.
+\paragraph{Examples.}
+As an example of a function class with $\zf$ that do not depend on $n$, assume a ground set $V = \bigcup_{\ell = 1}^L V_{\ell}$, and consider functions of the form
+\begin{align*}
+F(S) = \sum_{\ell = 1}^L \phi(|S \cap V_{\ell}|),
+\end{align*}
+where $\phi : \mathbb{R} \to \mathbb{R}$ is a bounded concave function, for example, $\phi(x) = \min\{\phi_{\max}, x\}$.
+Functions of this form are submodular, and have been used in applications such as document summarization to encourage diversity \citep{lin11}.
 It is easy to see that, for such functions, $\zf \leq L\phi_{\max}$, that is, $\zf$ is independent of $n$.
 
-The following theorem establishes a bound on the mixing time of the Gibbs sampler run on models of the form \eqref{eq:pdef}.
+For the \flid{} model \todo{ref}, we have $f(S) = \sum_{j=1}^L \max_{i \in S} w_{ij}$, therefore we get $\zf \leq f(V) = \sum_{j=1}^L w_j^{\mathrm{max}}$, where $w_j^{\mathrm{max}} = \max_{i \in V} w_{ij}$.
+Since the values of $\bw$ depend primarily on the number of repulsive groups, rather than the size of the ground set, we expect $\zf$ to grow much slower than $n$ in most practical applications.
+We present some experimental evidence of this claim in the next section.
+
+\vspace{1.5em}
+\noindent The following theorem establishes a bound on the mixing time of the Gibbs sampler run on models of the form \eqref{eq:pdef}.
 The bound is exponential in $\zf$, but polynomial in $n$.
 \begin{theorem} \label{thm:poly}
   For any function $F : 2^V \to \mathbb{R}$, the mixing time of the Gibbs sampler is bounded by
@@ -226,29 +237,36 @@ The bound is exponential in $\zf$, but polynomial in $n$.
 \end{theorem}
 Note that, since the factor of two that constitutes the difference between the two statements of the theorem lies in the exponent, it can have a significant impact on the above bounds.
 The dependence on $p_{\min}$ is related to the (worst-case) starting state of the chain, and can be eliminated if we have a way to guarantee a high-probability starting state.
-If $F$ is submodular or supermodular, this is usually straightforward to accomplish by using one of the standard constant-factor optimization algorithms \cite{nemhauser78,fujishige05} as a preprocessing step.
+If $F$ is submodular or supermodular, this is usually straightforward to accomplish by using one of the standard constant-factor optimization algorithms \citep{nemhauser78,fujishige05} as a preliminary step.
 More generally, if $F$ is bounded by $0 \leq F(S) \leq F_{\max}$, for all $S \subseteq V$, then $\log (1/p_{\min}) = \mathcal{O}(n \beta F_{\max})$.
 
 \paragraph{Canonical paths}
-Our proof of \theoremref{thm:poly} is based on the method of \emph{canonical paths} \cite{jerrum03,sinclair92,jerrum89,diaconis91}.
-The high-level idea of this method is to view the state space as a graph, and try to construct a path between each pair of states that carries a certain amount of flow specified by the stationary distribution under consideration.
-Depending on the choice of these paths and the resulting load on the edges of the graph, we can derive bounds on the mixing time of the Markov chain.
+Our proof of \theoremref{thm:poly} is based on the method of \emph{canonical paths} \citep{jerrum03,sinclair92,jerrum89,diaconis91}.
+The high-level idea of this method is to view the state space as a graph, and try to construct a path between each pair of states, which carries a certain amount of flow specified by the stationary distribution under consideration.
+Depending on the choice of these paths and the resulting load on the edges of the graph we can derive bounds on the mixing time of the Markov chain.
 
 More concretely, let us assume that for some set function $F$ and corresponding distribution $p$ as in \eqref{eq:pdef}, we construct the Gibbs chain on state space $\ss = 2^V$ with transition matrix $P$.
 We can view the state space as a directed graph that has vertex set $\ss$, and for any $A, B \in \ss$, contains edge $(S, S')$ if and only if $S \sim S'$, that is, if and only if $S$ and $S'$ differ by exactly one element.
-Now, assume that, for any pair of states $A, B \in \ss$, we define what is called a canonical path $\gamma_{AB} \defeq (A = S_0, S_1, \ldots, S_{\ell} = B)$, such that all $(S_i, S_{i+1})$ are edges in the above graph.
+Now, for any pair of states $A, B \in \ss$, we define a \emph{canonical path}
+\begin{align*}
+\gamma_{AB} \defeq (A = S_0, S_1, \ldots, S_{\ell} = B),
+\end{align*}
+such that all $(S_i, S_{i+1})$ are edges in the above graph.
 We denote the length of path $\gamma_{AB}$ by $|\gamma_{AB}|$, and define $Q(S, S') \defeq p(S) P(S, S')$.
-We also denote the set of all pairs of states whose canonical path goes through $(S, S')$ by $\mathcal{C}_{SS'} \defeq \sdef{(A, B) \in \ss \times \ss}{(S, S') \in \gamma_{AB}}$.
+We also denote the set of all pairs of states whose canonical path goes through $(S, S')$ by
+\begin{align*}
+\mathcal{C}_{SS'} \defeq \sdef{(A, B) \in \ss \times \ss}{(S, S') \in \gamma_{AB}}.
+\end{align*}
 The following quantity, referred to as the \emph{congestion} of an edge, uses a collection of canonical paths to quantify to what amount that edge is overloaded:
 \begin{align} \label{eq:cong}
   \rho(S, S') \defeq \frac{1}{Q(S, S')} \sum_{(A, B) \in \mathcal{C}_{SS'}} p(A) p(B) |\gamma_{AB}|.
 \end{align}
 The denominator $Q(S, S')$ quantifies the capacity of edge $(S, S')$, while the sum represents the total flow through that edge according to the choice of canonical paths.
 The congestion of the whole graph is then defined as $\rho \defeq \max_{S \sim S'}\rho(S, S')$.
-Low congestion implies that there are no bottlenecks in the state space, and the chain can move around fast, which also suggests rapid mixing.
-The following theorem makes this concrete.
+Low congestion implies that there are no bottlenecks in the state space, and the chain can move around fast, which results in rapid mixing.
+The following theorem makes this statement more concrete.
 
-\begin{theorem}[\hspace{1sp}\cite{sinclair92,jerrum03}] \label{thm:cpath}
+\begin{theorem}[\hspace{1sp}\citealp{sinclair92,jerrum03}] \label{thm:cpath}
   For any collection of canonical paths with congestion $\rho$, the mixing time of the chain is bounded by
   \begin{align*}
   	\tme \leq \rho \log\left(\frac{1}{\epsilon p_{\mathrm{min}}}\right).
@@ -256,7 +274,7 @@ The following theorem makes this concrete.
 %  where $p_{\min} \defeq \displaystyle\min_{S \in \ss}p(S)$.
 \end{theorem}
 
-\paragraph{Proof outline of \theoremref{thm:poly}}
+\subsection{Proof of \theoremref{thm:poly}}
 To apply \theoremref{thm:cpath} to our class of distributions, we need to construct a set of canonical paths in the corresponding state space $2^V$, and upper bound the resulting congestion.
 First, note that, to transition from state $A \in \ss$ to state $B \in \ss$, in our case, it is enough to remove the elements of $A \setminus B$ and add the elements of $B \setminus A$.
 Each removal and addition corresponds to an edge in the state space graph, and the order of these operations identify a canonical path in this graph that connects $A$ to $B$.
@@ -264,32 +282,109 @@ For our analysis, we assume a fixed order on $V$ (e.g., the natural order of the
 
 Having defined the set of canonical paths, we proceed to bounding the congestion $\rho(S, S')$ for any edge $(S, S')$.
 The main difficulty in bounding $\rho(S, S')$ is due to the sum in \eqref{eq:cong} over all pairs in $\mathcal{C}_{SS'}$.
-To simplify this sum we construct for each edge $(S, S')$ an injective map $\ess : \mathcal{C}_{SS'} \to \ss$; this is a combinatorial encoding technique that has been previously used in similar proofs to ours \cite{jerrum03}.
-We then prove the following key lemma about these maps.
+To simplify this sum, we construct for each edge $(S, S')$ an injective map $\ess : \mathcal{C}_{SS'} \to \ss$; this is a combinatorial encoding technique that has been previously used in similar proofs to ours \citep{jerrum03}.
+The following lemma details this construction, where for sets $A, B$, we denote $A \oplus B \defeq (A \setminus B)\cup(B \setminus A)$.
 
-\begin{lemma} \label{lem:poly}
-  For any $S \sim S'$, and any $A, B \in \ss$, it holds that
-  \begin{align*}
-  	p(A)p(B) \leq 2n\exp(2 \beta \zf)Q(S, S')p(\ess(A, B)).
-  \end{align*}
+\begin{lemma} \label{lem:inj}
+Define the maps $\ess : \mathcal{C}_{SS'} \to \ss$, for each pair $(S, S') \in \ss \times \ss$ with $S \sim S'$, as follows:
+\begin{align*}
+  \ess(A, B) = \twopartdefo{A \oplus B \oplus S}{F(S') \geq F(S)}{A \oplus B \oplus S'}.
+\end{align*}
+Then, each map $\ess$ is injective.
 \end{lemma}
 
+\begin{proof}
+  Assume that $F(S') \geq F(S)$, and $S' = S \cup \{r\}$, for some $r \in V$.
+  Assume that we are given $C \defeq A \oplus B \oplus S$, and we want to recover $A$ and $B$.
+  We will denote by $\prec$ the natural ordering of the ground set $V$.
+  First, we define
+  \begin{align*}
+    K^- &\defeq \sdef{i \in C \oplus S}{i \prec r}\\
+    K^+ &\defeq \sdef{i \in C \oplus S}{i \succ r}.
+  \end{align*}
+  Then, we can recover $A$ and $V$ as follows:
+  \begin{align*}
+    A &= S \oplus K^-\\
+    B &= S' \oplus K^+.
+  \end{align*}
+  The case $S' = S \setminus \{r\}$, as well as the two cases for $F(S') < F(S)$ are completely analogous.
+  Note that the distinction based on the value of the function has no effect on the proof here, but is technically needed for the next lemma.
+  The only thing that changes between the cases is whether the element $r$ that gets added or removed in the transition $(S, S')$ belongs to $A$ or $B$, which is always straightforward to determine from the type of the transition (for additions it belongs to $B$, and for removals to $A$).
+\end{proof}
+\noindent We then prove the following key lemma about the maps constructed above.
+\begin{lemma} \label{lem:poly_full}
+  For any $S \sim S'$, and any $A, B \in \ss$, it holds that
+  \begin{align*}
+    p(A)p(B) \leq 2n\exp(2 \beta \zf)Q(S, S')p(\ess(A, B)).
+  \end{align*}
+  
+  If $F$ is submodular or supermodular, then the bound is improved to
+  \begin{align*}
+  	p(A)p(B) \leq 2n\exp(\beta \zeta_f)Q(S, S')p(\ess(A, B)).
+  \end{align*}
+\end{lemma}
+\begin{proof}
+  We will consider the case $S' = S \cup \{r\}$, for some $r \in V$, with $F(S') \geq F(S)$.
+  Again, the other three cases are completely analogous by using $\ess$ as defined in \lemmaref{lem:inj}.
+  
+  We first compute
+  \begin{align*}
+    Q(S, S') &= p(S)P(S, S')\\
+             &= \frac{1}{n}\frac{p(S)p(S')}{p(S) + p(S')} \tag*{by definition of the Gibbs sampler}\\
+             &= \frac{1}{nZ}\frac{\exp(\beta F(S)) \exp(\beta F(S'))}{\exp(\beta F(S)) + \exp(\beta F(S'))} \tag*{by definition of our models}\\
+             &\geq \frac{1}{nZ}\frac{\exp(\beta F(S)) \exp(\beta F(S'))}{2\exp(\beta F(S'))} \tag*{by $F(S') \geq F(S)$}\\
+             &= \frac{\exp(\beta F(S))}{2nZ}.
+  \end{align*}
+  As a result, we get
+  \begin{align} \label{eq:ppq}
+    \frac{p(A)p(B)}{Q(S, S')} \leq \frac{2n}{Z}\exp(\beta (F(A) + F(B) - F(S))).
+  \end{align}
+  Let us denote
+  \begin{align*}
+    \zf(A, B) \defeq F(A) + F(B) - F(A \cup B) - F(A \cap B),
+  \end{align*}
+  for any $A, B \subseteq V$, so that $\zf = \max_{A, B \subseteq V}|\zf(A, B)|$.
+  Then, if we denote
+  \begin{align*}
+    C \defeq \ess(A, B) = A \oplus B \oplus S,
+  \end{align*}
+  we have
+  \begin{align*}
+    &F(A) + F(B) - F(S)\\
+    &= (F(A) + F(B) - F(A \cup B) - F(A \cap B)) -\\
+    &\ \ \ \ \ (F(S) + F(C) - F(A \cup B) - F(A \cap B)) + F(C)\\
+    &= (F(A) + F(B) - F(A \cup B) - F(A \cap B)) -\\
+    &\ \ \ \ \ (F(S) + F(C) - F(S \cup C) - F(S \cap C)) + F(C)\\
+    &= \zf(A, B) - \zf(S, C) + F(C)\\
+    &\leq 2\zf + F(C).
+  \end{align*}
+  If $F$ is submodular, then $\zf(A, B)$ and $\zf(S, C)$ are both non-negative, therefore $\zf(A, B) - \zf(S, C) + F(C) \leq \zf + F(C) = \zeta_f + F(C)$.
+  Similarly, if $F$ is supermodular, then $\zf(A, B)$ and $\zf(S, C)$ are both non-positive, therefore $\zf(A, B) - \zf(S, C) + F(C) \leq \zf + F(C) = \zeta_f + F(C)$.
+  Substituting these bounds in \eqref{eq:ppq} gives us the result of the lemma.
+\end{proof}
 Since $\ess$ is injective, it follows that $\sum_{(A, B) \in \mathcal{C}_{SS'}} p(\ess(A, B)) \leq 1$.
 Furthermore, it is clear that each canonical path $\gamma_{AB}$ has length $|\gamma_{AB}| \leq n$, since we need to add and/or remove at most $n$ elements to get from state $A$ to state $B$.
 Combining these two facts with the above lemma, we get
 \begin{align*}
-  \rho(S, S') \leq 2n^2 \exp(2 \beta \zf).
+  \rho(S, S') \leq 2n^2 \exp(2 \beta \zf),
 \end{align*}
-If $F$ is submodular or supermodular, we show that the dependence on $\zf$ in \lemmaref{lem:poly}  is improved to $\exp(\beta \zf)$.
-More details can be found in the longer version of the paper.
-
-\subsection{Fast mixing}
-We now proceed to show that, under some stronger conditions, we are able to establish even faster---$\mathcal{O}(n \log n)$---mixing.
-For any function $F$, we denote $\D_F(v|S) \defeq F(S \cup \{v\}) - F(S \setminus \{v\})$, and define the following quantity,
+for any set function $F$, and
 \begin{align*}
-  \gf &\defeq \max_{\substack{S \subseteq V\\r \in V}} \sum_{\substack{v \in V}} \tanh\left(\frac{\beta}{2} \big|\D_F(v|S) - \D_F(v|S \cup \{r\})\big| \right),
+  \rho(S, S') \leq 2n^2 \exp(2 \beta \zeta_f),
 \end{align*}
+if $F$ is sub- or supermodular.
 
+
+\section{Fast mixing}
+We now proceed to show that, under some stronger conditions, we are able to establish even faster---$\mathcal{O}(n \log n)$---mixing.
+For any function $F$, we denote
+\begin{align*}
+\D_F(i\mid S) \defeq F(S \cup \{i\}) - F(S \setminus \{i\}),
+\end{align*}
+and define the following quantity,
+\begin{align*}
+  \gf &\defeq \max_{\substack{S \subseteq V\\r \in V}} \sum_{\substack{i \in V}} \tanh\left(\frac{\beta}{2} \Big|\D_F(i\mid S) - \D_F(i\mid S \cup \{r\})\Big| \right),
+\end{align*}
 which quantifies the (maximum) total influence of an element $r \in V$ on the values of $F$.
 For example, if the inclusion of $r$ makes no difference with respect to other elements of the ground set, we will have $\gf = 0$.
 The following theorem establishes conditions for fast mixing of the Gibbs sampler when run on models of the form \eqref{eq:pdef}.
@@ -305,13 +400,110 @@ The following theorem establishes conditions for fast mixing of the Gibbs sample
   \end{align*}
 \end{theorem}
 Note that, in the second part of the theorem, $\gsf$ depends only on the monotone part of $F$. 
-We have seen in \sectref{sect:setup} that some commonly used models are based on decomposable functions that can be written in the form \eqref{eq:fdec}.
-We prove the following corollary that provides an easy to check condition for fast mixing of the Gibbs sampler when $F$ is a decomposable submodular function.
 
-\begin{cor} \label{cor:fast}
-  For any submodular function $F$ that can be written in the form of \eqref{eq:fdec}, with $f$ being its monotone (also decomposable) part according to \eqref{eq:decomp}, if we define
+\paragraph{Coupling.}
+Our proof of \theoremref{thm:fast} is based on the \emph{coupling} technique \citep{aldous83}; more specifically, we use the \emph{path coupling} method \citep{bubley97,levin08,jerrum03}.
+Given a Markov chain $(Z_t)$ on state space $\ss$ with transition matrix $P$, a coupling for $(Z_t)$ is a new Markov chain $(X_t, Y_t)$ on state space $\ss \times \ss$, such that both $(X_t)$ and $(Y_t)$ are by themselves Markov chains with transition matrix $P$.
+The idea is to construct the coupling in such a way that, even when the starting points $X_0$ and $Y_0$ are different, the chains $(X_t)$ and $(Y_t)$ tend to coalesce.
+Then, it can be shown that the coupling time $t_{\mathrm{couple}} \defeq \min\sdef{t \geq 0}{X_t = Y_t}$ is closely related to the mixing time of the original chain $(Z_t)$ \citep{levin08}.
+
+The main difficulty in applying the coupling approach lies in the construction of the coupling itself, for which one needs to consider any possible pair of states $(X_t, Y_t)$.
+The path coupling technique makes this construction easier by utilizing the same state-space graph that we used to define canonical paths in \sectref{sect:poly}.
+The core idea is to first define a coupling only over adjacent states, and then extend it for any pair of states by using a metric on the graph.
+More concretely, let us denote by $d : \ss \times \ss \to \mathbb{R}$ the \emph{path metric} on state space $\ss$; that is, for any $x, y \in \ss$, $d(x, y)$ is the minimum length of any path from $x$ to $y$ in the state space graph.
+The following theorem establishes fast mixing using this metric, as well as the diameter of the state space, $\mathrm{diam}(\ss) \defeq \max_{x,y \in \ss}d(x, y)$.
+\begin{theorem}[\hspace{1sp}\citealp{bubley97,levin08}] \label{thm:pc}
+For any Markov chain $(Z_t)$, let $(X_t, Y_t)$ be a coupling, such that, for some $a \geq 0$, and any $x, y \in \ss$ with $x \sim y$, it holds that
+\begin{align*}
+  \E[d(X_{t+1}, Y_{t+1}) \mid X_t = x, Y_t = y] \leq e^{-\alpha}d(x, y).
+\end{align*}
+Then, the mixing time of the original chain $(Z_t)$ is bounded by
+\begin{align*}
+  \tme \leq \frac{1}{\alpha}\left(\log(\mathrm{diam}(\ss)) + \log\frac{1}{\epsilon} \right).
+\end{align*}
+\end{theorem}
+
+\subsection{Proof of \theoremref{thm:fast}}
+In our case, the path metric $d$ is the Hamming distance between the binary vectors representing the states (equivalently, the number of elements by which two sets differ).
+We need to construct a suitable coupling $(X_t, Y_t)$ for any pair of states $x \sim y$.
+Consider the two corresponding sets $S, R \subseteq V$ that differ by exactly one element, and assume that $R = S \cup \{r\}$, for some $r \in V$. (The case $S = R \cup \{s\}$ for some $s \in V$ is completely analogous.)
+Remember that the Gibbs sampler first chooses an element $i \in V$ uniformly at random, and then adds or removes it according to the conditional probabilities.
+Our goal is to make the same updates happen to both $S$ and $R$ as frequently as possible.
+As a first step, we couple the candidate element for update $i \in V$ to always be the same in both chains.
+Then, we have to distinguish between the following cases.
+
+If $i = r$, then the conditionals for both chains are identical, and we can couple both chains to add $r$ with probability
+\begin{align*}
+p_{\mathrm{add}} \defeq \frac{p(S \cup \{r\})}{p(S) + p(S \cup \{r\})},
+\end{align*}
+which will result in new sets $S' = R' = S \cup \{r\}$, or remove $r$ with probability $1 - p_{\mathrm{add}}$, which will result in new sets $S' = R' = S$.
+Either way, we will have $d(S', R') = 0$.
+  
+If $i \neq r$, we cannot always couple the updates of the chains, because the conditional probabilities of the updates are different.
+In fact, we are forced to have different updates---one chain adding $i$, the other chain removing $i$---with probability equal to the difference of the corresponding conditionals, which we denote here by $p_{\mathrm{dif}}(v)$, defined as follows,
+\begin{align*}
+  p_{\mathrm{dif}}(i) \defeq \left|\frac{p(S \cup \{i\})}{p(S \cup \{i\}) + p(S \setminus \{i\})} - \frac{p(R \cup \{i\})}{p(R \cup \{i\}) + p(R \setminus \{i\})}\right|.
+\end{align*}
+In the case of different updates, we have $d(S', R') = 2$, otherwise the chains make the same update and still differ only by element $r$, that is, $d(S', R') = 1$.
+
+Putting together the three possible cases for the value of $d(S', R')$ described above, we get the following expected distance after one step,
+\begin{align*}
+  \E[d(S', R')] = 1 -\frac{1}{n} + \frac{1}{n}\sum_{i \neq r}p_{\mathrm{dif}}(i).
+\end{align*}
+We then prove the following lemma to bound the sum of $p_{\mathrm{dif}}$.
+\begin{lemma}
+For any $S, R \subseteq V$ with $R = S \cup \{r\}$,
+\begin{align*}
+  \sum_{i \neq r}p_{\mathrm{dif}}(i) \leq \gf.
+\end{align*}
+\end{lemma}
+
+\begin{proof}
+  For any $i \neq r$, we have
   \begin{align*}
-  	\theta_f \defeq \max_{v \in V} \sum_{\ell \in [L]} \sqrt{f_{\ell}(v)} \hspace{1em}\textrm{and}\hspace{1em} \lambda_f \defeq \max_{\ell \in [L]} \sum_{v \in V} \sqrt{f_{\ell}(v)},
+    p_{\mathrm{dif}}(i) &= \Bigg|\frac{\exp(\beta F(S \cup \{i\}))}{\exp(\beta F(S \cup \{i\})) + \exp(\beta F(S \setminus \{i\}))} -\\
+    &\ \ \ \ \ \ \ \frac{\exp(\beta F(R \cup \{i\}))}{\exp(\beta F(R \cup \{i\})) + \exp(\beta F(R \setminus \{i\}))}\Bigg|\\[0.8em]
+    &= \left|\frac{\exp(\beta \D_F(i\mid S))}{1 + \exp(\beta \D_F(i\mid S))} - \frac{\exp(\beta \D_F(i\mid R))}{1 + \exp(\beta \D_F(i\mid R))}\right|\\[0.8em]
+    &= \left|\frac{\exp(\beta \D_F(i\mid S)) - \exp(\beta \D_F(i\mid R))}{(1 + \exp(\beta \D_F(i\mid S)))(1 + \exp(\beta \D_F(i\mid R)))}\right|\\[0.8em]
+    &\leq \left|\frac{\exp(\beta \D_F(i\mid S)) - \exp(\beta \D_F(i\mid R))}{\exp(\beta \D_F(i\mid S)) + \exp(\beta \D_F(i\mid R))}\right|\\[0.8em]
+    &= \left|\frac{\exp(\beta (\D_F(i\mid S) - \D_F(i\mid R))) - 1}{\exp(\beta (\D_F(i\mid S) - \D_F(i\mid R))) + 1}\right|\\[0.8em]
+    &= \tanh \left(\frac{\beta}{2}\big|(\D_F(i\mid S) - \D_F(i\mid R)) \big|\right).
+  \end{align*}
+  The lemma follows by the definition of $\gf$, and the fact that $R = S \cup \{r\}$.
+\end{proof}
+\noindent Applying this lemma, we get
+\begin{align*}
+  \E[d(S', R')] = 1 -\frac{1}{n} + \frac{1}{n}\sum_{i \neq r}p_{\mathrm{dif}}(i) \leq 1 - \frac{1}{n}(1 - \gf) \leq \exp\left(-\frac{1-\gf}{n}\right),
+\end{align*}
+and the result of \theoremref{thm:fast} follows from applying \theoremref{thm:pc} with $\alpha = \gf/n$, and noting that $\mathrm{diam}(\ss) = n$.
+
+The specialization of \theoremref{thm:fast} to sub- or supermodular functions is based on the following lemma.
+\begin{lemma}
+  If $F$ is submodular or supermodular, and decomposed according to \eqref{eq:decomp}, then
+  \begin{align*}
+    \gf = \gsf.
+  \end{align*}
+\end{lemma}
+
+\begin{proof}
+  For any $S, R \subseteq V$ with $R = S \cup \{r\}$, and any $i \in V$, we have
+  \begin{align*}
+    \D_F(i\mid S) - \D_F(i\mid R) &= F(S \cup \{i\}) - F(S \setminus \{i\}) - F(R \cup \{i\}) + F(R \setminus \{i\})\\
+    &= f(S \cup \{i\}) - f(S \setminus \{i\}) - f(R \cup \{i\}) + f(R \setminus \{i\})\\
+    &= \D_f(i\mid S) - \D_f(i\mid R).
+  \end{align*}
+\end{proof}
+
+\subsection{Decomposable Functions}
+We have seen that some commonly used models, such as \flid{}, are based on decomposable functions that can be written in the form
+\begin{align}\label{eq:fdecgibbs}
+F(S) = \sum_{j=1}^L F_{j}(S).
+\end{align}
+We prove the following corollary that provides an easy to check condition for fast mixing of the Gibbs sampler when $F$ is a decomposable submodular function.
+\begin{cor} \label{cor:fast}
+  For any submodular function $F$ that can be written in the form of \eqref{eq:fdecgibbs}, with $f$ being its monotone (also decomposable) part according to \eqref{eq:decomp}, if we define
+  \begin{align*}
+  	\theta_f \defeq \max_{i \in V} \sum_{j\in [L]} \sqrt{f_{j}(\{i\})} \hspace{1em}\textrm{and}\hspace{1em} \lambda_f \defeq \max_{j\in [L]} \sum_{i \in V} \sqrt{f_{j}(\{i\})},
   \end{align*}
   then it holds that
   \begin{align*}
@@ -319,56 +511,33 @@ We prove the following corollary that provides an easy to check condition for fa
   \end{align*}
 \end{cor}
 
-For example, applying this to the facility location model defined in \sectref{sect:setup}, we get $\theta_f = \max_{v} \sum_{\ell = 1}^L \sqrt{w_{v, \ell}}$, and $\lambda_f = \max_{\ell} \sum_{v \in V} \sqrt{w_{v, \ell}}$, and obtain fast mixing if $\theta_f \lambda_f \leq 2/\beta$.
-As a special case, if we consider the class of set cover functions ($w_{v, \ell} \in \{0, 1\}$), such that each $v \in V$ covers at most $\delta$ sets, and each set $\ell \in [L]$ is covered by at most $\delta$ elements, then $\theta_f, \lambda_f \leq \delta$, and we obtain fast mixing if $\delta^2 \leq 2/\beta$.
+\begin{proof}
+  For any $S, R \subseteq V$ with $R = S \cup \{r\}$, we have
+  \begin{align*}
+  	&\sum_{i \neq r} \tanh \left(\frac{\beta}{2}\big|(\D_f(i\mid S) - \D_f(i\mid R)) \big|\right)\\
+    &\leq \sum_{i \neq r} \frac{\beta}{2}\big|(\D_f(i\mid S) - \D_f(i\mid R)) \big| \tag*{by $\tanh(x) \leq x$, for all $x \geq 0$}\\
+    &\leq \sum_{i \neq r} \frac{\beta}{2}(\D_f(i\mid S) - \D_f(i\mid R)) \tag*{by submodularity of $f$}\\
+    &= \frac{\beta}{2}\sum_{i \neq r}(f(S \cup \{i\}) - f(S \setminus \{i\}) - f(S \cup \{r\} \cup \{i\}) + f(S \cup \{r\} \setminus \{i\}))\\
+    &= \frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}(f_{j}(S \cup \{i\}) - f_{j}(S \setminus \{i\}) - f_{j}(S \cup \{r\} \cup \{i\}) + f_{j}(S \cup \{r\} \setminus \{i\}))\\
+    &\leq \frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}\min\big\{f_{j}(S \cup \{i\}) - f_{j}(S \setminus \{i\}), f_{j}(S \cup \{r\} \setminus \{i\}) - f_{j}(S \setminus \{i\})\big\} \tag*{by monotonicity of $f_{j}$}\\
+    &\leq \frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}\min\big\{f_{j}(i), f_{j}(r)\big\} \tag*{by submodularity of $f_{j}$}\\
+    &\leq \frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}\sqrt{f_{j}(i) f_{j}(r)}\\
+    &= \frac{\beta}{2}\sum_{j \in [L]}\sqrt{f_{j}(r)}\sum_{i \neq r}\sqrt{ f_{j}(i)}.
+  \end{align*}
+  The result follows by maximizing both sides over $S$ and $r$.
+\end{proof}
+
+\paragraph{Example.}Applying the above corollary to the \flid{} model, we get
+\begin{align*}
+\theta_f = \max_{i \in V} \sum_{j \in [L]} \sqrt{w_{ij}},
+\end{align*}
+and
+\begin{align*}
+\lambda_f = \max_{j \in [L]} \sum_{i \in V} \sqrt{w_{ij}},
+\end{align*}
+and we obtain fast mixing if $\theta_f \lambda_f \leq 2/\beta$.
+As a special case, if we consider the class of set cover functions ($w_{ij} \in \{0, 1\}$), such that each $i \in V$ covers at most $\delta$ sets, and each set indicated by $j \in [L]$ is covered by at most $\delta$ elements, then $\theta_f, \lambda_f \leq \delta$, and we obtain fast mixing if $\delta^2 \leq 2/\beta$.
 Note, that the corollary can be trivially applied to any submodular function by taking $L=1$, but may, in general, result in a loose bound if used that way.
-
-\paragraph{Coupling}
-Our proof of \theoremref{thm:fast} is based on the \emph{coupling} technique \cite{aldous83}; more specifically, we use the \emph{path coupling} method \cite{bubley97,levin08,jerrum03}.
-Given a Markov chain $(X_t)$ on state space $\ss$ with transition matrix $P$, a coupling for $(Z_t)$ is a new Markov chain $(X_t, Y_t)$ on state space $\ss \times \ss$, such that both $(X_t)$ and $(Y_t)$ are by themselves Markov chains with transition matrix $P$.
-The idea is to construct the coupling in such a way that, even when the starting points $X_0$ and $Y_0$ are different, the chains $(X_t)$ and $(Y_t)$ tend to coalesce.
-Then, it can be shown that the coupling time $t_{\mathrm{couple}} \defeq \min\sdef{t \geq 0}{X_t = Y_t}$ is closely related to the mixing time of the original chain $(Z_t)$. \cite{levin08}
-
-The main difficulty in applying the coupling approach lies in the construction of the coupling itself, for which one needs to consider any possible pair of states $(Y_t, Z_t)$.
-The path coupling technique makes this construction easier by utilizing the same state-space graph that we used to define canonical paths in \sectref{sect:poly}.
-The core idea is to first define a coupling only over adjacent states, and then extend it for any pair of states by using a metric on the graph.
-More concretely, let us denote by $d : \ss \times \ss \to \mathbb{R}$ the \emph{path metric} on state space $\ss$; that is, for any $x, y \in \ss$, $d(x, y)$ is the minimum length of any path from $x$ to $y$ in the state space graph.
-The following theorem establishes fast mixing using this metric, as well as the diameter of the state space, $\mathrm{diam}(\ss) \defeq \max_{x,y \in \ss}d(x, y)$.
-\begin{theorem}[\hspace{1sp}\cite{bubley97,levin08}] \label{thm:pc}
-For any Markov chain $(Z_t)$, if $(X_t, Y_t)$ is a coupling, such that, for some $a \geq 0$, and any $x, y \in \ss$ with $x \sim y$, it holds that
-\begin{align*}
-  \E[d(X_{t+1}, Y_{t+1}) \mid X_t = x, Y_t = y] \leq e^{-\alpha}d(x, y),
-\end{align*}
-then the mixing time of the original chain is bounded by
-\begin{align*}
-  \tme \leq \frac{1}{\alpha}\left(\log(\mathrm{diam}(\ss)) + \log\frac{1}{\epsilon} \right).
-\end{align*}
-\end{theorem}
-
-\paragraph{Proof outline of \theoremref{thm:fast}}
-In our case, the path metric $d$ is the Hamming distance between the binary vectors representing the states (equivalently, the number of elements by which two sets differ).
-We need to construct a suitable coupling $(X_t, Y_t)$ for any pair of states $x \sim y$.
-Consider the two corresponding sets $S, R \subseteq V$ that differ by exactly one element, and assume that $R = S \cup \{r\}$, for some $r \in V$. (The case $S = R \cup \{s\}$ for some $s \in V$ is completely analogous.)
-Remember that the Gibbs sampler first chooses an element $v \in V$ uniformly at random, and then adds or removes it according to the conditional probabilities.
-Our goal is to make the same updates happen to both $S$ and $R$ as frequently as possible.
-As a first step, we couple the candidate element for update $v \in V$ to always be the same in both chains.
-Then, we have to distinguish between the following cases.
-
-If $v = r$, then the conditionals for both chains are identical, therefore we can couple both chains to add $r$ with probability $p_{\mathrm{add}} \defeq p(S \cup \{r\}) / (p(S) + p(S \cup \{r\}))$, which will result in new sets $S' = R' = S \cup \{r\}$, or remove $r$ with probability $1 - p_{\mathrm{add}}$, which will result in new sets $S' = R' = S$.
-Either way, we will have $d(S', R') = 0$.
-  
-If $v \neq r$, we cannot always couple the updates of the chains, because the conditional probabilities of the updates are different.
-In fact, we are forced to have different updates (one chain adding $v$, the other chain removing $v$) with probability equal to the difference of the corresponding conditionals, which we denote here by $p_{\mathrm{dif}}(v)$.
-%  \begin{align*}
-%  	p_{\mathrm{dif}}(v) \defeq \left|\frac{p(S \cup \{v\})}{p(S \cup \{v\}) + p(S \setminus \{v\})} - \frac{p(R \cup \{v\})}{p(R \cup \{v\}) + p(R \setminus \{v\})}\right|.
-%  \end{align*}
-If this is the case, we will have $d(S', R') = 2$, otherwise the chains will make the same update and will still differ only by element $r$, that is, $d(S', R') = 1$.
-  
-Putting together all the above, we get the following expected distance after one step:
-\begin{align*}
-  \E[d(S', R')] = 1 -\frac{1}{n} + \frac{1}{n}\sum_{v \neq r}p_{\mathrm{dif}}(v) \leq 1 - \frac{1}{n}(1 - \gf) \leq \exp\left(-\frac{1-\gf}{n}\right).
-\end{align*}
-Our result follows from applying \theoremref{thm:pc} with $\alpha = \gf/n$, noting that $\mathrm{diam}(\ss) = n$.
 
 \section{Experiments}
 We compare the Gibbs sampler against the variational approach proposed by Djolonga and Krause \cite{djolonga14} for performing inference in models of the form \eqref{eq:pdef}, and use the same three models as in their experiments.
@@ -385,12 +554,12 @@ In the experiments, we vary this parameter from $0$ (modular model) to $1$ (``st
 
 For all three models, we constrain the size of the ground set to $n = 20$, so that we are able to compute, and compare against, the exact marginals.
 Furthermore, we run multiple repetitions for each model to account for the randomness of the model instance, and the random initialization of the Gibbs sampler.
-The marginals we compute are of the form $p(v \in S \mid C \subseteq S \subseteq D)$, for all $v \in V$.
+The marginals we compute are of the form $p(i \in S \mid C \subseteq S \subseteq D)$, for all $i \in V$.
 We run the Gibbs sampler for $100$, $500$, and $2000$ iterations on each problem instance.
 In compliance with recommended MCMC practice \cite{gelman11}, we discard the first half of the obtained samples as burn-in, and only use the second half for estimating the marginals.
 
 \figref{fig:exp} compares the average absolute error of the approximate marginals with respect to the exact ones.
-The averaging is performed over $v \in V$, and over the different repetitions of each experiment; errorbars depict two standard errors.
+The averaging is performed over $i \in V$, and over the different repetitions of each experiment; errorbars depict two standard errors.
 The two variational approximations are obtained from factorized distributions associated with modular lower and upper bounds respectively \cite{djolonga14}.
 We notice a similar trend on all three models.
 For the regimes that correspond to less ``peaked'' posterior distributions (small number of conditioned variables, small $\mu$), even $100$ Gibbs iterations outperform both variational approximations.
@@ -427,7 +596,7 @@ The latter gain an advantage when the posterior is concentrated around only a fe
 
 \paragraph{Related Work.}
 In contemporary work to ours, Rebeschini and Karbasi \cite{rebeschini15} analyzed the mixing times of log-submodular models.
-Using a method based on matrix norms, which was previously introduced by Dyer et al. \cite{dyer09}, and is closely related to path coupling, they arrive at a similar---though not directly comparable---condition to the one we presented in \theoremref{thm:fast}.
+Using a method based on matrix norms, which was previously introduced by Dyer et al. \cite{dyer09}, and is closely related to path coupling, they arrive at a similar, though not directly comparable, condition to the one we presented in \theoremref{thm:fast}.
 
 Iyer and Bilmes \cite{iyer15} recently considered a different class of probabilistic models, called submodular point processes, which are also defined through submodular functions, and have the form $p(S) \propto F(S)$.
 They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
