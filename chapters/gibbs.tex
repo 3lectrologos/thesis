@@ -219,7 +219,7 @@ It is easy to see that, for such functions, $\zf \leq L\phi_{\max}$, that is, $\
 
 For the \flid{} model \todo{ref}, we have $f(S) = \sum_{j=1}^L \max_{i \in S} w_{ij}$, therefore we get $\zf \leq f(V) = \sum_{j=1}^L w_j^{\mathrm{max}}$, where $w_j^{\mathrm{max}} = \max_{i \in V} w_{ij}$.
 Since the values of $\bw$ depend primarily on the number of repulsive groups, rather than the size of the ground set, we expect $\zf$ to grow much slower than $n$ in most practical applications.
-We present some experimental evidence of this claim in the next section.
+We present some experimental evidence of this claim in the next section. \todo{}
 
 \vspace{1.5em}
 \noindent The following theorem establishes a bound on the mixing time of the Gibbs sampler run on models of the form \eqref{eq:pdef}.
@@ -571,25 +571,27 @@ The latter gain an advantage when the posterior is concentrated around only a fe
 \begin{figure}[tb]
   \captionsetup[subfigure]{oneside,margin={2em,0em}}
   \begin{subfigure}[b]{\subflen}
-    \centering
-    \input{figures/gibbs/floc.tex}
+    %\centering
+    \hspace{6em}\input{figures/gibbs/floc.tex}
+    \vspace{-1.5em}
     \caption{Facility location}
-    \label{fig:exp1}
-  \end{subfigure}\\[1em]
+    \label{fig:gibbs_exp1}
+  \end{subfigure}\\[0.5em]
   \begin{subfigure}[b]{\subflen}
-    \centering
-    \input{figures/gibbs/gmm.tex}
+    %\centering
+    \hspace{6.35em}\input{figures/gibbs/gmm.tex}
+    \vspace{-1.5em}
     \caption{Pairwise MRF}
-    \label{fig:exp2}
-  \end{subfigure}\\[1em]
+    \label{fig:gibbs_exp2}
+  \end{subfigure}\\[0.5em]
   \begin{subfigure}[b]{\subflen}
-    \centering
-    \input{figures/gibbs/ic.tex}
+    %\centering
+    \hspace{6em}\input{figures/gibbs/ic.tex}
+    \vspace{-1.5em}
     \caption{Higher-order MRF}
-    \label{fig:exp3}
-  \end{subfigure}
-  \caption{Absolute error of the marginals computed by the Gibbs sampler compared to variational inference \cite{djolonga14}.
-  	A modest $500$ Gibbs iterations outperform the variational method for the most part.}
+    \label{fig:gibbs_exp3}
+  \end{subfigure}\\
+  \caption{Absolute error of the marginals computed by the Gibbs sampler compared to the variational approximations by \cite{djolonga14}.}
   \label{fig:exp}
 \end{figure}
 
