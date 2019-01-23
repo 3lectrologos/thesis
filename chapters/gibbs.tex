@@ -219,7 +219,6 @@ It is easy to see that, for such functions, $\zf \leq L\phi_{\max}$, that is, $\
 
 For the \flid{} model \todo{ref}, we have $f(S) = \sum_{j=1}^L \max_{i \in S} w_{ij}$, therefore we get $\zf \leq f(V) = \sum_{j=1}^L w_j^{\mathrm{max}}$, where $w_j^{\mathrm{max}} = \max_{i \in V} w_{ij}$.
 Since the values of $\bw$ depend primarily on the number of repulsive groups, rather than the size of the ground set, we expect $\zf$ to grow much slower than $n$ in most practical applications.
-We present some experimental evidence of this claim in the next section. \todo{}
 
 \vspace{1.5em}
 \noindent The following theorem establishes a bound on the mixing time of the Gibbs sampler run on models of the form \eqref{eq:pdef}.
@@ -540,61 +539,82 @@ As a special case, if we consider the class of set cover functions ($w_{ij} \in 
 Note, that the corollary can be trivially applied to any submodular function by taking $L=1$, but may, in general, result in a loose bound if used that way.
 
 \section{Experiments}
-We compare the Gibbs sampler against the variational approach proposed by Djolonga and Krause \cite{djolonga14} for performing inference in models of the form \eqref{eq:pdef}, and use the same three models as in their experiments.
-We briefly review here the experimental setup and refer to their paper for more details.
+In the following two experiments, we compare the Gibbs sampler against the variational approach proposed by Djolonga and Krause \cite{djolonga14} for performing inference in probabilistic submodular models.
+In particular, the authors propose two variational approximations, denoted in the following by ``upper'' and ``lower'', which are obtained from factorized distributions associated with modular upper and lower bounds respectively.
 
-The first is a (log-submodular) facility location model with an added modular term that penalizes the number of selected elements, that is, $p(S) \propto \exp(F(S)-2|S|)$, where $F$ is a submodular facility location function.
-The model is constructed from randomly subsampling real data from a problem of sensor placement in a water distribution network \cite{krause08}.
+\paragraph{Estimating the log-partition function.}
+We start with approximating the normalizers $\log(Z)$ for a family of (log-submodular) \flid{} models on ground set sizes ranging from $n = 10$ to $n = 100$.
+These \flid{} models are learned from synthetic data that we describe in \sectref{sect:syn_single}.
+In short, each model represents a single approximately mutually exclusive group of three genes together with five frequently and independently occurring genes, as well as a number of random noise genes.
+
+We obtain estimates for $log(Z)$ via a Gibbs-sampler based reverse importance sampling procedure \todo{ref background}, using $200$, $1000$, and $5000$ samples.
+For each model we repeat the sampling procedure $100$ times to get standard error estimates.
+Since estimating the exact value of $\log(Z)$ is infeasible for $n > 20$, we obtain an accurate estimate by computing the averaged importance sampling and reverse importance sampling estimates when run with $2\cdot 10^6$ samples.
+\figref{fig:gibbs_zest} shows the estimation errors with respect to this approximately true value; errorbars depict two standard errors.
+As is natural, more Gibbs samples result in more accurate estimates, and we can also observe that reverse importance sampling tends to produce overestimates of the log-partition function.
+We also see that the two variational approaches, which guarantee upper and lower bounds respectively, are considerably less accurate.
+
+\setlength\figureheight{0.6\textwidth}
+\setlength\figurewidth{0.8\textwidth}
+\newcommand{\subflen}{\textwidth}
+\begin{figure}[tb]
+  \centering
+  \input{figures/gibbs/zest.tex}
+  \caption{The error in estimating the log-partition function when using Gibbs-based reverse importance sampling compared to the variational approximations by \cite{djolonga14}.}
+  \label{fig:gibbs_zest}
+\end{figure}
+
+\paragraph{Estimating marginals.}
+We now repeat the experiments performed by \cite{djolonga14} to estimate marginals, and use the same three models that they used.
+
+The first is a (log-submodular) \flid{} model, in which the manually added modular term penalizes the number of selected elements, that is, $p(S) \propto \exp(f(S)-2|S|)$, where $f$ is a submodular facility location function.
+The model is constructed from randomly subsampling real data from a problem of sensor placement in a water distribution network \citep{krause08}.
 In the experiments, we iteratively condition on random observations for each variable in the ground set.
-The second is a (log-supermodular) pairwise Markov random field (MRF; a generalized Ising model with varying weights), constructed by first randomly sampling points from a 2-D two-cluster Gaussian mixture model, and then introducing a pairwise potential for each pair of points with exponentially-decreasing weight in the distance of the pair.
+
+The second is a (log-supermodular) pairwise Markov random field, constructed by first randomly sampling points from a two-dimensional two-cluster Gaussian mixture model, and then introducing a pairwise potential for each pair of points with exponentially-decreasing weight in the distance of the pair.
 In the experiments, we iteratively condition on pairs of observations, one from each cluster.
-The third is a (log-supermodular) higher-order MRF, which is constructed by first generating a random Watts-Strogatz graph, and then creating one higher-order potential per node, which contains that node and all of its neighbors in the graph.
+
+The third is a (log-supermodular) higher-order Markov random field, which is constructed by first generating a random Watts-Strogatz graph, and then creating one higher-order potential per node, which contains that node and all of its neighbors in the graph.
 The strength of the potentials is controlled by a parameter $\mu$, which is closely related to the curvature of the functions that define them.
 In the experiments, we vary this parameter from $0$ (modular model) to $1$ (``strongly'' supermodular model).
 
 For all three models, we constrain the size of the ground set to $n = 20$, so that we are able to compute, and compare against, the exact marginals.
 Furthermore, we run multiple repetitions for each model to account for the randomness of the model instance, and the random initialization of the Gibbs sampler.
 The marginals we compute are of the form $p(i \in S \mid C \subseteq S \subseteq D)$, for all $i \in V$.
-We run the Gibbs sampler for $100$, $500$, and $2000$ iterations on each problem instance.
-In compliance with recommended MCMC practice \cite{gelman11}, we discard the first half of the obtained samples as burn-in, and only use the second half for estimating the marginals.
+As before, we run the Gibbs sampler for $200$, $1000$, and $5000$ iterations on each problem instance.
 
-\figref{fig:exp} compares the average absolute error of the approximate marginals with respect to the exact ones.
+\figref{fig:gibbs_exp} compares the average absolute error of the approximate marginals with respect to the exact ones.
 The averaging is performed over $i \in V$, and over the different repetitions of each experiment; errorbars depict two standard errors.
-The two variational approximations are obtained from factorized distributions associated with modular lower and upper bounds respectively \cite{djolonga14}.
 We notice a similar trend on all three models.
-For the regimes that correspond to less ``peaked'' posterior distributions (small number of conditioned variables, small $\mu$), even $100$ Gibbs iterations outperform both variational approximations.
-The latter gain an advantage when the posterior is concentrated around only a few states, which happens after having conditioned on almost all variables in the first two models, or for $\mu$ close to $1$ in the third model.
+For the regimes that correspond to less ``peaked'' posterior distributions (small number of conditioned variables, small $\mu$), even a few thousand Gibbs iterations outperform both variational approximations.
+On the other hand, the variational methods gain an advantage when the posterior is concentrated around only a few states, which happens after having conditioned on almost all variables in the first two models, or for $\mu$ close to $1$ in the third model.
 
 \setlength\figureheight{0.45\textwidth}
 \setlength\figurewidth{0.7\textwidth}
-\newcommand{\subflen}{\textwidth}
+\renewcommand{\subflen}{\textwidth}
 \begin{figure}[tb]
   \captionsetup[subfigure]{oneside,margin={2em,0em}}
   \begin{subfigure}[b]{\subflen}
-    %\centering
-    \hspace{6em}\input{figures/gibbs/floc.tex}
-    \vspace{-1.5em}
+    \centering
+    \input{figures/gibbs/floc.tex}
     \caption{Facility location}
     \label{fig:gibbs_exp1}
   \end{subfigure}\\[0.5em]
   \begin{subfigure}[b]{\subflen}
-    %\centering
-    \hspace{6.35em}\input{figures/gibbs/gmm.tex}
-    \vspace{-1.5em}
+    \centering
+    \input{figures/gibbs/gmm.tex}
     \caption{Pairwise MRF}
     \label{fig:gibbs_exp2}
   \end{subfigure}\\[0.5em]
   \begin{subfigure}[b]{\subflen}
-    %\centering
-    \hspace{6em}\input{figures/gibbs/ic.tex}
-    \vspace{-1.5em}
+    \centering
+    \input{figures/gibbs/ic.tex}
     \caption{Higher-order MRF}
     \label{fig:gibbs_exp3}
   \end{subfigure}\\
   \caption{Absolute error of the marginals computed by the Gibbs sampler compared to the variational approximations by \cite{djolonga14}.}
-  \label{fig:exp}
+  \label{fig:gibbs_exp}
 \end{figure}
-
 
 \paragraph{Related Work.}
 In contemporary work to ours, Rebeschini and Karbasi \cite{rebeschini15} analyzed the mixing times of log-submodular models.

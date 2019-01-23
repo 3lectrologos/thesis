@@ -1,0 +1,121 @@
+\begin{tikzpicture}
+
+\begin{axis}[%
+tick label style={/pgf/number format/fixed,font=\sffamily\small},
+label style={font=\sffamily\small},
+legend style={font=\sffamily\small},
+view={0}{90},
+width=\figurewidth,
+height=\figureheight,
+xmin=10, xmax=100,
+xtick={10, 20, 30, 40, 50, 60, 70, 80, 90, 100},
+xticklabels={10, 20, 30, 40, 50, 60, 70, 80, 90, 100},
+ytick={-1, 0, 1, 2},
+yticklabels={-1, 0, 1, 2},
+xlabel={|V|},
+xlabel shift=0em,
+ymin=-1, ymax=2,
+ylabel={log(Z) error},
+ylabel shift=0em,
+major tick length=2pt,
+axis lines*=left,
+legend cell align=left,
+clip=false,
+legend style={anchor=east,at={(1.4,0.5)},draw=none,row sep=0},
+every axis plot/.append style={
+  mark=*,
+  mark options={solid},
+  mark size=1.7pt,
+  line width=1.2pt,
+  opacity=0.9,
+}
+]
+
+\addplot [
+mark=none,
+line width=0.5pt,
+color=darkgray,
+densely dotted,
+forget plot
+]
+coordinates{
+(10,0)(100,0)
+};
+
+\addplot [
+color=col2,
+densely dashed,
+error bars/.cd,
+error bar style={solid, line width=1pt},
+y dir=both,
+y explicit
+]
+coordinates{
+(10,0.35539)+-(0.00000,0.00000)(20,1.07111)+-(0.00000,0.00000)(30,0.80737)+-(0.00000,0.00000)(40,1.29351)+-(0.00000,0.00000)(50,1.60388)+-(0.00000,0.00000)(60,1.49767)+-(0.00000,0.00000)(70,1.43556)+-(0.00000,0.00000)(80,1.07637)+-(0.00000,0.00000)(90,1.48887)+-(0.00000,0.00000)(100,1.02160)+-(0.00000,0.00000)
+};
+\addlegendentry{Var (upper)}
+
+\addplot [
+color=col3,
+densely dashed,
+error bars/.cd,
+error bar style={solid, line width=1pt},
+y dir=both,
+y explicit
+]
+coordinates{
+(10,-0.35950)+-(0.00000,0.00000)(20,-0.47676)+-(0.00000,0.00000)(30,-0.41621)+-(0.00000,0.00000)(40,-0.52156)+-(0.00000,0.00000)(50,-0.51657)+-(0.00000,0.00000)(60,-0.49091)+-(0.00000,0.00000)(70,-0.48657)+-(0.00000,0.00000)(80,-0.38849)+-(0.00000,0.00000)(90,-0.33757)+-(0.00000,0.00000)(100,-0.49170)+-(0.00000,0.00000
+)
+};
+\addlegendentry{Var (lower)}
+
+%\addplot [
+%color=col4,
+%error bars/.cd,
+%error bar style={line width=1pt},
+%y dir=both,
+%y explicit
+%]
+%coordinates{
+%(10,0.00506)+-(0.00091,0.00091)(20,-0.00047)+-(0.00109,0.00109)(30,-0.00863)+-(0.00083,0.00083)(40,0.00610)+-(0.00137,0.00137)(50,-0.02719)+-(0.00162,0.00162)(60,0.01238)+-(0.00150,0.00150)(70,-0.04667)+-(0.00154,0.00154)(80,0.01313)+-(0.00246,0.00246)(90,0.06270)+-(0.00226,0.00226)(100,-0.00767)+-(0.00172,0.00172)
+%};
+%\addlegendentry{IS (5000)}
+
+\addplot [
+color=col1,
+error bars/.cd,
+error bar style={line width=1pt},
+y dir=both,
+y explicit
+]
+coordinates{
+(10,0.10253)+-(0.02460,0.02460)(20,0.12686)+-(0.03603,0.03603)(30,0.09077)+-(0.03473,0.03473)(40,0.23134)+-(0.04583,0.04583)(50,0.33206)+-(0.05460,0.05460)(60,0.39746)+-(0.05415,0.05415)(70,0.31946)+-(0.06372,0.06372)(80,0.67164)+-(0.07966,0.07966)(90,0.56673)+-(0.07851,0.07851)(100,0.44824)+-(0.06916,0.06916)
+};
+\addlegendentry{RIS (200)}
+
+\addplot [
+color=col1!70!black,
+error bars/.cd,
+error bar style={line width=1pt},
+y dir=both,
+y explicit
+]
+coordinates{
+(10,0.05587)+-(0.01767,0.01767)(20,0.08846)+-(0.02156,0.02156)(30,0.04689)+-(0.02324,0.02324)(40,0.11156)+-(0.03455,0.03455)(50,0.12209)+-(0.04492,0.04492)(60,0.22190)+-(0.04104,0.04104)(70,0.23596)+-(0.04507,0.04507)(80,0.30204)+-(0.06617,0.06617)(90,0.38489)+-(0.05605,0.05605)(100,0.25828)+-(0.04482,0.04482)
+};
+\addlegendentry{RIS (1000)}
+
+\addplot [
+color=col1!40!black,
+error bars/.cd,
+error bar style={line width=1pt},
+y dir=both,
+y explicit
+]
+coordinates{
+(10,0.01750)+-(0.01240,0.01240)(20,0.02770)+-(0.02016,0.02016)(30,0.02305)+-(0.01558,0.01558)(40,0.06318)+-(0.02122,0.02122)(50,0.03783)+-(0.02724,0.02724)(60,0.15083)+-(0.03255,0.03255)(70,0.05477)+-(0.03440,0.03440)(80,0.21590)+-(0.04418,0.04418)(90,0.20155)+-(0.03946,0.03946)(100,0.12165)+-(0.03505,0.03505)
+};
+\addlegendentry{RIS (5000)}
+
+\end{axis}
+\end{tikzpicture}

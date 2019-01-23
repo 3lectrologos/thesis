@@ -53,6 +53,12 @@ F(S) = \sum_{\ell \in [L]} F_{\ell}(S).
 
 \section{Sampling and Mixing Times}
 
+\paragraph{Approximating the log-partition function.}
+There are two straightforward methods for estimating the log-partition function using sampling.
+The first one, importance sampling (IS) \citep{ais}, assumes that we have a normalized distribution $\pi$ from which we draw $M$ samples $\{x\}$
+
+The second, reverse important sampling (RIS) \citep{ris},
+
 \paragraph{Mixing times.}
 Approximating quantities of interest using MCMC methods is based on using time averages to estimate expectations over the desired distribution.
 In particular, we estimate the expected value of function $f : \ss \to \mathbb{R}$ by $\E_p[f(X)] \approx (1/T)\sum_{r=1}^{T} f(X_{s + r})$.
