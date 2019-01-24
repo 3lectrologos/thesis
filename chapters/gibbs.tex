@@ -616,23 +616,16 @@ On the other hand, the variational methods gain an advantage when the posterior 
   \label{fig:gibbs_exp}
 \end{figure}
 
-\paragraph{Related Work.}
-In contemporary work to ours, Rebeschini and Karbasi \cite{rebeschini15} analyzed the mixing times of log-submodular models.
-Using a method based on matrix norms, which was previously introduced by Dyer et al. \cite{dyer09}, and is closely related to path coupling, they arrive at a similar, though not directly comparable, condition to the one we presented in \theoremref{thm:fast}.
-
-Iyer and Bilmes \cite{iyer15} recently considered a different class of probabilistic models, called submodular point processes, which are also defined through submodular functions, and have the form $p(S) \propto F(S)$.
-They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
-
-The canonical path method for bounding mixing times has been previously used in applications, such as approximating the partition function of ferromagnetic Ising models \cite{jerrum93}, approximating matrix permanents \cite{jerrum89,jerrum04perm}, and counting matchings in graphs \cite{jerrum03}.
-The most prominent application of coupling-based methods is counting $k$-colorings in low-degree graphs \cite{jerrum95,bubley98,jerrum03}.
-Other applications include counting independent sets in graphs \cite{dyer00}, and approximating the partition function of various subclasses of Ising models at high temperatures \cite{levin08}.
-
-\todo{Add Chengtao constrained etc. paper}
-\todo{Add DPP -- Rayleigh papers}
-
 
 \section{Conclusion}
-We considered the problem of performing marginal inference using MCMC sampling techniques in probabilistic models defined through submodular functions.
-In particular, we presented for the first time sufficient conditions to obtain upper bounds on the mixing time of the Gibbs sampler in general log-submodular and log-supermodular models.
+In this chapter, we presented sufficient conditions that guarantee upper bounds on the mixing time of the Gibbs sampler in general probabilistic submodular models.
 Furthermore, we demonstrated that, in practice, the Gibbs sampler compares favorably to previously proposed variational approximations, at least in regimes of high uncertainty.
-We believe that this is an important step towards a unified framework for further analysis and practical application of this rich class of probabilistic submodular models.
+
+\paragraph{Further related work.}
+In contemporary work to ours, Rebeschini and Karbasi \citep{rebeschini15} analyzed the mixing times of log-submodular models.
+Using a method based on matrix norms, which was previously introduced by \cite{dyer09}, and is closely related to path coupling, they arrive at a similar, though not directly comparable, condition to the one we presented in \theoremref{thm:fast}.
+
+The canonical path method for bounding mixing times has been previously used in a number of theoretical results, such as approximating the partition function of ferromagnetic Ising models \citep{jerrum93}, approximating matrix permanents \citep{jerrum89,jerrum04perm}, and counting matchings in graphs \citep{jerrum03}.
+
+Coupling-based methods have been most prominently used for counting $k$-colorings in low-degree graphs \cite{jerrum95,bubley98,jerrum03}.
+Other applications of coupling include counting independent sets in graphs \citep{dyer00}, and approximating the partition function of various subclasses of Ising models at high temperatures \citep{levin08book}.

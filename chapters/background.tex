@@ -35,6 +35,13 @@ An alternative and equivalent way of defining distributions of the above form is
 If we define $V(X) \defeq \sdef{v \in V}{X_v = 1}$, it is easy to see that the distribution $p_X(X) \propto \exp(\beta F(V(X)))$ over binary vectors is isomorphic to the distribution over sets of \eqref{eq:pdef}.
 With a slight abuse of notation, we will use $F(X)$ to denote $F(V(X))$, and use $p$ to refer to both distributions.
 
+Iyer and Bilmes \citep{iyer15} recently considered a different class of probabilistic models, called submodular point processes, which are also defined through submodular functions, and have the form $p(S) \propto F(S)$.
+They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
+
+\todo{Add Chengtao constrained etc. paper}
+\todo{Add DPP -- Rayleigh papers}
+
+
 \paragraph{Example models}
 The (ferromagnetic) Ising model is an example of a log-supermodular model.
 In its simplest form, it is defined through an undirected graph $(V, E)$, and a set of pairwise potentials $\sigma_{v,w}(S) \defeq 4(\mathds{1}_{\{v \in S\}}-0.5)(\mathds{1}_{\{w \in S\}}-0.5)$.
