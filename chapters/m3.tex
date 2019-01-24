@@ -109,13 +109,12 @@ where $0 < \delta < 1$.
 It is easy to see that $\Pc$ is reversible, and has stationary distribution $p$.
 
 We next illustrate how combining the two chains works on a simple example, where a mixture of only a few log-modular distributions can dramatically improve mixing compared to running the vanilla Gibbs chain.
-Then %, %in the next section
-we propose an algorithm for automatically creating such a mixture.
+Then, we propose an algorithm for automatically creating such a mixture.
 
-\subsection{Example: Ising Model on the Complete Graph} \label{sect:ising}
-We consider the Ising model on a finite complete graph \citep{levin08}, also known as the Curie-Weiss model in statistical physics, which can be written in the form of \eqref{eq:pdef} as follows:
+\section{Ising Model on the Complete Graph} \label{sect:ising}
+We consider the Ising model on a finite complete graph \citep{levin08}, also known as the Curie-Weiss model in statistical physics, which is family of log-supermodular distributions that can be written as follows,
 \begin{align*}
-  pb(S) = \frac{1}{Z(\beta)}\exp\left(-\frac{2\beta}{n} |S|(n-|S|)\right). \tag{\isingb}
+  p(S) = \frac{1}{Z(\beta)}\exp\left(-\frac{2\beta}{n} |S|(n-|S|)\right). \tag{\isingb}
 \end{align*}
 In particular, we focus on the case where $\beta = \ln(n)$, that is,
 \begin{align*}
@@ -124,18 +123,24 @@ In particular, we focus on the case where $\beta = \ln(n)$, that is,
 In this case, if we define $\dn \defeq 2 \ln(n) / n$, then $F(S) = -\dn |S|(n-|S|)$.
 
 The Gibbs sampler is known to experience poor mixing in this model; the following is an immediate corollary of Theorem 15.3 in \citep{levin08book}.
-\begin{cor}[cf. Theorem 15.3 in \citep{levin08book}]
+\begin{cor}
   For $n \geq 3$, the Gibbs sampler on \ising{} has spectral gap $\gg = \bO\left(e^{-cn}\right)$, where $c > 0$ is a constant.
 \end{cor}
 \noindent From \theoremref{thm:spectral} it follows that the mixing time of Gibbs is
 \begin{align*}
     \tme = \Omega\left((e^{cn} - 1)\log\left(\frac{1}{2\epsilon}\right) \right).
 \end{align*}
-Yet, it has been shown that the only reason for this is a single bottleneck in the state space \citep{levin08}.
-To make this statement more formal, let us define a decomposition of $\Omega$ into two disjoint sets, $\Omega_0 \defeq \{S \in \Omega \mid |S| < n/2\}$, and $\Omega_1 \defeq \{S \in \Omega \mid |S| > n/2\}$ \citep{jerrum04poincare}.
-To keep things simple, we will assume for the remainder of this section that $n$ is odd; the analysis when $n$ is even follows from the same arguments with only a minor technical adjustment.
-Our goal is to separately examine two characteristics of the sampler: (i) its movement between the two sets $\Omega_0$, $\Omega_1$, and (ii) its movement when restricted to stay within each of these sets.
 
+Yet, it has been shown that the only reason for this is a single bottleneck in the state space \citep{levin08}.
+To make this statement more formal, let us define a decomposition of $\Omega$ into two disjoint sets \citep{jerrum04poincare},
+\begin{align*}
+\Omega_0 &\defeq \{S \in \Omega \mid |S| < n/2\},\\
+\Omega_1 &\defeq \{S \in \Omega \mid |S| > n/2\}.
+\end{align*}
+To keep things simple, we will assume for the remainder of this section that $n$ is odd; the analysis when $n$ is even follows from the same arguments with only a minor technical adjustment.
+
+\paragraph{The projection and restriction chains.}
+Our goal is to separately examine two characteristics of the sampler: (i) its movement between the two sets $\Omega_0$, $\Omega_1$, and (ii) its movement when restricted to stay within each of these sets.
 For analyzing the ``between-sets'' behavior, we define the projection $\bar{p} : \{0, 1\} \to \mathbb{R}$ of $p$ as
 \begin{align*}
   \bar{p}(i) \defeq \sum_{S \in \Omega_i} p(S),
@@ -154,41 +159,144 @@ and the two restriction chains $P_i : \Omega_i \times \Omega_i \to \mathbb{R}$ o
 \end{align*}
 Again, it is easy to see that each of the $P_i$ is also reversible and has stationary distribution $p_i$.
 
+\paragraph{Gibbs restrictions.}
 Coming back to the Gibbs sampler, if we could show that it mixes fast within each of $\Omega_0$ and $\Omega_1$, then we could deduce that the only reason for the slow mixing on $\Omega$ is the bottleneck between these two sets.
 Indeed, the following corollary of a theorem by \cite{ding09} shows exactly that.
-\begin{cor}[cf. Theorem 2 in \citep{ding09}] \label{thm:grest}
+\begin{cor}[cf. Theorem 2, \citealp{ding09}] \label{cor:grest}
   For all $n \geq 3$, the restriction chains of the Gibbs sampler $\Pg_i$, $i = 0, 1$, on \ising{} have spectral gap $\gg_i = \Theta\big(\displaystyle\tfrac{2\ln(n) - 1}{n}\big)$.
 \end{cor}
 
+\paragraph{\Ms{} projection.}
 To improve mixing we want to create an \Ms{} chain that is able to bypass the aforementioned bottleneck.
 For this purpose, we use a mixture of two log-modular distributions, the first of which puts most of its mass on $\Omega_0$, and the second on $\Omega_1$.
-We define the mixture of the form \eqref{eq:qdef} by
+We define the mixture of the form \eqref{eq:qprop} by
 \begin{align*}
   m_1(S) &= \sum_{v \in S} -\dn (n-1) = -\dn (n-1) |S|,\\
   m_2(S) &= \sum_{v \in S} \dn (n-1) = \dn (n-1) |S|.
-  %w_1    &= 1 / Z_1 = 1 / \prod_{v \in V} \left( 1 + \exp(-\dn (n-1)) \right) = \left(1 + \exp(-\dn(n-1))\right)^{-n}\\
-  %w_2    &= 1 / Z_2 = 1 / \prod_{v \in V} \left( 1 + \exp(-\dn (n-1)) \right) = \left(1 + \exp(-\dn(n-1))\right)^{-n}.
 \end{align*}
 We also use $w_1 = 1 / Z_1$ and $w_2 = 1 / Z_2$, where $Z_1$ and $Z_2$ are the normalizers of $m_1$ and $m_2$ respectively.
+The resulting proposal distribution can be written as follows,
+\begin{align} \label{eq:qdef}
+  q(S) = \frac12\left( \frac{\exp(-\dn (n-1)|S|)}{Z_1} + \frac{\exp(\dn (n-1)|S|)}{Z_2}\right),
+\end{align}
+where $Z_1 = \left(1 + \exp(-\dn(n-1))\right)^n$, and $Z_2 = \left(1 + \exp(\dn(n-1))\right)^n$.
 It follows that $Z_q = 1 / 2$, and, furthermore, the mixture $q$ is symmetric, that is, $q(S) = q(V \setminus S)$.
+
 Since the proposal $q$ is symmetric and state independent, we would expect the \Ms{} chain to jump between $\Omega_0$ and $\Omega_1$ without being hindered by the bottleneck described previously.
 We verify this intuition by proving the following lemma.
 \begin{lemma} \label{lem:mproj}
   For all $n \geq 10$, the projection chain $\bPm$ of the \Ms{} sampler on \ising{} has spectral gap $\bgm = \Omega(1)$.
 \end{lemma}
 
-Putting everything together we show the following result about the combined chain $\Pc$.
+\begin{proof}
+We define $p_k = \sum_{S \in \Omega, |S| = k} p(S)$, and $q_k = \sum_{S \in \Omega, |S| = k} q(S)$.
+We then proceed to upper bound $p_k$, and lower bound $q_k$.
+
+\paragraph{Bounding $p_k$.}
+By definition, we can write $p_k = \hat{p}_k / Z$, where $\hat{p}_0 = 1$, and for $k > 0$ we have
+\begin{align*}
+\hat{p}_k &\defeq \binom{n}{k} \exp\left(-\frac{2\ln(n)}{n} k(n-k)\right)\\
+            &= \binom{n}{k} n^{-\frac{2k}{n} (n-k)}\\
+            &\leq \left(\frac{en}{k}\right)^k n^{-\frac{2k}{n} (n-k)}\\
+            &= \left(\frac{e}{k}\right)^k n^{-k + \frac{2k^2}{n}}.
+\end{align*}
+It follows that
+\begin{align} \label{eq:logpk}
+  \ln(\hat{p}_k) \leq -k \ln\left(\frac{k}{e}\right) + \left(\frac{2k^2}{n} - k\right)\ln(n).
+\end{align}
+It is easy to verify that for all $n \geq 10$ and $3 \leq k \leq \lfloor n/2 \rfloor$, it holds that $(2k-n)\ln(n) \leq 0.5n\ln(k/e)$.
+Substituting this into \eqref{eq:logpk}, we get
+\begin{align*}
+            \ln(\hat{p}_k) &\leq -0.5k\ln\left(\frac{k}{e}\right)\\
+  \Rightarrow\ \ \hat{p}_k &\leq \exp(-0.5k\ln(k/e)).
+\end{align*}
+Noting that, for all $k$, $\hat{p}_k \leq 1$, and using the fact that $\hat{p}_{n-k} = \hat{p}_k$, we get
+\begin{align}
+  Z &= \sum_{k = 0}^n \hat{p}_k \nonumber\\ 
+    &\leq 2\sum_{k = 0}^{\lfloor n/2 \rfloor} \hat{p}_ k\nonumber\\
+    &= 2(\hat{p}_0 + \hat{p}_1 + \hat{p}_2 + \sum_{k = 3}^{\lfloor n/2 \rfloor} \hat{p}_k) \nonumber\\
+    &\leq 3 + \sum_{k = 3}^{\lfloor n/2 \rfloor} \exp(-0.5k\ln(k/e)) \nonumber\\
+    &\leq c_1, \label{eq:Zconst}
+\end{align}
+where $c_1$ is a constant.
+
+\paragraph{Bounding $q_k$.}
+First, it is easy to see that, for all $n \geq 1$, $Z_1 \leq 3$.
+\begin{align*}
+  q_k &= \sum_{S \in \Omega, |S| = k} q(S)\\
+      &\geq \sum_{S \in \Omega, |S| = k} \frac{1}{2} \frac{\exp(-\dn (n-1)|S|)}{Z_1} \tag{by \eqref{eq:qdef}} \\
+      &\geq \frac{1}{6} \binom{n}{k} \exp(-\dn (n-1)|S|)
+\end{align*}
+
+\paragraph{Bounding the spectral gap.}
+For the projection chain $\bPm$, we have
+\begin{align*}
+\bPm(0, 1) &= \frac{1}{\bar{p}(0)} \sum_{\subalign{S &\in \Omega_i\\ R &\in \Omega_j}} p(S) \Pm(S, R)\\
+           %&\geq \frac{1}{\bar{p}(0)} \sum_{\subalign{S &\in \Omega_i\\ R &\in \Omega_j\\ |R| &= |V \setminus S|}} p(S) \Pm(S, R)\\
+           %&\geq \frac{1}{\bar{p}(0)} \sum_{\subalign{S &\in \Omega_i\\ R &\in \Omega_j\\ |R| &= |V \setminus S|}} p(S) q(R)\displaystyle\frac{p(R)q(S)}{p(S)q(R)}\\ \tag{$p(R) = p(S)$ and $q(R) = q(S)$}
+           %&\geq \frac{1}{\bar{p}(0)} \sum_{\subalign{S &\in \Omega_i\\ R &\in \Omega_j\\ |R| &= |V \setminus S|}} p(S) q(R)\\
+           %&\geq \frac{1}{\bar{p}(0)} \sum_{k = 0}^{\lfloor n/2 \rfloor} p_k q_{n-k}\\
+           %&= \frac{1}{\bar{p}(0)} \sum_{k = 0}^{\lfloor n/2 \rfloor} p_k q_{k} \tag{by symmetry of $q_k$}\\
+           %&= 2 \sum_{k = 0}^{\lfloor n/2 \rfloor} p_k q_{k} \tag{$\bar{p}(0) = 1/2$ by symmetry of $p$} \\
+           &\geq 2p_0 q_n \tag{$\bar{p}(0) = 1/2$ by symmetry of $p$}\\
+           &= 2p_0 q_0 \tag{by symmetry of $q$}\\
+           &\geq 2\frac{\hat{p}_0}{Z} \frac{1}{6} \tag{$q_0 \geq \frac{1}{6}$}\\
+           &\geq 2\frac{1}{c_1}\frac{1}{6} \tag{$\hat{p}_0 = 1$}\\
+           &= c \bar{p}(1),
+\end{align*}
+where $c = (2/3)c_1$.
+
+Finally, it is easy to show that the spectral gap of any reversible two-state chain $P$ with stationary distribution $p$ that satisfies $P(0, 1) = c\,p(1)$ is $c$; for example, see Fact 6 by \cite{anari16}.
+Applying this to the above projection chain shows that the spectral gap of $\bPm$ is $c$.
+\end{proof}
+
+\paragraph{Combining the chains.}
+Putting everything together, we show the following result about the combined chain $\Pc$.
+\begin{theorem} \label{thm:combo}
+  For all $n \geq 10$, the combined chain $\Pc$ on \ising{} has spectral gap
+  \begin{align*}
+    \gc = \Omega\left( \displaystyle\frac{2\ln(n) - 1}{2n} \right).
+  \end{align*}
+\end{theorem}
+\noindent The proof consists of two steps.
+In the first step, we make two comparison arguments \citep{diaconis93,levin08book} to show that the spectral gaps of the projection and restriction chains of the combined sampler are smaller by at most a constant factor in $\delta$ compared to those of Gibbs and \Ms{}.
+In particular, we use the \Ms{} bound (\lemmaref{lem:mproj}) for the projection chain, and the Gibbs bound (\corref{cor:grest}) for the restriction chains.
+The following two lemmas make this more concrete.
+
+\begin{lemma} \label{lem:cproj}
+  For all $n \geq 10$, the projection chain $\bPc$ of the combined chain on \ising{} has spectral gap $\bgc = \Omega(1).$
+\end{lemma}
+
+\begin{proof}
+  By definition, $\bPc(S, R) \geq \delta \bPm(S, R)$, therefore a simple comparison argument (e.g., Lemma 13.22 in \citep{levin08book}) combined with the result of \lemmaref{lem:mproj} gives us $\bgc \geq \delta \bgm = \Omega(1)$.
+\end{proof}
+
+\begin{lemma} \label{lem:crest}
+  For all $n \geq 3$, each of the restriction chains $\Pc_i$ of the combined chain on \ising{} has spectral gap $\gc_i = \Theta\left(\displaystyle\frac{2\ln(n) - 1}{2n}\right)$.
+\end{lemma}
+
+\begin{proof}
+  By definition, $\Pc_i(S, R) \geq \delta \Pg_i(S, R)$, therefore, using a comparison argument like above together with \corref{cor:grest} gives us $\gc_i \geq \delta \gg_i = \Theta\left(\displaystyle\frac{2\ln(n) - 1}{2n}\right)$.
+\end{proof}
+
+The second step combines the projection and restriction bounds to establish a bound on the spectral gap of the combined chain.
+To accomplish this we use the following result by \cite{jerrum04poincare}, which states that the spectral gap of the whole chain cannot be much smaller than the smallest of the projection and restriction spectral gaps.
+\begin{theorem}[\hspace{1sp}Theorem 1, \citealp{jerrum04poincare}] \label{thm:jerrum04}
+  Given a reversible Markov chain $P$, if the spectral gap of its projection chain $\bar{P}$ is bounded below by $\bar{\gamma}$, and the spectral gaps of its restriction chains $P_i$ are uniformly bounded below by $\gamma_{\textrm{min}}$, then the spectral gap of $P$ is bounded below by
+  \begin{align*}
+    \gamma = \min\left\{ \frac{\bar{\gamma}}{3}, \frac{\bar{\gamma}\gamma_{\textrm{min}}}{3\Pmax + \bar{\gamma}} \right\},
+  \end{align*}
+  where $p_{\textrm{max}} \defeq \displaystyle\max_{i \in \{0, 1\}}\max_{S \in \Omega_i} \sum_{R \in \Omega \setminus \Omega_i} P(S, R)$.
+\end{theorem}
+
 \begin{theorem}
   For all $n \geq 10$, the combined chain $\Pc$ on \ising{} has spectral gap
   \begin{align*}
     \gc = \Omega\left( \displaystyle\frac{2\ln(n) - 1}{2n} \right).
   \end{align*}
 \end{theorem}
-The proof consists of two steps.
-In the first step we make a comparison argument \citep{diaconis93,levin08book} to show that the spectral gaps of the projection and restriction chains of the combined sampler are smaller by at most a constant factor in $\delta$ compared to those of Gibbs and \Ms{}.
-In particular, we use the \Ms{} bound (\lemmaref{lem:mproj}) for the projection chain, and the Gibbs bound (\theoremref{thm:grest}) for the restriction chains.
-The second step, then, combines the projection and restriction bounds to establish a bound on the spectral gap of the combined chain.
-To accomplish this we use a result by \cite{jerrum04poincare}, which, roughly speaking, states that the spectral gap of the whole chain cannot be much smaller than the smallest of the projection and restriction spectral gaps.
+
+The result of \theoremref{thm:combo} follows directly by combining the spectral gap bounds of \lemmasref{lem:cproj} and \ref{lem:crest} in \theoremref{thm:jerrum04}, and noting that $\Pmax \leq 1$.
 
 Finally, using \theoremref{thm:spectral}, and noting that, in this case, $\pmin = \bO(e^{-n})$ (cf. proof of \lemmaref{lem:mproj}), we get a mixing time of $\tme = \bO(n^2 \log(1 / \epsilon))$ for the combined chain.
 This shows that the addition of the \Ms{} sampler results in an exponential improvement in mixing time over the Gibbs sampler by itself.
@@ -256,12 +364,6 @@ Semigradients are modular functions that provide lower (subgradient) or upper (s
 More concretely, given a set $S \in \Omega$, a modular function $m$ is a subgradient of $F$ at $S$, if, for all $R \in \Omega$, $F(R) \geq F(S) + m(R) - m(S)$.
 Similarly, $m$ is a supergradient if the inequality is reversed.
 Although, in general, a function is not guaranteed to have sub- or supergradients at each $S \in \Omega$, it has been shown that this is true when $F$ is submodular or supermodular \citep{fujishige05, jegelka11, iyer12}.
-
-Submodularity expresses a notion of diminishing returns; that is, adding an element to a larger set provides less benefit than adding that same element to a smaller set.
-More formally, $F$ is submodular if, for any $S \subseteq R \subseteq V$, and any $v \in V \setminus R$, it holds that $F(R \cup \{v\}) - F(R) \leq F(S \cup \{v\}) - F(S)$.
-Supermodularity is defined in a similar way by reversing the sign of this inequality.
-The resulting models of the form \eqref{eq:pdef} are referred to as log-submodular and log-supermodular respectively.
-Many commonly used models fall under these categories; Ising and Potts models, including our example in the previous section, are log-supermodular, while determinantal point processes and facility location diversity models are log-submodular.
 
 Coming back to the second step of \algoref{alg:mixture}, to create a subgradient of $F$ given permutation $\sigma$ we just need to define a modular function via marginal gains according to the permutation order \citep{iyer13}, as shown in \algoref{alg:sub}.
 Moreover, this is a subgradient of $F$ at $\{\sigma_1, \ldots, \sigma_k\}$, for all $1 \leq k \leq n$.

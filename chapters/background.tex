@@ -4,11 +4,17 @@
 We start by considering set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $|V| = n$.
 Without loss of generality, if not otherwise stated, we will hereafter assume that $V = [n] \defeq \{1, 2, \ldots,n\}$.
 The marginal gain obtained by adding element $v \in V$ to set $S \subseteq V$ is defined as $F(v|S) \defeq F(S \cup \{v\}) - F(S)$.
-Intuitively, submodularity expresses a notion of diminishing returns; that is, adding an element to a larger set provides less benefit than adding it to a smaller one.
-More formally, $F$ is submodular if, for any $S \subseteq T \subseteq V$, and any $v \in V \setminus T$, it holds that $F(v|T) \leq F(v|S)$.
-Supermodularity is defined analogously by reversing the sign of this inequality.
-In particular, if a function $F$ is submodular, then the function $-F$ is supermodular.
-If a function $m$ is both submodular and supermodular, then it is called modular, and may be written in the form $m(S) = c + \sum_{v \in S} m_v$, where $c \in \mathbb{R}$, and $m_v \in \mathbb{R}$, for all $v \in V$.
+%Intuitively, submodularity expresses a notion of diminishing returns; that is, adding an element to a larger set provides less benefit than adding it to a smaller one.
+%More formally, $F$ is submodular if, for any $S \subseteq T \subseteq V$, and any $v \in V \setminus T$, it holds that $F(v|T) \leq F(v|S)$.
+%Supermodularity is defined analogously by reversing the sign of this inequality.
+%In particular, if a function $F$ is submodular, then the function $-F$ is supermodular.
+%If a function $m$ is both submodular and supermodular, then it is called modular, and may be written in the form $m(S) = c + \sum_{v \in S} m_v$, where $c \in \mathbb{R}$, and $m_v \in \mathbb{R}$, for all $v \in V$.
+
+Submodularity expresses a notion of diminishing returns; that is, adding an element to a larger set provides less benefit than adding that same element to a smaller set.
+More formally, $F$ is submodular if, for any $S \subseteq R \subseteq V$, and any $v \in V \setminus R$, it holds that $F(R \cup \{v\}) - F(R) \leq F(S \cup \{v\}) - F(S)$.
+Supermodularity is defined in a similar way by reversing the sign of this inequality.
+The resulting models of the form \eqref{eq:pdef} are referred to as log-submodular and log-supermodular respectively.
+Many commonly used models fall under these categories; Ising and Potts models, including our example in the previous section, are log-supermodular, while determinantal point processes and facility location diversity models are log-submodular.
 
 \section{Probabilistic Models, Inference, and Learning}
 \todo{Exponential family}
