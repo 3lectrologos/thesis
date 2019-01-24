@@ -159,6 +159,15 @@ and the two restriction chains $P_i : \Omega_i \times \Omega_i \to \mathbb{R}$ o
 \end{align*}
 Again, it is easy to see that each of the $P_i$ is also reversible and has stationary distribution $p_i$.
 
+In \figref{fig:decomp}, we depict the structure of our reasoning for the remainder of this section, including the results that we prove or use to ultimately arrive at \theoremref{thm:combo}.
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\textwidth]{figures/m3/decomposition2.pdf}\\[2em]
+  \caption{The structure of our reasoning to prove \theoremref{thm:combo}.}
+  \label{fig:decomp}
+\end{figure}
+
 \paragraph{Gibbs restrictions.}
 Coming back to the Gibbs sampler, if we could show that it mixes fast within each of $\Omega_0$ and $\Omega_1$, then we could deduce that the only reason for the slow mixing on $\Omega$ is the bottleneck between these two sets.
 Indeed, the following corollary of a theorem by \cite{ding09} shows exactly that.
@@ -289,13 +298,6 @@ To accomplish this we use the following result by \cite{jerrum04poincare}, which
   where $p_{\textrm{max}} \defeq \displaystyle\max_{i \in \{0, 1\}}\max_{S \in \Omega_i} \sum_{R \in \Omega \setminus \Omega_i} P(S, R)$.
 \end{theorem}
 
-\begin{theorem}
-  For all $n \geq 10$, the combined chain $\Pc$ on \ising{} has spectral gap
-  \begin{align*}
-    \gc = \Omega\left( \displaystyle\frac{2\ln(n) - 1}{2n} \right).
-  \end{align*}
-\end{theorem}
-
 The result of \theoremref{thm:combo} follows directly by combining the spectral gap bounds of \lemmasref{lem:cproj} and \ref{lem:crest} in \theoremref{thm:jerrum04}, and noting that $\Pmax \leq 1$.
 
 Finally, using \theoremref{thm:spectral}, and noting that, in this case, $\pmin = \bO(e^{-n})$ (cf. proof of \lemmaref{lem:mproj}), we get a mixing time of $\tme = \bO(n^2 \log(1 / \epsilon))$ for the combined chain.
@@ -309,7 +311,7 @@ Let us assume, as is usually the case, that we have access to a function oracle 
 Ideally, we would like to construct a proposal $q$ that is as close to $p$ as possible, that is, minimize an objective such as the following,
 \begin{align*}
   E_1(q) &\defeq \min_q \| p - q \|\\
-         &= \min_q \left\| \frac{\exp(F(\cdot))}{Z} - \frac{1}{Z_q}\textstyle\sum_{i = 1}^r \wi\exp(\mi(\cdot)) \right\|,
+         &\,\,= \min_q \left\| \frac{\exp(F(\cdot))}{Z} - \frac{1}{Z_q}\textstyle\sum_{i = 1}^r \wi\exp(\mi(\cdot)) \right\|,
 \end{align*}
 where $\| \cdot \|$ could be, for example, total variation distance or the maximum norm.
 Unfortunately, this problem is hard: both computing the partition function $Z$, and jointly optimizing over all $\wi, \mi$ are infeasible in practice.

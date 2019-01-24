@@ -1,0 +1,22 @@
+\documentclass{standalone}
+
+\usepackage{../../core}
+
+\begin{document}
+
+\begin{tikzpicture}[
+  scale=2.5,
+  >=latex,
+  line join=bevel,
+  NN/.style={draw=textcolor!60!white,fill=col1,text=black,fill opacity=0.8,circle,line width=1.5pt,minimum size=5.5em,font=\LARGE},
+  LL/.style={draw=textcolor!60!white,line width=2pt},
+  ]
+  \node[NN] (v1) at (0,40bp) {\color{textcolor}$1$};
+  \node[NN,fill=col2] (v2) at (40bp,40bp) {\color{textcolor}$2$};
+
+  \draw [LL,->] (v1) to[out=45,in=135] (v2);
+  \draw [LL,->] (v2) to[out=-135,in=-45] (v1);
+
+\end{tikzpicture}
+
+\end{document}

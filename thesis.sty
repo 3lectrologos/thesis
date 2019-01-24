@@ -108,11 +108,12 @@
 % Theory environments
 \RequirePackage{amsthm}
 \newtheorem{definition}{Definition}
-\newtheorem{theorem}{Theorem}
-\newtheorem{lemma}{Lemma}
-\newtheorem{cor}{Corollary}
-\newtheorem{assumption}{Assumption}
-\newtheorem{prop}{Proposition}
+\numberwithin{definition}{chapter}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{cor}[definition]{Corollary}
+\newtheorem{assumption}[definition]{Assumption}
+\newtheorem{prop}[definition]{Proposition}
 
 
 % -----------------------------------------------------------------------------
@@ -264,7 +265,7 @@
 % -----------------------------------------------------------------------------
 % Algorithm related
 % -----------------------------------------------------------------------------
-\RequirePackage[ruled,vlined,linesnumbered]{algorithm2e}
+\RequirePackage[ruled,vlined,linesnumbered,algochapter]{algorithm2e}
 \RequirePackage{algorithmic}
 %\renewcommand{\theHalgorithm}{\arabic{algorithm}}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
@@ -296,3 +297,6 @@
 
 % Import external pdfs. Needs to be imported *after* xcolor!
 \RequirePackage{pdfpages}
+
+% Per-chapter numbering
+\numberwithin{figure}{chapter}
