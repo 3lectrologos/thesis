@@ -55,7 +55,7 @@ Assuming that the current state is $X_t = \{2\}$, there are three potential new 
 The Gibbs sampler first selects one of the neighbors uniformly at random, and then either stays at $X_t$ or moves to that neighbor according to the corresponding conditional probability.
 
 %\RestyleAlgo{ruled,vlined,linesnumbered}
-\begin{algorithm}[tb]
+\begin{algorithm}[htbp]
     \setstretch{1.3}
     \DontPrintSemicolon
     \vspace{0.5em}
@@ -77,9 +77,10 @@ The Gibbs sampler first selects one of the neighbors uniformly at random, and th
 	\label{alg:gibbs}
 \end{algorithm}
 
-\begin{figure}[htb]
+\vspace{1em}
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.55\textwidth]{figures/gibbs/lattice_gibbs_2.pdf}\\[1em]
+\includegraphics[width=0.5\textwidth]{figures/gibbs/lattice_gibbs_2.pdf}\\[1em]
 \caption{An illustration of a single Gibbs step on ground set $V = \{1, 2, 3\}$, and current state $X_t = \{2\}$.
 We first choose one of the neighbors of $X_t$ uniformly at random, and then either stay at $X_t$ or move to that neighbor according to the corresponding conditional probability.}
 \label{fig:gibbs}
@@ -268,16 +269,53 @@ The following theorem makes this statement more concrete.
 \begin{theorem}[\hspace{1sp}\citealp{sinclair92,jerrum03}] \label{thm:cpath}
   For any collection of canonical paths with congestion $\rho$, the mixing time of the chain is bounded by
   \begin{align*}
-  	\tme \leq \rho \log\left(\frac{1}{\epsilon p_{\mathrm{min}}}\right).
+  	\tme \leq \rho \log\left(\frac{1}{\epsilon p_{\mathrm{min}}}\right),
   \end{align*}
-%  where $p_{\min} \defeq \displaystyle\min_{S \in \ss}p(S)$.
+where $p_{\mathrm{min}} \defeq \displaystyle\min_{S \in \ss}p(S)$.
 \end{theorem}
+
+\newcommand{\subflen}{0.48\textwidth}
+\begin{figure}[tbp]
+  %\captionsetup[subfigure]{oneside,margin={2em,0em}}
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \includegraphics[width=\textwidth]{figures/gibbs/cp_easy_path_4.pdf}
+    \caption{Canonical path}
+    \label{fig:cong1}
+  \end{subfigure}\hspace{1em}
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \includegraphics[width=\textwidth]{figures/gibbs/cp_easy.pdf}
+    \caption{Capacities}
+    \label{fig:cong2}
+  \end{subfigure}\\[2em]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \includegraphics[width=\textwidth]{figures/gibbs/cp_easy_cong.pdf}
+    \caption{Low congestion}
+    \label{fig:cong3}
+  \end{subfigure}\hspace{1em}
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \includegraphics[width=\textwidth]{figures/gibbs/cp_hard_cong.pdf}
+    \caption{High congestion}
+    \label{fig:cong4}
+  \end{subfigure}\\
+  \caption{(a) The state space for ground set $V = \{1, 2, 3, 4\}$, and an illustration of a canonical path from $A = \{2, 4\}$ to $B = \{1, 3\}$.
+  (b) For an example distribution $p$, the width of each edge denotes the corresponding capacity $Q(S, S')$.
+  (c) The color of each edge denotes the corresponding congestion $\rho(S, S')$; darker edges indicate higher congestion.
+  (d) Similar to (c), but for a different distribution that has almost all of its mass concentrated on seven states.
+  It can been seen that it has notably higher congestion $\rho$, and contains a significant bottleneck at $S = \{V\}$.
+  }
+  \label{fig:cong}
+\end{figure}
 
 \subsection{Proof of \theoremref{thm:poly}}
 To apply \theoremref{thm:cpath} to our class of distributions, we need to construct a set of canonical paths in the corresponding state space $2^V$, and upper bound the resulting congestion.
 First, note that, to transition from state $A \in \ss$ to state $B \in \ss$, in our case, it is enough to remove the elements of $A \setminus B$ and add the elements of $B \setminus A$.
 Each removal and addition corresponds to an edge in the state space graph, and the order of these operations identify a canonical path in this graph that connects $A$ to $B$.
 For our analysis, we assume a fixed order on $V$ (e.g., the natural order of the elements themselves), and perform the operations according to this order.
+\figref{fig:cong1} shows an example of such a canonical path for a small state space, and \figsref{fig:cong2}--\ref{fig:cong4} illustrate the capacities $Q(S, S')$, and congestions $\rho(S, S')$ for two example distributions.
 
 Having defined the set of canonical paths, we proceed to bounding the congestion $\rho(S, S')$ for any edge $(S, S')$.
 The main difficulty in bounding $\rho(S, S')$ is due to the sum in \eqref{eq:cong} over all pairs in $\mathcal{C}_{SS'}$.
@@ -547,7 +585,7 @@ We start with approximating the normalizers $\log(Z)$ for a family of (log-submo
 These \flid{} models are learned from synthetic data that we describe in \sectref{sect:syn_single}.
 In short, each model represents a single approximately mutually exclusive group of three genes together with five frequently and independently occurring genes, as well as a number of random noise genes.
 
-We obtain estimates for $log(Z)$ via a Gibbs-sampler based reverse importance sampling procedure \todo{ref background}, using $200$, $1000$, and $5000$ samples.
+We obtain estimates for $\log(Z)$ via a Gibbs-sampler based reverse importance sampling procedure \todo{ref background}, using $200$, $1000$, and $5000$ samples.
 For each model we repeat the sampling procedure $100$ times to get standard error estimates.
 Since estimating the exact value of $\log(Z)$ is infeasible for $n > 20$, we obtain an accurate estimate by computing the averaged importance sampling and reverse importance sampling estimates when run with $2\cdot 10^6$ samples.
 \figref{fig:gibbs_zest} shows the estimation errors with respect to this approximately true value; errorbars depict two standard errors.
@@ -556,7 +594,7 @@ We also see that the two variational approaches, which guarantee upper and lower
 
 \setlength\figureheight{0.6\textwidth}
 \setlength\figurewidth{0.8\textwidth}
-\newcommand{\subflen}{\textwidth}
+\renewcommand{\subflen}{\textwidth}
 \begin{figure}[tb]
   \centering
   \input{figures/gibbs/zest.tex}

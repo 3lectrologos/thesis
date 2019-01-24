@@ -1,0 +1,73 @@
+\documentclass{standalone}
+
+\usepackage{../../core}
+
+\begin{document}
+
+\begin{tikzpicture}[
+  xscale=1.7,
+  yscale=1.9,
+  >=latex,
+  line join=bevel,
+  NN/.style={draw=textcolor,fill=textcolor,text=textcolor,fill opacity=0.7,circle,line width=0.3em,minimum size=3.5em,font={\Large}},
+  LL/.style={line width=0.2em}
+  ]
+  \node[NN,draw=col1!9!white,fill=col1!9!white] (S0) at (0,0) {\LARGE$\varnothing$};
+  \node[NN,draw=col1!23!white,fill=col1!23!white] (S1) at (-75bp,50bp) {$1$};
+  \node[NN,draw=col1!23!white,fill=col1!23!white] (S2) at (-25bp,50bp) {$2$};
+  \node[NN,draw=col1!23!white,fill=col1!23!white] (S3) at (25bp,50bp) {$3$};
+  \node[NN,draw=col1!23!white,fill=col1!23!white] (S4) at (75bp,50bp) {$4$};
+  \node[NN,draw=col1!63!white,fill=col1!63!white] (S12) at (-125bp,100bp) {$12$};
+  \node[NN,draw=col1!38!white,fill=col1!38!white] (S13) at (-75bp,100bp) {$13$};
+  \node[NN,draw=col1!38!white,fill=col1!38!white] (S14) at (-25bp,100bp) {$14$};
+  \node[NN,draw=col1!38!white,fill=col1!38!white] (S23) at (25bp,100bp) {$23$};
+  \node[NN,draw=col1!38!white,fill=col1!38!white] (S24) at (75bp,100bp) {$24$};
+  \node[NN,draw=col1!63!white,fill=col1!63!white] (S34) at (125bp,100bp) {$34$};
+  \node[NN,draw=col1!63!white,fill=col1!63!white] (S123) at (-75bp,150bp) {$123$};
+  \node[NN,draw=col1!63!white,fill=col1!63!white] (S124) at (-25bp,150bp) {$124$};
+  \node[NN,draw=col1!63!white,fill=col1!63!white] (S134) at (25bp,150bp) {$134$};
+  \node[NN,draw=col1!63!white,fill=col1!63!white] (S234) at (75bp,150bp) {$234$};
+  \node[NN,draw=col1!63!white,fill=col1!63!white] (S1234) at (0,200bp) {$V$};
+
+  \newcommand*{\maxlw}{7.0pt}
+  \newcommand*{\cghigh}{col3}
+  \newcommand*{\cglow}{white}
+
+  \draw [LL,line width=0.126*\maxlw,draw=\cghigh!16!\cglow] (S0) -- (S1);
+  \draw [LL,line width=0.126*\maxlw,draw=\cghigh!16!\cglow] (S0) -- (S2);
+  \draw [LL,line width=0.126*\maxlw,draw=\cghigh!16!\cglow] (S0) -- (S3);
+  \draw [LL,line width=0.126*\maxlw,draw=\cghigh!16!\cglow] (S0) -- (S4);
+  
+  \draw [LL,line width=0.344*\maxlw,draw=\cghigh!44!\cglow] (S1) -- (S12);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S1) -- (S13);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S1) -- (S14);
+  \draw [LL,line width=0.344*\maxlw,draw=\cghigh!44!\cglow] (S2) -- (S12);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S2) -- (S23);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S2) -- (S24);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S3) -- (S13);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S3) -- (S23);
+  \draw [LL,line width=0.344*\maxlw,draw=\cghigh!44!\cglow] (S3) -- (S34);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S4) -- (S14);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S4) -- (S24);
+  \draw [LL,line width=0.344*\maxlw,draw=\cghigh!44!\cglow] (S4) -- (S34);
+  
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S12) -- (S123);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S12) -- (S124);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S13) -- (S123);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S13) -- (S134);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S14) -- (S124);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S14) -- (S134);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S23) -- (S123);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S23) -- (S234);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S24) -- (S124);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S24) -- (S234);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S34) -- (S134);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S34) -- (S234);
+  
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S123) -- (S1234);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S124) -- (S1234);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S134) -- (S1234);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S234) -- (S1234);
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,74 @@
+\documentclass{standalone}
+
+\usepackage{../../core}
+
+\begin{document}
+
+\begin{tikzpicture}[
+  xscale=1.7,
+  yscale=1.9,
+  >=latex,
+  line join=bevel,
+  NN/.style={draw=textcolor,fill=textcolor,text=textcolor,fill opacity=0.7,circle,line width=0.3em,minimum size=3.5em,font={\Large}},
+  LL/.style={draw=textcolor!60!white,line width=1.5pt}
+  ]
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S0) at (0,0) {\LARGE$\varnothing$};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S1) at (-75bp,50bp) {$1$};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S2) at (-25bp,50bp) {$2$};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S3) at (25bp,50bp) {$3$};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S4) at (75bp,50bp) {$4$};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S12) at (-125bp,100bp) {$12$};
+  \node[NN,draw=col4,fill=col1!50!white] (S13) at (-75bp,100bp) {$13$};
+  \node[text=col4,font=\LARGE] (txt) at (-92bp,100bp) {\Huge\sffamily\bfseries B};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S14) at (-25bp,100bp) {$14$};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S23) at (25bp,100bp) {$23$};
+  \node[NN,draw=col4,fill=col1!50!white] (S24) at (75bp,100bp) {$24$};
+  \node[text=col4,font=\LARGE] (txt) at (92bp,100bp) {\Huge\sffamily\bfseries A};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S34) at (125bp,100bp) {$34$};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S123) at (-75bp,150bp) {$123$};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S124) at (-25bp,150bp) {$124$};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S134) at (25bp,150bp) {$134$};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S234) at (75bp,150bp) {$234$};
+  \node[NN,draw=col1!50!white,fill=col1!50!white] (S1234) at (0,200bp) {$V$};
+
+  \newcommand*{\maxlw}{6.0pt}
+
+  \draw [LL] (S0) -- (S1);
+  \draw [LL] (S0) -- (S2);
+  \draw [LL] (S0) -- (S3);
+  \draw [LL] (S0) -- (S4);
+  
+  \draw [LL] (S1) -- (S12);
+  \draw [LL] (S1) -- (S13);
+  \draw [LL] (S1) -- (S14);
+  \draw [LL] (S2) -- (S12);
+  \draw [LL] (S2) -- (S23);
+  \draw [LL] (S2) -- (S24);
+  \draw [LL] (S3) -- (S13);
+  \draw [LL] (S3) -- (S23);
+  \draw [LL] (S3) -- (S34);
+  \draw [LL] (S4) -- (S14);
+  \draw [LL] (S4) -- (S24);
+  \draw [LL] (S4) -- (S34);
+  
+  \draw [LL] (S12) -- (S123);
+  \draw [LL] (S12) -- (S124);
+  \draw [LL] (S13) -- (S123);
+  \draw [LL] (S23) -- (S123);
+  \draw [LL] (S23) -- (S234);
+  \draw [LL] (S24) -- (S234);
+  \draw [LL] (S34) -- (S134);
+  \draw [LL] (S34) -- (S234);
+  
+  \draw [LL] (S123) -- (S1234);
+  \draw [LL] (S124) -- (S1234);
+  \draw [LL] (S134) -- (S1234);
+  \draw [LL] (S234) -- (S1234);
+  
+  \draw [->,LL,draw=col4,line width=4pt] (S24) -- (S124);
+  \draw [->,LL,draw=col4,line width=4pt] (S124) -- (S14);
+  \draw [->,LL,draw=col4,line width=4pt] (S14) -- (S134);
+  \draw [->,LL,draw=col4,line width=4pt] (S134) -- (S13);
+\end{tikzpicture}
+
+\end{document}

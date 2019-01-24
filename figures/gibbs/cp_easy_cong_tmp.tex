@@ -1,0 +1,89 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+
+\definecolor{bgcolor}{HTML}{2e3037}
+\definecolor{textcolor}{HTML}{EEEEFF}
+\definecolor{col1}{HTML}{39c0ba}
+\colorlet{col1light}{col1!50!textcolor}
+\definecolor{col2}{HTML}{F279DF}
+
+\RequirePackage{fontspec}
+\RequirePackage{xunicode}
+\RequirePackage{xltxtra}
+\setmainfont[Ligatures={Common,TeX}]{Gill Sans MT Std Light}
+\setsansfont[Ligatures={Common,TeX}]{Gill Sans MT Std Light}
+
+\begin{document}
+
+\begin{tikzpicture}[
+  xscale=1.7,
+  yscale=1.5,
+  >=latex,
+  line join=bevel,
+  NN/.style={draw=textcolor,fill=textcolor,text=black,fill opacity=0.8,circle,line width=0.3em,minimum size=3.5em},
+  NS/.style={draw=col1,fill=textcolor,text=black,fill opacity=0.7,circle,line width=0.3em,minimum size=3.5em},
+  LL/.style={draw=textcolor,line width=0.2em},
+  LS/.style={draw=col1,line width=0.2em},
+  LT/.style={midway,text=col1,font=\scriptsize}
+  ]
+  \node[NN,draw=col2!9!textcolor,fill=col2!9!textcolor] (S0) at (0,0) {$\{\}$};
+  \node[NN,draw=col2!23!textcolor,fill=col2!23!textcolor] (S1) at (-75bp,50bp) {$1$};
+  \node[NN,draw=col2!23!textcolor,fill=col2!23!textcolor] (S2) at (-25bp,50bp) {$2$};
+  \node[NN,draw=col2!23!textcolor,fill=col2!23!textcolor] (S3) at (25bp,50bp) {$3$};
+  \node[NN,draw=col2!23!textcolor,fill=col2!23!textcolor] (S4) at (75bp,50bp) {$4$};
+  \node[NN,draw=col2!63!textcolor,fill=col2!63!textcolor] (S12) at (-125bp,100bp) {$12$};
+  \node[NN,draw=col2!38!textcolor,fill=col2!38!textcolor] (S13) at (-75bp,100bp) {$13$};
+  \node[NN,draw=col2!38!textcolor,fill=col2!38!textcolor] (S14) at (-25bp,100bp) {$14$};
+  \node[NN,draw=col2!38!textcolor,fill=col2!38!textcolor] (S23) at (25bp,100bp) {$23$};
+  \node[NN,draw=col2!38!textcolor,fill=col2!38!textcolor] (S24) at (75bp,100bp) {$24$};
+  \node[NN,draw=col2!63!textcolor,fill=col2!63!textcolor] (S34) at (125bp,100bp) {$34$};
+  \node[NN,draw=col2!63!textcolor,fill=col2!63!textcolor] (S123) at (-75bp,150bp) {$123$};
+  \node[NN,draw=col2!63!textcolor,fill=col2!63!textcolor] (S124) at (-25bp,150bp) {$124$};
+  \node[NN,draw=col2!63!textcolor,fill=col2!63!textcolor] (S134) at (25bp,150bp) {$134$};
+  \node[NN,draw=col2!63!textcolor,fill=col2!63!textcolor] (S234) at (75bp,150bp) {$234$};
+  \node[NN,draw=col2!63!textcolor,fill=col2!63!textcolor] (S1234) at (0,200bp) {$V$};
+
+  \newcommand*{\maxlw}{7.0pt}
+  \newcommand*{\cghigh}{col2}
+  \newcommand*{\cglow}{green}
+
+  \draw [LL,line width=0.126*\maxlw,draw=\cghigh!16!\cglow] (S0) -- (S1);
+  \draw [LL,line width=0.126*\maxlw,draw=\cghigh!16!\cglow] (S0) -- (S2);
+  \draw [LL,line width=0.126*\maxlw,draw=\cghigh!16!\cglow] (S0) -- (S3);
+  \draw [LL,line width=0.126*\maxlw,draw=\cghigh!16!\cglow] (S0) -- (S4);
+  
+  \draw [LL,line width=0.344*\maxlw,draw=\cghigh!44!\cglow] (S1) -- (S12);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S1) -- (S13);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S1) -- (S14);
+  \draw [LL,line width=0.344*\maxlw,draw=\cghigh!44!\cglow] (S2) -- (S12);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S2) -- (S23);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S2) -- (S24);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S3) -- (S13);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S3) -- (S23);
+  \draw [LL,line width=0.344*\maxlw,draw=\cghigh!44!\cglow] (S3) -- (S34);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S4) -- (S14);
+  \draw [LL,line width=0.293*\maxlw,draw=\cghigh!31!\cglow] (S4) -- (S24);
+  \draw [LL,line width=0.344*\maxlw,draw=\cghigh!44!\cglow] (S4) -- (S34);
+  
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S12) -- (S123);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S12) -- (S124);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S13) -- (S123);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S13) -- (S134);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S14) -- (S124);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S14) -- (S134);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S23) -- (S123);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S23) -- (S234);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S24) -- (S124);
+  \draw [LL,line width=0.483*\maxlw,draw=\cghigh!51!\cglow] (S24) -- (S234);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S34) -- (S134);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S34) -- (S234);
+  
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S123) -- (S1234);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S124) -- (S1234);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S134) -- (S1234);
+  \draw [LL,line width=0.64*\maxlw,draw=\cghigh!64!\cglow] (S234) -- (S1234);
+\end{tikzpicture}
+
+\end{document}
