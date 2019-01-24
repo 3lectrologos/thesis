@@ -3,46 +3,16 @@
 \emph{The majority of the content of this chapter has already been published in conference proceedings \citep{gotovos18}.}
 
 \section{Introduction}
-Discrete probabilistic models have played a fundamental role in machine learning.
-Examples range from classic graphical models, such as Ising and Potts models \citep{koller09}, which have long been used in computer vision applications \citep{boykov01}, to determinantal point processes \citep{kulesza12} used in video summarization \citep{gong14}, and facility location diversity models used for product recommentation \citep{tschiatschek16}.
-Recently, there has been increased interest in general distributions over subsets of a finite ground set $V$; that is, given a set function $F : 2^V \to \mathbb{R}$, distributions of the form $\pi(S) \propto \exp(F(S))$, for all $S \subseteq V$.
-These can be equivalently seen as distributions over binary random vectors, if $S$ is replaced by the indicator function of the corresponding vector.
-All the aforementioned examples can be expressed in this form for a suitable choice of $F$.
-
-While exact inference in such models is known to be intractable in general \citep{jerrum93}, there has been recent work on analyzing approximate inference techniques, such as variational methods \citep{djolonga14, djolonga16mixed}, and Markov chain Monte Carlo (MCMC) sampling \citep{gotovos15, rebeschini15}.
-The sampling analyses, in particular, focus on the Gibbs sampler, and derive sufficient conditions under which it mixes---converges toward the target distribution---sufficiently fast.
-
+The conditions derived in the previous chapter gave us some insight into the factors that determine the mixing rate of the Gibbs sampler in probabilistic submodular models.
 Unfortunately, oftentimes in practice these conditions do not hold and the Gibbs sampler mixes prohibitively slowly.
 A fundamental reason for this slow mixing behavior is the existence of bottlenecks in the state space of the Markov chain.
 Conceptually, one can think about the state-space graph containing several isolated components that are poorly connected to each other, thus making it hard for the Gibbs sampler to move between them.
 
-In this work, we propose a novel sampling strategy that allows for global moves in the state space, thereby avoiding bottlenecks, and, thus, accelerating mixing.
+In this chapter, we propose a novel sampling strategy that allows for global moves in the state space, thereby avoiding bottlenecks, and, thus, accelerating mixing.
 Our sampler is based on using a proposal distribution that approximates the target $\pi$ by a mixture of product distributions.
 We further propose an algorithm for constructing such a mixture using discrete semigradient information of the associated function $F$.
 This idea makes a step towards bridging optimization and sampling, a theme that has been successful in continuous spaces.
 Our sampler is readily combined with other existing samplers, and we show provable theoretical, as well as empirical examples of speedups.
-
-\paragraph{Contributions.}
-The main contributions of this paper are as follows.
-\begin{itemize}
-\item We propose the \Ms{} sampler, which makes global moves according to a specific mixture of product distributions.
-\item We theoretically analyze mixing times on an illustrative family of Ising models, and prove that adding the \Ms{} sampler results in an exponential improvement over the Gibbs sampler.
-\item We demonstrate the effectiveness of combining the \Ms{} and Gibbs samplers in practice on three models learned from real-world data.
-\end{itemize}
-
-\paragraph{Related work.}
-Recent work on analyzing the mixing time of MCMC samplers for discrete probabilistic models includes deriving general conditions on $F$ to achieve fast mixing \citep{gotovos15, rebeschini15, li16}, as well as looking at specific subclasses, such as strongly Rayleigh distributions \citep{li16, anari16}.
-
-There has also been work on mapping discrete inference to continuous domains \citep{zhang12, pakman13, dinh17, nishimura18} to enable the use of well-established continuous samplers, such as Hamiltonian Monte Carlo \citep{neal12, betancourt17}.
-It is worth pointing out that, while these methods usually outperform simple Gibbs or Metropolis samplers, they still tend to suffer from considerable slowdowns in multimodal distributions \citep{neal12}.
-Our work is orthogonal to these methods, in the sense that our proposed sampler can be combined with any of the existing ones to provide a principled way for performing global moves that can lead to improved mixing.
-
-Both darting Monte Carlo \citep{sminchisescu07,ahn13} and variational MCMC \citep{defreitas01} share the high-level concept of combining two chains, one making global moves between high-probability regions, and another making local moves around those regions.
-However, their proposed global samplers for continuous spaces are generally not applicable to the class of discrete distributions we consider.
-
-There are several well-known results on mixing of the Gibbs sampler for the Ising model on different graph structures \citep{jerrum93,berger05,levin08,levin08book}.
-Other (non-MCMC) approaches to discrete sampling include Perturb-and-MAP \citep{papandreou11,hazan13}, and random projections \citep{zhu15}.
-Semigradients of submodular set functions have recently been exploited for optimization \citep{iyer13, jegelka11} and variational inference \citep{djolonga16}, but, to our knowledge, no prior work  has used them for sampling.
 
 
 %\section{Background}
@@ -85,19 +55,19 @@ Semigradients of submodular set functions have recently been exploited for optim
 %  \threepartdefo{\displaystyle\frac{1}{n}p_{S \rightarrow R}}{R \sim S}{1 - \displaystyle\sum_{T \sim S} \displaystyle\frac{1}{n}p_{S \rightarrow T}}{R = S}{0}.
 %\end{align*}
 %
-%\paragraph{Mixing.}
-%The efficiency of a Markov chain in approximating its target distribution depends largely on the speed of convergence of the chain, which is quantified by the chain's mixing time.
-%Most commonly, distance from stationarity is measured by the maximum total variation distance, over all starting states, between $X_t$ and the target distribution $\pi$, that is, $d(t) \defeq \max_{X_0 \in \Omega} \dtv{P^t(X_0, \cdot)}{\pi}$.
-%Then, the mixing time denotes the minimum number of iterations required to get $\epsilon$-close to stationarity, $\tme \defeq \min \{ t \mid d(t) \leq \epsilon \}$.
-%
-%A common way to obtain an upper bound on the mixing time of a chain is by lower bounding its spectral gap, defined as $\gamma \defeq 1 - \lambda_2$, where $\lambda_2$ is the second largest eigenvalue of the transition matrix $P$.
-%The following well-known theorem connects the spectral gap to mixing time.
-%\begin{theorem}[cf. Theorems 12.3, 12.4 in \citep{levin08book}] \label{thm:spectral}
-%  Let $P$ be the transition matrix of a lazy, irreducible, and reversible Markov chain, and let $\gamma$ be its spectral gap, and $\pmin \defeq \min_{S \in \Omega} \pi(S)$. Then,
-%  \begin{align*}
-%    \left( \frac{1}{\gamma} - 1 \right)\log\left( \frac{1}{2\epsilon} \right) \leq \tme \leq \frac{1}{\gamma} \log\left( \frac{1}{\epsilon\pmin} \right).
-%  \end{align*}
-%\end{theorem}
+
+\paragraph{Mixing time and spectral gap.}
+As a reminder, the mixing time of a Markov chain $(X_t)_t$ denotes the minimum number of iterations required to get $\epsilon$-close to stationarity, $\tme \defeq \min \{ t \mid d(t) \leq \epsilon \}$.
+The distance to stationarity, $d(t) \defeq \max_{X_0 \in \Omega} \dtv{P^t(X_0, \cdot)}{\pi}$, is the maximum total variation distance, over all starting states, between $X_t$ and the target distribution $\pi$.
+
+A common way to obtain an upper bound on the mixing time of a chain is by lower bounding its spectral gap, defined as $\gamma \defeq 1 - \lambda_2$, where $\lambda_2$ is the second largest eigenvalue of the corresponding transition matrix $P$.
+The following well-known theorem connects the spectral gap to mixing time.
+\begin{theorem}[cf. Theorems 12.3, 12.4 in \citep{levin08book}] \label{thm:spectral}
+  Let $P$ be the transition matrix of a lazy, irreducible, and reversible Markov chain, and let $\gamma$ be its spectral gap, and $\pmin \defeq \min_{S \in \Omega} \pi(S)$. Then,
+  \begin{align*}
+    \left( \frac{1}{\gamma} - 1 \right)\log\left( \frac{1}{2\epsilon} \right) \leq \tme \leq \frac{1}{\gamma} \log\left( \frac{1}{\epsilon\pmin} \right).
+  \end{align*}
+\end{theorem}
 
 \section{The Mixture Chain}
 Despite the simplicity and computational efficiency of the Gibbs sampler, the fact that it is constrained to performing local moves makes it susceptible to state-space bottlenecks, which hinder the movement of the chain around the state space.
@@ -135,21 +105,20 @@ Computing $p_a$ requires $\bO(r)$ time for the sum in \eqref{eq:qprop}, and it c
 All in all, the total time for one step of \Ms{} is $\bO(n + r)$.
 
 As is always the case with Metropolis chains, the mixing time of the \Ms{} sampler will depend on how well the proposal $q$ approximates the target distribution $\pi$.
-The following observation shows that, in theory, we can approximate any distribution of the form \eqref{eq:pdef} by a mixture of the form \eqref{eq:qprop}.
+The following observation shows that, in theory, we can approximate any distribution of the form $p(S) \propto \exp(F(S))$ by a mixture of the form \eqref{eq:qprop}.
 
 \begin{prop} \label{prop:decomp}
   For any $\pi$ on $\Omega$ as in \eqref{eq:pdef}, and any $\epsilon > 0$, there are positive constants $\wi = \wi(\epsilon) > 0$, and normalized modular functions $\mi = \mi(\epsilon)$, such that, if we define $q(S) \defeq \sum_{i = 1}^r \wi \exp(\mi(S))$, for all $S \in \Omega$, then $\dtv{\pi}{q} \leq \epsilon$.
 \end{prop}
-Conceptually, the proof relies on having one log-modular term per set in $\Omega$.\footnote{Detailed proofs of all our results can be found in the appendix.}
+Conceptually, the proof relies on having one log-modular term per set in $\Omega$.
 Therefore, while the above result shows that mixtures of log-modulars are expressive enough, the constructed mixture of exponential size in $n$ is not useful for practical purposes.
 On the other hand, it is not necessary for us to have $q$ be an accurate approximation of $\pi$ everywhere, as long as the corresponding \Ms{} chain is able to bypass state-space bottlenecks.
 With this in mind, we suggest combining the \Ms{} and Gibbs chains, so that each of them serve complementary purposes in the final chain; the role of \Ms{} is to make global moves and avoid bottlenecks, while the role of Gibbs is to move fast within well-connected regions of the state space.
 To make this happen, we define the transition matrix $\Pc : \Omega \times \Omega \to \mathbb{R}$ of the combined chain as
 \begin{align} \label{eq:cdef}
-  \Pc(S, R) = \alpha\Pg(S, R) + (1-\alpha)\Pm(S, R),
+  \Pc(S, R) = \delta\Pg(S, R) + (1-\delta)\Pm(S, R),
 \end{align}
-where $0 < \alpha < 1$.
-\todo {Use some other symbol instead of $\alpha$.}
+where $0 < \delta < 1$.
 It is easy to see that $\Pc$ is reversible, and has stationary distribution $\pi$.
 
 We next illustrate how combining the two chains works on a simple example, where a mixture of only a few log-modular distributions can dramatically improve mixing compared to running the vanilla Gibbs chain.
@@ -229,7 +198,7 @@ Putting everything together we show the following result about the combined chai
   \end{align*}
 \end{theorem}
 The proof consists of two steps.
-In the first step we make a comparison argument \citep{diaconis93,levin08book} to show that the spectral gaps of the projection and restriction chains of the combined sampler are smaller by at most a constant factor in $\alpha$ compared to those of Gibbs and \Ms{}.
+In the first step we make a comparison argument \citep{diaconis93,levin08book} to show that the spectral gaps of the projection and restriction chains of the combined sampler are smaller by at most a constant factor in $\delta$ compared to those of Gibbs and \Ms{}.
 In particular, we use the \Ms{} bound (\lemmaref{lem:mproj}) for the projection chain, and the Gibbs bound (\theoremref{thm:grest}) for the restriction chains.
 The second step, then, combines the projection and restriction bounds to establish a bound on the spectral gap of the combined chain.
 To accomplish this we use a result by \cite{jerrum04poincare}, which, roughly speaking, states that the spectral gap of the whole chain cannot be much smaller than the smallest of the projection and restriction spectral gaps.
@@ -257,39 +226,37 @@ for $i \in \{1, \ldots, r\}$.
 This problem is still hard, since optimizing $\| \exp(F(\cdot)) \|$ is by itself infeasible in general.
 
 \begin{algorithm}[tb]
-  \setstretch{1.2}
-  \caption{Iterative semigradient-based mixture construction}
+  \setstretch{1.3}
+  \DontPrintSemicolon
+  \caption{\strut Iterative semigradient-based mixture construction}
   \label{alg:mixture}
-  \small{
-    \begin{algorithmic}[1]
-      \REQUIRE Set function $F$, mixture size $r$
-      \FOR{$i = 1$ \TO $r$}
-      \LET{$\sigma$}{\textsc{Greedy}($F$, $\{m_1, \ldots, m_{i-1}\}$)} \label{lin:perm}
-      \LET{$m_i$}{\textsc{SemiGradient}($F$, $\sigma$)}
-      \ENDFOR
-      \RETURN $\{m_1, \ldots, m_r\}$
-    \end{algorithmic}
+  \vspace{0.5em}
+  \SetKwInOut{Input}{Input}
+  \Input{Set function $F$, mixture size $r$}
+  \For{$i = 1$ \KwTo $r$}{
+  $\sigma$ $\gets$ \textsc{Greedy}($F$, $\{m_1, \ldots, m_{i-1}\}$) \label{lin:perm}\;
+  $m_i$ $\gets$ \textsc{SemiGradient}($F$, $\sigma$)\;
   }
+  \Return{$\{m_1, \ldots, m_r\}$}\;
 \end{algorithm}
 
 \begin{algorithm}[tb]
-  \setstretch{1.2}
-  \caption{Greedy difference maximization}
+  \setstretch{1.3}
+  \DontPrintSemicolon
+  \caption{\strut Greedy difference maximization}
   \label{alg:greedy}
-  \small{
-    \begin{algorithmic}[1]
-      \REQUIRE Set function $F$, modular functions $\{m_1, \ldots, m_{i-1}\}$
-      \LET{$D_i(S)$}{$F(S) - \log \sum_{j=1}^{i-1} \exp(m_j(S))$, for all $S \in \Omega$}
-      \LET{$\sigma$}{$(1, \ldots, n)$}
-      \LET{$A$}{$\emptyset$}
-      \FOR{$i = 1$ \TO $n$}
-      \LET{$v^*$}{$\argmax_{v \in V} \left( D_i(A \cup \{v\}) - D_i(A) \right)$}
-      \LET{$\sigma_i$}{$v^*$}
-      \LET{$A$}{$A \cup \{v^*\}$}
-      \ENDFOR
-      \RETURN $\sigma$
-    \end{algorithmic}
+  \vspace{0.5em}
+  \SetKwInOut{Input}{Input}
+  \Input{Set function $F$, modular functions $\{m_1, \ldots, m_{i-1}\}$}
+  $D_i(S)$ $\gets$ $F(S) - \log \sum_{j=1}^{i-1} \exp(m_j(S))$, for all $S \in \Omega$\;
+  $\sigma$ $\gets$ $(1, \ldots, n)$\;
+  $A$ $\gets$ $\emptyset$\;
+  \For{$i = 1$ \KwTo $n$}{
+  $v^*$ $\gets$ $\argmax_{v \in V} \left( D_i(A \cup \{v\}) - D_i(A) \right)$\;
+  $\sigma_i$ $\gets$ $v^*$\;
+  $A$ $\gets$ $A \cup \{v^*\}$\;
   }
+  \Return{$\sigma$}\;
 \end{algorithm}
 
 To arrive at a practical algorithm, we approximate the above objective using the two-step procedure described in \algoref{alg:mixture}.
@@ -309,47 +276,45 @@ Supermodularity is defined in a similar way by reversing the sign of this inequa
 The resulting models of the form \eqref{eq:pdef} are referred to as log-submodular and log-supermodular respectively.
 Many commonly used models fall under these categories; Ising and Potts models, including our example in the previous section, are log-supermodular, while determinantal point processes and facility location diversity models are log-submodular.
 
-\begin{algorithm}[tb]
-    \setstretch{1.2}
-	\caption{Subgradient computation}
-	\label{alg:sub}
-	\small{
-		\begin{algorithmic}[1]
-			\REQUIRE Set function $F$, permutation $\sigma$
-            \LET{$A$}{$\emptyset$}
-            \LET{$f$}{$F(\emptyset)$}
-			\FOR{$v = 1$ \TO $n$}
-			\LET{$m_v$}{$F(A \cup \{\sigma_v\}) - F(A)$}
-            \LET{$A$}{$A \cup \sigma_v$}
-			\ENDFOR
-            \RETURN $m(S) \defeq \sum_{v \in S} m_v$, for all $S \in \Omega$
-		\end{algorithmic}
-	}
-\end{algorithm}
-
-\begin{algorithm}[tb]
-    \setstretch{1.2}
-	\caption{Supergradient computation}
-	\label{alg:super}
-	\small{
-		\begin{algorithmic}[1]
-			\REQUIRE Set function $F$, permutation $\sigma$
-            \LET{$k$}{\textsc{DrawUniform}(1, n)}
-			\FOR{$v = 1$ \TO $k$}
-			\LET{$m_v$}{$F(V) - F(V \setminus \{v\})$}
-            \ENDFOR
-			\FOR{$v = k+1$ \TO $n$}
-			\LET{$m_v$}{$F(\{v\})$}
-			\ENDFOR
-            \RETURN $m(S) \defeq \sum_{v \in S} m_v$, for all $S \in \Omega$
-		\end{algorithmic}
-	}
-\end{algorithm}
-
 Coming back to the second step of \algoref{alg:mixture}, to create a subgradient of $F$ given permutation $\sigma$ we just need to define a modular function via marginal gains according to the permutation order \citep{iyer13}, as shown in \algoref{alg:sub}.
 Moreover, this is a subgradient of $F$ at $\{\sigma_1, \ldots, \sigma_k\}$, for all $1 \leq k \leq n$.
 On the other hand, \algoref{alg:super} creates a supergradient of $F$ at $\{\sigma_1, \ldots, \sigma_k\}$ for a randomly chosen $k$. (This type of supergradient is denoted by $\bar{g}_Y$ by \cite{iyer13}.)
 In fact, the modular functions $m_1$, $m_2$ that we used in analyzing the Ising model in the previous section were supergradients of $F$ at sets $S_1 = \emptyset$, and $S_2 = V$ respectively.
+
+\begin{algorithm}[tb]
+  \setstretch{1.3}
+  \DontPrintSemicolon
+  \caption{\strut Subgradient computation}
+  \label{alg:sub}
+  \vspace{0.5em}
+  \SetKwInOut{Input}{Input}
+  \Input{Set function $F$, permutation $\sigma$}
+  $A$ $\gets$ $\emptyset$\;
+  $f$ $\gets$ $F(\emptyset)$\;
+  \For{$v = 1$ \KwTo $n$}{
+    $m_v$ $\gets$ $F(A \cup \{\sigma_v\}) - F(A)$\;
+    $A$ $\gets$ $A \cup \sigma_v$\;
+  }
+  \Return{$m(S) \defeq \sum_{v \in S} m_v$}\;% \textrm{, for all} $S \in \Omega$}\;
+\end{algorithm}
+
+\begin{algorithm}[tb]
+  \setstretch{1.3}
+  \DontPrintSemicolon
+  \caption{\strut Supergradient computation}
+  \label{alg:super}
+  \vspace{0.5em}
+  \SetKwInOut{Input}{Input}
+  \Input{Set function $F$, permutation $\sigma$}
+  $k$ $\gets$ \textsc{Unif}($\{1,\ldots,n\}$)\;
+  \For{$v = 1$ \KwTo $k$}{
+    $m_v$ $\gets$ $F(V) - F(V \setminus \{v\})$
+  }
+  \For{$v = k+1$ \KwTo $n$}{
+    $m_v$ $\gets$ $F(\{v\})$
+  }
+  \Return{$m(S) \defeq \sum_{v \in S} m_v$}
+\end{algorithm}
 
 In practice, we can use \algoref{alg:mixture} regardless of whether $F$ is sub- or supermodular.
 We have, however, noticed that subgradients give better results when $F$ is submodular, and the same goes for supergradients and supermodular functions.
@@ -498,11 +463,22 @@ It is interesting to see that even random permutations are enough to significant
 Similar observations can be made with respect to computation time, as shown in \figsref{fig:water1-time}--\ref{fig:hots1-time}, which measure wall-clock time on the $x$-axis.
 
 In \figref{fig:water2} we show how mixture size affects performance; as expected, adding more components to the mixture results in a proposal that approximates the target distribution better, and, therefore, mixes faster.
-Finally, in \figref{fig:water3} we see that both Gibbs ($\alpha = 1$) and \Ms{} ($\alpha = 0$, $r = 200$) perform poorly by themselves, but combining them results in much improved performance.
+Finally, in \figref{fig:water3} we see that both Gibbs ($\delta = 1$) and \Ms{} ($\delta = 0$, $r = 200$) perform poorly by themselves, but combining them results in much improved performance.
 This highlights again the complementary nature of the two chains (local vs. global moves) we discussed earlier.
 
 \section{Conclusion}
-We considered the problem of sampling from general discrete probabilistic models, and presented the \Ms{} sampler that proposes global moves using a mixture of log-modular distributions.
+In this chapter, we presented the \Ms{} sampler that proposes global moves using a mixture of log-modular distributions.
 We theoretically analyzed the effect of combining our sampler with the Gibbs sampler on a class of Ising models, and proved an exponential improvement in mixing time.
 We also demonstrated notable improvements when combining the two samplers on three models of practical interest.
-We believe that our work represents a step towards moving beyond local samplers, and incorporating ideas from optimization, such as semigradients, into probabilistic inference.
+
+\paragraph{Further related work.}
+There has been some recent work on mapping discrete inference to continuous domains \citep{zhang12, pakman13, dinh17, nishimura18} to enable the use of well-established continuous samplers, such as Hamiltonian Monte Carlo \citep{neal12, betancourt17}.
+It is worth pointing out that, while these methods usually outperform simple Gibbs or Metropolis samplers, they still tend to suffer from considerable slowdowns in multimodal distributions \citep{neal12}.
+Our work in this chapter is orthogonal to these methods, in the sense that our proposed sampler can be combined with any of the existing ones to provide a principled way for performing global moves that can lead to improved mixing.
+
+Both darting Monte Carlo \citep{sminchisescu07,ahn13}, and variational MCMC \citep{defreitas01} share the high-level concept of combining two chains, one making global moves between high-probability regions, and another making local moves around those regions.
+However, their proposed global samplers for continuous spaces are generally not applicable to the class of discrete distributions we consider.
+
+Other (non-MCMC) approaches to discrete sampling include Perturb-and-MAP \citep{papandreou11,hazan13}, and random projections \citep{zhu15}.
+
+Semigradients of submodular set functions have recently been exploited for optimization \citep{iyer13, jegelka11} and variational inference \citep{djolonga16}, but, to our knowledge, no prior work  has used them for sampling.

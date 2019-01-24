@@ -58,6 +58,8 @@ The Gibbs sampler first selects one of the neighbors uniformly at random, and th
 \begin{algorithm}[htbp]
     \setstretch{1.3}
     \DontPrintSemicolon
+	\caption{\strut The Gibbs sampler for probabilistic submodular models.}
+	\label{alg:gibbs}
     \vspace{0.5em}
     \SetKwInOut{Input}{Input}
     \Input{Ground set $V$, distribution $p(S) \propto \exp(\beta F(S))$}
@@ -68,13 +70,10 @@ The Gibbs sampler first selects one of the neighbors uniformly at random, and th
 	  $p_{\mathrm{add}}$ $\gets$ $\exp(\beta\Delta_F(i \mid X_t))/(1 + \exp(\beta\Delta_F(i \mid X_t)))$\;
 	  $z$ $\gets$ $\mathrm{Unif}([0,1])$\;
 	  \uIf{$z \leq p_{\mathrm{add}}$}{
-        $X_{t+1} \gets X_t \cup \{i\}$\;
+        $X_{t+1}$ $\gets$ $X_t \cup \{i\}$\;
       } \Else{
         $X_{t+1} \gets X_t \setminus \{i\}$\;
       }}
-    %\vspace{1em}
-	\caption{The Gibbs sampler for probabilistic submodular models.}
-	\label{alg:gibbs}
 \end{algorithm}
 
 \vspace{1em}
@@ -649,7 +648,7 @@ On the other hand, the variational methods gain an advantage when the posterior 
     \input{figures/gibbs/ic.tex}
     \caption{Higher-order MRF}
     \label{fig:gibbs_exp3}
-  \end{subfigure}\\
+  \end{subfigure}\\[-1em]
   \caption{Absolute error of the marginals computed by the Gibbs sampler compared to the variational approximations by \cite{djolonga14}.}
   \label{fig:gibbs_exp}
 \end{figure}
