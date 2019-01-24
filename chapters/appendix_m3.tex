@@ -1,40 +1,5 @@
 \chapter{Detailed Proofs (Ch. 4)}
 
-\section{Proof of \propref{prop:decomp}}
-
-\setcounter{lemma}{0}
-\begin{prop}
-  For any $\pi$ on $\Omega$ as in \eqref{eq:pdef}, and any $\epsilon > 0$, there are positive constants $\wi = \wi(\epsilon) > 0$, and normalized modular functions $\mi = \mi(\epsilon)$, $i \in \{1, \ldots, r\}$, such that, if we define $q(S) \defeq \sum_{i = 1}^r \wi \exp(\mi(S))$, for all $S \in \Omega$, then $\dtv{\pi}{q} \leq \epsilon$.
-\end{prop}
-
-\begin{proof}
-  Let $r = |\Omega|$, and let $\left( S_i \right)_{i = 1}^r$ be an enumeration of all sets in $\Omega$.
-  For any $i \in \{1, \ldots, r\}$, and any $v \in V$, we define
-  \begin{align*}
-    m_{iv} = \twopartdefo{\beta_i}{v \in S_i}{-\beta_i},
-  \end{align*}
-  and $\mi(S) = \sum_{v \in S} m_{iv}$, for all $S \in \Omega$.
-  We also define
-  \begin{align*}
-    w_i = \frac{\pi(S_i)}{Z_i} = \frac{\pi(S_i)}{\left(1 + e^{\beta_i}\right)^{|S_i|}\left(1 + e^{-\beta_i}\right)^{|V \setminus S_i|}}.
-  \end{align*}
-  Then, for all $i \in \{1, \ldots, r\}$, we have
-  \begin{align*}
-    d_i(&\beta_1, \ldots, \beta_r) \defeq |\pi(S_i) - q(S_i)| \\
-      &= \left| \pi(S_i) - \sum_{j = 1}^r \pi(S_j) \frac{e^{\beta_j|S_j|}}{\left( 1 + e^{\beta_j|S_j|} \right) \left( 1 + e^{-\beta_j|V \setminus S_j|} \right)} \right| \\
-      &\leq \pi(S_i) \left( 1 - \frac{e^{\beta_i|S_i|}}{\left( 1 + e^{\beta_i|S_i|} \right) \left( 1 + e^{-\beta_i|V \setminus S_i|} \right)} \right) +\\
-      &\ \ \ \ \sum_{j : S_j \neq S_i} \pi(S_j) \frac{e^{\beta_j|S_i|}}{\left( 1 + e^{\beta_j|S_j|} \right) \left( 1 + e^{-\beta_j|V \setminus S_j|} \right)}.
-  \end{align*}
-  Note that both terms vanish if we let all $\beta_j \to \infty$.
-  Therefore, for any $\delta > 0$, there are $\beta_{ij} = \beta_{ij}(\delta)$, for all $j \in \{1, \ldots, r\}$, such that $d_i(\beta_{i1}, \ldots, \beta_{ir}) \leq \delta$.
-  
-  Finally, choosing $\hat{\beta}_j \defeq \max_{i \in \{1, \ldots, r\}} \beta_{ij}$, for all $j \in \{1, \ldots, r\}$, we get
-  \begin{align*}
-    \dtv{\pi}{q} = \frac{1}{2}\sum_{i = 0}^r d_i(\hat{\beta}_1, \ldots, \hat{\beta}_r) \leq 2^{n-1} \delta.
-  \end{align*}
-  The result follows by choosing $\delta = \epsilon / 2^{n-1}$.
-\end{proof}
-
 \section{Ising Model on the Complete Graph}
 
 \subsection{Bounds on Gibbs mixing}

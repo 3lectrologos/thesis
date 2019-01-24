@@ -43,6 +43,14 @@ They showed that inference in SPPs is, in general, also a hard problem, and prov
 
 
 \paragraph{Example models}
+Perhaps the simplest family of such models are log-modular distributions, which describe a collection of independent binary random variables.
+Equivalently, they are distributions of the form \eqref{eq:pdef} where $F$ is a modular function, that is, a function of the form $F(S) = c + \sum_{v \in S}m_v$, where $c, m_v \in \mathbb{R}$, for all $v \in V$.
+The partition function of a log-modular distribution can be derived in closed form as $Z_m = \exp(c) \prod_{v \in V} \left( 1 + \exp(m_v) \right)$.
+Consequently, the corresponding log-modular distribution is
+\begin{align*}
+  p_m(S) = \frac{\exp\big( \sum_{v \in S} m_v \big)}{\prod_{v \in V} \left( 1 + \exp(m_v) \right)}.
+\end{align*}
+
 The (ferromagnetic) Ising model is an example of a log-supermodular model.
 In its simplest form, it is defined through an undirected graph $(V, E)$, and a set of pairwise potentials $\sigma_{v,w}(S) \defeq 4(\mathds{1}_{\{v \in S\}}-0.5)(\mathds{1}_{\{w \in S\}}-0.5)$.
 Its distribution has the form $p(S) \propto \exp(\beta\sum_{\{v,w\} \in E} \sigma_{v,w}(S))$, and is log-supermodular, because $F(S) = \sum_{\{v,w\} \in E} \sigma_{v,w}(S)$ is supermodular. (Each $\sigma_{v,w}$ is supermodular, and supermodular functions are closed under addition.)
@@ -59,6 +67,22 @@ F(S) = \sum_{\ell \in [L]} F_{\ell}(S).
 \end{align}
 
 \section{Sampling and Mixing Times}
+
+\paragraph{Gibbs sampler.}
+One of the most commonly used chains is the (single-site) Gibbs sampler, which adds or removes a single element %of the ground set
+at a time.
+It first selects uniformly at random an element $v \in V$; subsequently, it adds or removes $v$ to the current state $X_t$ according to the probability of the resulting state.
+We denote by $P : \Omega \times \Omega \to \mathbb{R}$ the transition matrix of a Markov chain, that is, for all $S, R \in \Omega$, $P(S, R) \defeq \P\left[ X_{t+1} = R \mid X_t = S \right]$.
+Then, if we define
+\begin{align*}
+p_{S \rightarrow R} = \displaystyle\frac{\exp(F(R))}{\exp(F(R)) + \exp(F(S))},
+\end{align*}
+and denote by $S \sim R$ states that differ by exactly one element (i.e., $\big||R| - |S|\big| = 1$),
+the transition matrix $\Pg$ of the Gibbs sampler is
+\begin{align*}
+  \Pg(S, R) = 
+  \threepartdefo{\displaystyle\frac{1}{n}p_{S \rightarrow R}}{R \sim S}{1 - \displaystyle\sum_{T \sim S} \displaystyle\frac{1}{n}p_{S \rightarrow T}}{R = S}{0}.
+\end{align*}
 
 \paragraph{Approximating the log-partition function.}
 There are two straightforward methods for estimating the log-partition function using sampling.

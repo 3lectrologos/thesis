@@ -9,61 +9,19 @@ A fundamental reason for this slow mixing behavior is the existence of bottlenec
 Conceptually, one can think about the state-space graph containing several isolated components that are poorly connected to each other, thus making it hard for the Gibbs sampler to move between them.
 
 In this chapter, we propose a novel sampling strategy that allows for global moves in the state space, thereby avoiding bottlenecks, and, thus, accelerating mixing.
-Our sampler is based on using a proposal distribution that approximates the target $\pi$ by a mixture of product distributions.
+Our sampler is based on using a proposal distribution that approximates the target $p$ by a mixture of product distributions.
 We further propose an algorithm for constructing such a mixture using discrete semigradient information of the associated function $F$.
 This idea makes a step towards bridging optimization and sampling, a theme that has been successful in continuous spaces.
 Our sampler is readily combined with other existing samplers, and we show provable theoretical, as well as empirical examples of speedups.
 
-
-%\section{Background}
-%We consider set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $n$ that can be assumed to be $V = \{1, \ldots, n\}$ without loss of generality.
-%In this paper, we focus on distributions over $\Omega \defeq 2^V$ of the form
-%\begin{align} \label{eq:pdef}
-%  \pi(S) = \frac{1}{Z} \exp\left( F(S) \right),
-%\end{align}
-%for all $S \in \Omega$.
-%The partition function $Z \defeq \sum_{S \in \Omega} \exp(F(S))$ serves as the normalizer of the distribution.
-%Alternatively, we can describe distributions of the above form via binary vectors $X \in \{0, 1\}^n$.
-%If we define $V(X) \defeq \{v \in V \mid X_v = 1\}$, then the distribution $p_X(X) \propto \exp(F(V(X)))$ over binary vectors is isomorphic to the distribution \eqref{eq:pdef} over sets.
-%
-%Perhaps the simplest family of such models are log-modular distributions, which describe a collection of independent binary random variables.
-%Equivalently, they are distributions of the form \eqref{eq:pdef} where $F$ is a modular function, that is, a function of the form $F(S) = c + \sum_{v \in S}m_v$, where $c, m_v \in \mathbb{R}$, for all $v \in V$.
-%The partition function of a log-modular distribution can be derived in closed form as $Z_m = \exp(c) \prod_{v \in V} \left( 1 + \exp(m_v) \right)$.
-%Consequently, the corresponding log-modular distribution is
-%\begin{align*}
-%  \pi_m(S) = \frac{\exp\big( \sum_{v \in S} m_v \big)}{\prod_{v \in V} \left( 1 + \exp(m_v) \right)}.
-%\end{align*}
-%
-%\paragraph{Inference and sampling.}
-%Performing exact inference in models of the form \eqref{eq:pdef}, that is, computing conditional probabilities such as $\pi(A \subseteq S \subseteq B \mid C \subseteq S \subseteq D)$, is known to be in general \#P-hard \citep{jerrum93}.
-%As a result, we have to resort to approximate inference algorithms, such as Markov chain Monte Carlo sampling \citep{levin08book}, which is the primary focus of this paper.
-%An MCMC algorithm for distribution $\pi$ simulates a Markov chain in state space $\Omega$ in such a way that the sequence of visited states $(X_0, X_1, \ldots) \in \Omega^{\mathbb{N}}$ ultimately converges to $\pi$.
-%
-%\paragraph{Gibbs sampler.}
-%One of the most commonly used chains is the (single-site) Gibbs sampler, which adds or removes a single element %of the ground set
-%at a time.
-%It first selects uniformly at random an element $v \in V$; subsequently, it adds or removes $v$ to the current state $X_t$ according to the probability of the resulting state.
-%We denote by $P : \Omega \times \Omega \to \mathbb{R}$ the transition matrix of a Markov chain, that is, for all $S, R \in \Omega$, $P(S, R) \defeq \P\left[ X_{t+1} = R \mid X_t = S \right]$.
-%Then, if we define
-%\begin{align*}
-%p_{S \rightarrow R} = \displaystyle\frac{\exp(F(R))}{\exp(F(R)) + \exp(F(S))},
-%\end{align*}
-%and denote by $S \sim R$ states that differ by exactly one element (i.e., $\big||R| - |S|\big| = 1$),
-%the transition matrix $\Pg$ of the Gibbs sampler is
-%\begin{align*}
-%  \Pg(S, R) = 
-%  \threepartdefo{\displaystyle\frac{1}{n}p_{S \rightarrow R}}{R \sim S}{1 - \displaystyle\sum_{T \sim S} \displaystyle\frac{1}{n}p_{S \rightarrow T}}{R = S}{0}.
-%\end{align*}
-%
-
 \paragraph{Mixing time and spectral gap.}
 As a reminder, the mixing time of a Markov chain $(X_t)_t$ denotes the minimum number of iterations required to get $\epsilon$-close to stationarity, $\tme \defeq \min \{ t \mid d(t) \leq \epsilon \}$.
-The distance to stationarity, $d(t) \defeq \max_{X_0 \in \Omega} \dtv{P^t(X_0, \cdot)}{\pi}$, is the maximum total variation distance, over all starting states, between $X_t$ and the target distribution $\pi$.
+The distance to stationarity, $d(t) \defeq \max_{X_0 \in \Omega} \dtv{P^t(X_0, \cdot)}{p}$, is the maximum total variation distance, over all starting states, between $X_t$ and the target distribution $p$.
 
 A common way to obtain an upper bound on the mixing time of a chain is by lower bounding its spectral gap, defined as $\gamma \defeq 1 - \lambda_2$, where $\lambda_2$ is the second largest eigenvalue of the corresponding transition matrix $P$.
 The following well-known theorem connects the spectral gap to mixing time.
 \begin{theorem}[cf. Theorems 12.3, 12.4 in \citep{levin08book}] \label{thm:spectral}
-  Let $P$ be the transition matrix of a lazy, irreducible, and reversible Markov chain, and let $\gamma$ be its spectral gap, and $\pmin \defeq \min_{S \in \Omega} \pi(S)$. Then,
+  Let $P$ be the transition matrix of a lazy, irreducible, and reversible Markov chain, and let $\gamma$ be its spectral gap, and $\pmin \defeq \min_{S \in \Omega} p(S)$. Then,
   \begin{align*}
     \left( \frac{1}{\gamma} - 1 \right)\log\left( \frac{1}{2\epsilon} \right) \leq \tme \leq \frac{1}{\gamma} \log\left( \frac{1}{\epsilon\pmin} \right).
   \end{align*}
@@ -88,13 +46,13 @@ If we denote by $\Zi$ the normalizer of $\mi$, then the normalizer of the mixtur
                                 &= \sum_{i = 1}^{r} \wi \sum_{R \in \Omega} \exp\left(\mi(R) \right)\\
                                 &= \sum_{i = 1}^r \wi \Zi.
 \end{align*}
-We define the \Ms{} chain as a Metropolis chain \citep{levin08book} using $q$ as a proposal distribution; its transition matrix $\Pm : \Omega \times \Omega \to \mathbb{R}$ is given by
+We define the \Ms{} chain as a Metropolis chain using $q$ as a proposal distribution; its transition matrix $\Pm : \Omega \times \Omega \to \mathbb{R}$ is given by
 \begin{align*}
   \Pm(S, R) = \twopartdefo{q(R) p_a(S, R)}{R \neq S}{1 - \displaystyle\sum_{T \neq S} q(T) p_a(S, T)},
 \end{align*}
 where
 \begin{align*}
-  p_{a}(S, R) \defeq \min\left\{1, \displaystyle\frac{\pi(R)q(S)}{\pi(S)q(R)}\right\}.
+  p_{a}(S, R) \defeq \min\left\{1, \displaystyle\frac{p(R)q(S)}{p(S)q(R)}\right\}.
 \end{align*}
 
 Note that, contrary to usual practice, the proposal $q$ only depends on the proposed state, but not on the current state of the chain.
@@ -104,22 +62,51 @@ Sampling from $q$ can be done in $\bO(n)$ time---first, sample a log-modular com
 Computing $p_a$ requires $\bO(r)$ time for the sum in \eqref{eq:qprop}, and it can be straightforwardly improved by parallelizing this computation.
 All in all, the total time for one step of \Ms{} is $\bO(n + r)$.
 
-As is always the case with Metropolis chains, the mixing time of the \Ms{} sampler will depend on how well the proposal $q$ approximates the target distribution $\pi$.
+As is always the case with Metropolis chains, the mixing time of the \Ms{} sampler will depend on how well the proposal $q$ approximates the target distribution $p$.
 The following observation shows that, in theory, we can approximate any distribution of the form $p(S) \propto \exp(F(S))$ by a mixture of the form \eqref{eq:qprop}.
 
 \begin{prop} \label{prop:decomp}
-  For any $\pi$ on $\Omega$ as in \eqref{eq:pdef}, and any $\epsilon > 0$, there are positive constants $\wi = \wi(\epsilon) > 0$, and normalized modular functions $\mi = \mi(\epsilon)$, such that, if we define $q(S) \defeq \sum_{i = 1}^r \wi \exp(\mi(S))$, for all $S \in \Omega$, then $\dtv{\pi}{q} \leq \epsilon$.
+  For any distribution $p$ on $\Omega$ as in \eqref{eq:pdef}, and any $\epsilon > 0$, there are positive constants $\wi = \wi(\epsilon) > 0$, and normalized modular functions $\mi = \mi(\epsilon)$, such that, if we define $q(S) \defeq \sum_{i = 1}^r \wi \exp(\mi(S))$, then $\dtv{p}{q} \leq \epsilon$.
 \end{prop}
+
+\begin{proof}
+  Let $r = |\Omega|$, and let $\left( S_i \right)_{i = 1}^r$ be an enumeration of all sets in $\Omega$.
+  For any $i \in \{1, \ldots, r\}$, and any $v \in V$, we define
+  \begin{align*}
+    m_{iv} = \twopartdefo{\beta_i}{v \in S_i}{-\beta_i},
+  \end{align*}
+  and $\mi(S) = \sum_{v \in S} m_{iv}$, for all $S \in \Omega$.
+  We also define
+  \begin{align*}
+    w_i = \frac{p(S_i)}{Z_i} = \frac{p(S_i)}{\left(1 + e^{\beta_i}\right)^{|S_i|}\left(1 + e^{-\beta_i}\right)^{|V \setminus S_i|}}.
+  \end{align*}
+  Then, for all $i \in \{1, \ldots, r\}$, we have
+  \begin{align*}
+    d_i(&\beta_1, \ldots, \beta_r) \defeq |p(S_i) - q(S_i)| \\
+      &= \left| p(S_i) - \sum_{j = 1}^r p(S_j) \frac{e^{\beta_j|S_j|}}{\left( 1 + e^{\beta_j|S_j|} \right) \left( 1 + e^{-\beta_j|V \setminus S_j|} \right)} \right| \\
+      &\leq p(S_i) \left( 1 - \frac{e^{\beta_i|S_i|}}{\left( 1 + e^{\beta_i|S_i|} \right) \left( 1 + e^{-\beta_i|V \setminus S_i|} \right)} \right) +\\
+      &\ \ \ \ \sum_{j : S_j \neq S_i} p(S_j) \frac{e^{\beta_j|S_i|}}{\left( 1 + e^{\beta_j|S_j|} \right) \left( 1 + e^{-\beta_j|V \setminus S_j|} \right)}.
+  \end{align*}
+  Note that both terms vanish if we let all $\beta_j \to \infty$.
+  Therefore, for any $\delta > 0$, there are $\beta_{ij} = \beta_{ij}(\delta)$, for all $j \in \{1, \ldots, r\}$, such that $d_i(\beta_{i1}, \ldots, \beta_{ir}) \leq \delta$.
+  
+  Finally, choosing $\hat{\beta}_j \defeq \max_{i \in \{1, \ldots, r\}} \beta_{ij}$, for all $j \in \{1, \ldots, r\}$, we get
+  \begin{align*}
+    \dtv{p}{q} = \frac{1}{2}\sum_{i = 0}^r d_i(\hat{\beta}_1, \ldots, \hat{\beta}_r) \leq 2^{n-1} \delta.
+  \end{align*}
+  The result follows by choosing $\delta = \epsilon / 2^{n-1}$.
+\end{proof}
+
 Conceptually, the proof relies on having one log-modular term per set in $\Omega$.
 Therefore, while the above result shows that mixtures of log-modulars are expressive enough, the constructed mixture of exponential size in $n$ is not useful for practical purposes.
-On the other hand, it is not necessary for us to have $q$ be an accurate approximation of $\pi$ everywhere, as long as the corresponding \Ms{} chain is able to bypass state-space bottlenecks.
+On the other hand, it is not necessary for us to have $q$ be an accurate approximation of $p$ everywhere, as long as the corresponding \Ms{} chain is able to bypass state-space bottlenecks.
 With this in mind, we suggest combining the \Ms{} and Gibbs chains, so that each of them serve complementary purposes in the final chain; the role of \Ms{} is to make global moves and avoid bottlenecks, while the role of Gibbs is to move fast within well-connected regions of the state space.
 To make this happen, we define the transition matrix $\Pc : \Omega \times \Omega \to \mathbb{R}$ of the combined chain as
 \begin{align} \label{eq:cdef}
   \Pc(S, R) = \delta\Pg(S, R) + (1-\delta)\Pm(S, R),
 \end{align}
 where $0 < \delta < 1$.
-It is easy to see that $\Pc$ is reversible, and has stationary distribution $\pi$.
+It is easy to see that $\Pc$ is reversible, and has stationary distribution $p$.
 
 We next illustrate how combining the two chains works on a simple example, where a mixture of only a few log-modular distributions can dramatically improve mixing compared to running the vanilla Gibbs chain.
 Then %, %in the next section
@@ -128,11 +115,11 @@ we propose an algorithm for automatically creating such a mixture.
 \subsection{Example: Ising Model on the Complete Graph} \label{sect:ising}
 We consider the Ising model on a finite complete graph \citep{levin08}, also known as the Curie-Weiss model in statistical physics, which can be written in the form of \eqref{eq:pdef} as follows:
 \begin{align*}
-  \pib(S) = \frac{1}{Z(\beta)}\exp\left(-\frac{2\beta}{n} |S|(n-|S|)\right). \tag{\isingb}
+  pb(S) = \frac{1}{Z(\beta)}\exp\left(-\frac{2\beta}{n} |S|(n-|S|)\right). \tag{\isingb}
 \end{align*}
 In particular, we focus on the case where $\beta = \ln(n)$, that is,
 \begin{align*}
-  \pi(S) = \frac{1}{Z}\exp\left(-\frac{2\ln(n)}{n} |S|(n-|S|)\right). \tag{\ising}
+  p(S) = \frac{1}{Z}\exp\left(-\frac{2\ln(n)}{n} |S|(n-|S|)\right). \tag{\ising}
 \end{align*}
 In this case, if we define $\dn \defeq 2 \ln(n) / n$, then $F(S) = -\dn |S|(n-|S|)$.
 
@@ -149,23 +136,23 @@ To make this statement more formal, let us define a decomposition of $\Omega$ in
 To keep things simple, we will assume for the remainder of this section that $n$ is odd; the analysis when $n$ is even follows from the same arguments with only a minor technical adjustment.
 Our goal is to separately examine two characteristics of the sampler: (i) its movement between the two sets $\Omega_0$, $\Omega_1$, and (ii) its movement when restricted to stay within each of these sets.
 
-For analyzing the ``between-sets'' behavior, we define the projection $\bar{\pi} : \{0, 1\} \to \mathbb{R}$ of $\pi$ as
+For analyzing the ``between-sets'' behavior, we define the projection $\bar{p} : \{0, 1\} \to \mathbb{R}$ of $p$ as
 \begin{align*}
-  \bar{\pi}(i) \defeq \sum_{S \in \Omega_i} \pi(S),
+  \bar{p}(i) \defeq \sum_{S \in \Omega_i} p(S),
 \end{align*}
 and, for any reversible chain $P$, we define its projection chain $\bar{P} : \{0, 1\} \times \{0, 1\} \to \mathbb{R}$ as
 \begin{align*}
-  \bar{P}(i, j) \defeq \frac{1}{\bar{\pi}(i)} \sum_{\subalign{S \in \Omega_i, R \in \Omega_j}} \pi(S) P(S, R).
+  \bar{P}(i, j) \defeq \frac{1}{\bar{p}(i)} \sum_{\subalign{S \in \Omega_i, R \in \Omega_j}} p(S) P(S, R).
 \end{align*}
-It is easy to see that $\bar{P}$ is also reversible and has stationary distribution $\bar{\pi}$. For analyzing the ``within-set'' behavior, we define the restrictions $\pi_i : \Omega_i \to \mathbb{R}$ of $\pi$ as
+It is easy to see that $\bar{P}$ is also reversible and has stationary distribution $\bar{p}$. For analyzing the ``within-set'' behavior, we define the restrictions $p_i : \Omega_i \to \mathbb{R}$ of $p$ as
 \begin{align*}
-  \pi_i(S) \defeq \frac{\pi_i(S)}{\bar{\pi}(i)},
+  p_i(S) \defeq \frac{p_i(S)}{\bar{p}(i)},
 \end{align*}
 and the two restriction chains $P_i : \Omega_i \times \Omega_i \to \mathbb{R}$ of $P$ as
 \begin{align*}
   P_i(S, R) \defeq \twopartdefo{P(S, R)}{S \neq R}{1 - \displaystyle\sum_{\subalign{T \in \Omega_i: T \neq S}}P(S, T)}.
 \end{align*}
-Again, it is easy to see that each of the $P_i$ is also reversible and has stationary distribution $\pi_i$.
+Again, it is easy to see that each of the $P_i$ is also reversible and has stationary distribution $p_i$.
 
 Coming back to the Gibbs sampler, if we could show that it mixes fast within each of $\Omega_0$ and $\Omega_1$, then we could deduce that the only reason for the slow mixing on $\Omega$ is the bottleneck between these two sets.
 Indeed, the following corollary of a theorem by \cite{ding09} shows exactly that.
@@ -211,9 +198,9 @@ Having seen the positive effect of the \Ms{} sampler, we now turn to the issue o
 While a manual construction like the one we just presented for the Ising model may be feasible in some cases, it is often more practical to have an automated way of obtaining the mixture.
 
 Let us assume, as is usually the case, that we have access to a function oracle for $F$, and we want to create a mixture of size $r$.
-Ideally, we would like to construct a proposal $q$ that is as close to $\pi$ as possible, that is, minimize an objective such as the following,
+Ideally, we would like to construct a proposal $q$ that is as close to $p$ as possible, that is, minimize an objective such as the following,
 \begin{align*}
-  E_1(q) &\defeq \min_q \| \pi - q \|\\
+  E_1(q) &\defeq \min_q \| p - q \|\\
          &= \min_q \left\| \frac{\exp(F(\cdot))}{Z} - \frac{1}{Z_q}\textstyle\sum_{i = 1}^r \wi\exp(\mi(\cdot)) \right\|,
 \end{align*}
 where $\| \cdot \|$ could be, for example, total variation distance or the maximum norm.
