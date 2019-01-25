@@ -303,6 +303,7 @@ The result of \theoremref{thm:combo} follows directly by combining the spectral 
 Finally, using \theoremref{thm:spectral}, and noting that, in this case, $\pmin = \bO(e^{-n})$ (cf. proof of \lemmaref{lem:mproj}), we get a mixing time of $\tme = \bO(n^2 \log(1 / \epsilon))$ for the combined chain.
 This shows that the addition of the \Ms{} sampler results in an exponential improvement in mixing time over the Gibbs sampler by itself.
 
+\clearpage
 \section{Constructing the Mixture}
 Having seen the positive effect of the \Ms{} sampler, we now turn to the issue of how to choose the proposal $q$.
 While a manual construction like the one we just presented for the Ising model may be feasible in some cases, it is often more practical to have an automated way of obtaining the mixture.
@@ -410,116 +411,12 @@ In fact, the modular functions $m_1$, $m_2$ that we used in analyzing the Ising 
 In practice, we can use \algoref{alg:mixture} regardless of whether $F$ is sub- or supermodular.
 We have, however, noticed that subgradients give better results when $F$ is submodular, and the same goes for supergradients and supermodular functions.
 
+
 \section{Experiments}
-\setlength\figureheight{0.33\textwidth}
-\setlength\figurewidth{0.35\textwidth}
-\renewcommand{\subflen}{0.328\textwidth}
-\newcommand{\scspacey}{-0.5em}
-\newcommand{\scspacex}{0.2em}
-\begin{figure*}[t!]
-  \captionsetup[subfigure]{oneside,margin={2em,0em}}
-  \begin{subfigure}[b]{\subflen}
-    \centering
-    \input{figures/m3/ising6.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}\textsc{Ising} ($n = 6$)}
-    \label{fig:ising6}
-  \end{subfigure}
-  \begin{subfigure}[b]{\subflen}
-    \input{figures/m3/ising7.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}\textsc{Ising} ($n = 7$)}
-    \label{fig:ising7}
-  \end{subfigure}
-  \begin{subfigure}[b]{\subflen}
-    \input{figures/m3/ising8.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}\textsc{Ising} ($n = 8$)}
-    \label{fig:ising8}
-  \end{subfigure}\\[0.8em]
-  \begin{subfigure}[b]{\subflen}
-    \centering
-    \input{figures/m3/water1.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}\textsc{Water}}
-    \label{fig:water1}
-  \end{subfigure}
-  \begin{subfigure}[b]{\subflen}
-    \input{figures/m3/berkeley1.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}\textsc{Sensor}}
-    \label{fig:berkeley1}
-  \end{subfigure}
-  \begin{subfigure}[b]{\subflen}
-    \input{figures/m3/hots1.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}\textsc{Game}}
-    \label{fig:hots1}
-  \end{subfigure}\\[0.8em]
-  \begin{subfigure}[b]{\subflen}
-    \centering
-    \input{figures/m3/water1-time.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}\textsc{Water}}
-    \label{fig:water1-time}
-  \end{subfigure}
-  \begin{subfigure}[b]{\subflen}
-    \input{figures/m3/berkeley1-time.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}\textsc{Sensor}}
-    \label{fig:berkeley1-time}
-  \end{subfigure}
-  \begin{subfigure}[b]{\subflen}
-    \input{figures/m3/hots1-time.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}\textsc{Game}}
-    \label{fig:hots1-time}
-  \end{subfigure}
-  \caption{
-    (a)-(c) Ising model results for increasing $n$. Note how the Gibbs sampler gets worse significantly faster than the combined ones.
-    (d)-(f) Potential scale reduction factor (PSRF) as a function of sampling iterations.
-    (g)-(i) PSRF as a function of wall-clock time in milliseconds.
-    The combined sampler outperforms Gibbs both in terms of samples required, as well as actual runtime.
-  }
-  \label{fig:expising}
-\end{figure*}
-
-\setlength\figureheight{0.44\textwidth}
-\setlength\figurewidth{0.48\textwidth}
-\renewcommand{\subflen}{0.46\textwidth}
-\renewcommand{\scspacey}{-0.3em}
-\renewcommand{\scspacex}{0.2em}
-\begin{figure*}[t!]
-  \captionsetup[subfigure]{oneside,margin={2em,0em}}
-  \centering
-  \begin{subfigure}[b]{\subflen}
-    \centering
-    \input{figures/m3/water2.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}\textsc{Water}}
-    \label{fig:water2}
-  \end{subfigure}
-  \hspace{1em}
-  \begin{subfigure}[b]{\subflen}
-    \input{figures/m3/water3.tex}
-    \vspace{\scspacey}
-    \caption{\hspace{\scspacex}\textsc{Water}}
-    \label{fig:water3}
-  \end{subfigure}
-  \caption{
-    (a) Increasing the number of mixture components improves performance.
-    (b) The combination of Gibbs and \Ms{} performs better than either of them does individually.
-  }
-  \label{fig:exp2}
-\end{figure*}
-
 We now evaluate the performance of our proposed sampler on the Ising model we analyzed earlier, as well as the following three models learned from real-world data sets.
-\paragraph{\textsc{Water}.} A (log-submodular) facility location model, which was used in a problem of sensor placement in a water distribution network \citep{krause08}.
-The function $F$ is of the form
-\begin{align*}
-F(S) = \sum_{j = 1}^L \max_{i \in S}c_{ij}.
-\end{align*}
-We randomly subsample the original facility location matrix $C = (c_{ij})$, so that $n = 50$, and $L = 500$.
+\paragraph{\textsc{Water}.} The same (log-submodular) \flid{} model based on a problem of sensor placement in a water distribution network \citep{krause08} that we also used in the experimental section of last chapter (see \figref{fig:gibbs_exp1}).
+In this case, we randomly subsample the original facility location matrix, so that $n = 50$, and $L = 500$.
+
 \paragraph{\textsc{Sensor}.} A (log-submodular) determinantal point process \citep{kulesza12}, which was used in a problem of sensor placement for indoor temperature monitoring \citep{guestrin05}.
 The function $F$ is of the form
 \begin{align*}
@@ -527,19 +424,18 @@ F(S) = \log |K + \sigma^2 I|,
 \end{align*}
 where $K$ is a kernel matrix, and $\sigma$ is a noise parameter.
 The size of the ground set is $n = 46$.
-\paragraph{\textsc{Game}.} A (log-submodular) facility location diversity model \citep{tschiatschek16}, which represents the characters that are chosen by players in the popular online game ``Heroes of the Storm''.
+
+\paragraph{\textsc{Game}.} A (log-submodular) \flid{} model, which represents the characters that are chosen by players in the popular online game ``Heroes of the Storm''.
 We learned the model from an online data set of approximately $8,000$ teams of $5$ characters\footnote{https://www.hotslogs.com} using noise-contrastive estimation, as described by \cite{tschiatschek16}.
-The function $F$ is of the form
-\begin{align*}
-F(S) = \sum_{v \in S}w_v + \sum_{j = 1}^L \max_{i \in S}c_{ij},
-\end{align*}
-with $n = 48$, and $L = 10$.
+The model has a ground set of size $n = 48$, and $L = 10$ latent dimensions.
+
 In practice, we would only be interested in sampling sets of fixed size $\ell = 5$.
 The Gibbs sampler can be easily modified to sample under a cardinality constraint by using moves that swap an element in the current set $X_t$ with an element in $V \setminus X_t$.
 Extending the \Ms{} chain to sample from cardinality-constrained models is also straightforward.
 In fact, the only additional ingredient required is a procedure to sample a set of size $\ell$ from a log-modular distribution, which can be easily done, as before, in $\bO(n)$ time.
 
-In what follows, we compare the performance of the Gibbs sampler (\textsc{Gibbs}) against our proposed combined sampler using a proposal mixture $q$ constructed by \algoref{alg:mixture} (\textsc{Combo-I}).
+\paragraph{Results.}
+We compare the performance of the Gibbs sampler (\textsc{Gibbs}) against our proposed combined sampler using a proposal mixture $q$ constructed by \algoref{alg:mixture} (\textsc{Combo-I}).
 We also compare against a variation where we substitute the greedy procedure in \lineref{lin:perm} of \algoref{alg:mixture} with picking a permutation $\sigma$ of the ground set uniformly at random (\textsc{Combo-R}).
 
 To assess convergence we use the potential scale reduction factor (PSRF) \citep{brooks11} using $20$ parallel chains.
@@ -549,13 +445,100 @@ In \figsref{fig:ising6}--\ref{fig:ising8} we show the results for the Ising mode
 The other two combined samplers use mixtures of size $r = 20$.
 Note that Gibbs mixes dramatically slower than the combined sampler, even for such small $n$.
 
-In \figsref{fig:water1}--\ref{fig:hots1} we show the results on the three log-submodular models described before using mixtures of size $r = 200$.
-It is interesting to see that even random permutations are enough to significantly improve over the performance of Gibbs.
-Similar observations can be made with respect to computation time, as shown in \figsref{fig:water1-time}--\ref{fig:hots1-time}, which measure wall-clock time on the $x$-axis.
+\setlength\figureheight{0.47\textwidth}
+\setlength\figurewidth{0.65\textwidth}
+\renewcommand{\subflen}{1.0\textwidth}
+\begin{figure}[htbp]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/m3/ising6.tex}
+    \vspace{-0.5em}
+    \caption{\textsc{Ising} ($n = 6$)}
+    \label{fig:ising6}
+  \end{subfigure}\\[1em]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/m3/ising7.tex}
+    \vspace{-0.5em}
+    \caption{\textsc{Ising} ($n = 7$)}
+    \label{fig:ising7}
+  \end{subfigure}\\[1em]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/m3/ising8.tex}
+    \vspace{-0.5em}
+    \caption{\textsc{Ising} ($n = 8$)}
+    \label{fig:ising8}
+  \end{subfigure}\\[-0.5em]
+  \caption{
+    Ising model results for increasing $n$.
+    Note how the previously discussed bottleneck significantly affects the Gibbs sampler's performance, while it has almost no effect on the combined chains.
+    }
+  \label{fig:expising}
+\end{figure}
+
+In \figref{fig:expising} we show the results on the three log-submodular models described before using mixtures of size $r = 200$.
+It is interesting to see that even random permutations are enough to provide a significant improvement over the performance of Gibbs.
+Similar observations can be made with respect to computation time, as shown in \figref{fig:exptime} in the appendix, which measure wall-clock time on the $x$-axis.
+
+\setlength\figureheight{0.47\textwidth}
+\setlength\figurewidth{0.65\textwidth}
+\renewcommand{\subflen}{1.0\textwidth}
+\begin{figure}[htbp]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/m3/water1.tex}
+    \vspace{-0.5em}
+    \caption{\textsc{Water}}
+    \label{fig:water1}
+  \end{subfigure}\\[1em]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/m3/berkeley1.tex}
+    \vspace{-0.5em}
+    \caption{\textsc{Sensor}}
+    \label{fig:berkeley1}
+  \end{subfigure}\\[1em]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/m3/hots1.tex}
+    \vspace{-0.5em}
+    \caption{\textsc{Game}}
+    \label{fig:hots1}
+  \end{subfigure}\\[-0.5em]
+  \caption{
+    Potential scale reduction factor (PSRF) as a function of sampling iterations.
+    The combined chains have a clear advantage over Gibbs on all three models.
+    }
+  \label{fig:expsamples}
+\end{figure}
 
 In \figref{fig:water2} we show how mixture size affects performance; as expected, adding more components to the mixture results in a proposal that approximates the target distribution better, and, therefore, mixes faster.
 Finally, in \figref{fig:water3} we see that both Gibbs ($\delta = 1$) and \Ms{} ($\delta = 0$, $r = 200$) perform poorly by themselves, but combining them results in much improved performance.
 This highlights again the complementary nature of the two chains (local vs. global moves) we discussed earlier.
+
+\setlength\figureheight{0.63\textwidth}
+\setlength\figurewidth{0.8\textwidth}
+\renewcommand{\subflen}{\textwidth}
+\begin{figure*}[htbp]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/m3/water2.tex}
+    \caption{\textsc{Water} -- subgradients}
+    \label{fig:water2}
+  \end{subfigure}\\[2em]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/m3/water3.tex}
+    \caption{\textsc{Water} -- mixture weight}
+    \label{fig:water3}
+  \end{subfigure}\\
+  \caption{
+    (a) Increasing the number of mixture components improves performance.
+    (b) The combination of Gibbs and \Ms{} performs better than either of them does individually.
+  }
+  \label{fig:exp2}
+\end{figure*}
 
 \section{Conclusion}
 In this chapter, we presented the \Ms{} sampler that proposes global moves using a mixture of log-modular distributions.

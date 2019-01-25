@@ -195,8 +195,6 @@ Note that, in this case we get practically no benefit from adding more than 20 s
 \setlength\figureheight{0.65\textwidth}
 \setlength\figurewidth{0.9\textwidth}
 \renewcommand{\subflen}{\textwidth}
-\renewcommand{\scspacey}{-0.3em}
-\renewcommand{\scspacex}{0.2em}
 \begin{figure}[htbp]
   \captionsetup[subfigure]{oneside,margin={2em,0em}}
   \centering
@@ -369,7 +367,7 @@ For a comparison of the discovered mutation interactions, we also refer to \cite
 \paragraph{Breast cancer (BRCA).}
 The data set consists of 375 mutations and 507 patients.
 We show the resulting learned \fldc{} model ($L = 15$) in \figref{fig:mat_brca}, the extracted mutually exclusive groups $R_1$--$R_{11}$ in \figsref{fig:rep_brca_1} and \ref{fig:rep_brca_2}, and a graphical summarization of all these groups in \figref{fig:graph_brca}.
-In \figref{fig:att_brca_1} we show the six extracted co-ocurring groups with the highest coverage; groups $A_7$--$A_{14}$ can be found in \figref{fig:att_brca_2} in the appendix.
+In \figref{fig:att_brca_1} we show the six extracted co-ocurring groups with the highest coverage; groups $A_7$--$A_{14}$ can be found in \figsref{fig:att_brca_2} and \ref{fig:att_brca_3} in the appendix.
 
 The CoMEt results on BRCA take into account additional information about the classification of each patient into four different subtypes of breast cancer.
 While this means that we cannot directly compare our results to theirs, we still recover some of their findings (e.g., the first three mutations in $R_1$), but also extract significant groups that were not found by CoMEt, even when constrained to a specific subtype (e.g., $R_3$ for the ``Luminal-A'' subtype).

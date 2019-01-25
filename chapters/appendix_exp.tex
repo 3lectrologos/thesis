@@ -1,0 +1,66 @@
+\chapter{Additional Experimental Results}
+
+\section{Results from \chapref{ch:m3}}
+
+\setlength\figureheight{0.35\textwidth}
+\setlength\figurewidth{0.55\textwidth}
+\renewcommand{\subflen}{1.0\textwidth}
+\begin{figure}[h!]
+  \captionsetup[subfigure]{oneside,margin={2em,0em}}
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/m3/water1-time.tex}
+    \vspace{-0.5em}
+    \caption{\textsc{Water}}
+    \label{fig:water1_time}
+  \end{subfigure}\\
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/m3/berkeley1-time.tex}
+    \vspace{-0.5em}
+    \caption{\textsc{Sensor}}
+    \label{fig:berkeley1_time}
+  \end{subfigure}\\
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \input{figures/m3/hots1-time.tex}
+    \vspace{-0.5em}
+    \caption{\textsc{Game}}
+    \label{fig:hots1_time}
+  \end{subfigure}\\[-1em]
+  \caption{
+    Potential scale reduction factor (PSRF) as a function of wall-clock time.
+    }
+  \label{fig:exptime}
+\end{figure}
+
+
+\section{Results from \chapref{ch:genes}}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/genes/aml_comet1.pdf}\\[2em]
+\includegraphics[width=\textwidth]{figures/genes/aml_comet2.pdf}\\[2em]
+\caption{Two more groups reported by CoMEt as mutually exclusive, which our method rejects due to the high $p_{\textrm{ova}}$ values.}
+\label{fig:comet_aml}
+\end{figure}
+\vspace{3em}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/genes/brca_9_a.pdf}\\[1.2em]
+\includegraphics[width=\textwidth]{figures/genes/brca_13_a.pdf}\\[1.2em]
+\includegraphics[width=\textwidth]{figures/genes/brca_5_a.pdf}\\[1.2em]
+\caption{The next three co-occurring groups extracted from the TCGA BRCA data set.}
+\label{fig:att_brca_2}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/genes/brca_10_a.pdf}\\[1.2em]
+\includegraphics[width=\textwidth]{figures/genes/brca_12_a.pdf}\\[1.2em]
+\includegraphics[width=\textwidth]{figures/genes/brca_3_a.pdf}\\[1.2em]
+\includegraphics[width=\textwidth]{figures/genes/brca_2_a.pdf}\\[1.2em]
+\includegraphics[width=\textwidth]{figures/genes/brca_6_a.pdf}\\[1.2em]
+\caption{The rest of the co-occurring groups extracted from the TCGA BRCA data set.}
+\label{fig:att_brca_3}
+\end{figure}
