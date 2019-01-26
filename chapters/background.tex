@@ -1,6 +1,6 @@
 \chapter{Background} \label{ch:background}
 
-\section{Submodularity and Submodular Optimization} \label{sect:bg_submod}
+\section{Submodularity} \label{sect:bg_submod}
 
 Modeling notions such as coverage, representativeness, or diversity is an important challenge in many machine learning problems.
 These notions are well captured by submodular set functions.
@@ -8,7 +8,7 @@ Analogously, supermodular functions capture notions of smoothness, regularity, o
 As a result, submodularity and supermodularity have found numerous applications in machine learning problems of discrete nature, akin to concavity and convexity for continuous optimization.
 
 \subsection{Basics}
-More concretely, we consider set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $|V| = n$.
+We consider set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $|V| = n$.
 Without loss of generality, if not otherwise stated, we will hereafter assume that $V = [n] \defeq \{1, 2, \ldots,n\}$.
 Adding an element $i$ to a set $S$ results in a difference in the value of $F$ that is called marginal gain, and is defined as follows.
 \begin{definition}[Marginal gain]
@@ -66,7 +66,34 @@ for all $S \subseteq V$, where $c \in \mathbb{R}$ is a constant, $m$ is a normal
 \end{definition}
 An analogous decomposition using a monotone supermodular function $f$ is possible for any supermodular function $F$ as well.
 
-\subsection{Optimization}
+\subsection{Submodular Maximization}
+Perhaps the most celebrated result pertaining to submodular functions is the approximation guarantee for maximizing a monotone submodular function under a cardinality constraint.
+Although the maximization problem itself is NP-hard, \cite{nemhauser78} showed that the simple greedy \algoref{alg:greedy}, which repeatedly adds the element with the maximum marginal gain, identifies a solution that is within a factor of $1 - 1/e$ of the optimal value.
+\begin{theorem}[\hspace{1sp}\citealp{nemhauser78}]
+For any normalized monotone submodular function $F$, the solution $S^*$ returned by \algoref{alg:greedy} satisfies
+\begin{align*}
+F(S^*) \geq \left(1 - \frac{1}{e}\right) \max_{S \subseteq V, |S| \leq k} F(S).
+\end{align*}
+\end{theorem}
+
+\begin{algorithm}[tb]
+  \setstretch{1.3}
+  \DontPrintSemicolon
+  \caption{\strut Greedy submodular maximization}
+  \label{alg:greedy}
+  \vspace{0.5em}
+  \SetKwInOut{Input}{Input}
+  \Input{Set function $F$, cardinality constraint $k$}
+  $S^*$ $\gets$ $\varnothing$\;
+  \For{$j = 1$ \KwTo $k$}{
+  Select $i^*$ $\in$ $\argmax_{i \in V \setminus S^*} F(i \mid S^*)$\;
+  $S^*$ $\gets$ $S^* \cup \{i^*\}$\;
+  }
+  \Return{$S$}\;
+\end{algorithm}
+
+Numerous extensions of this result have been studied, including results for the non-monotone setting \citep{feige11,buchbinder14}; for different kinds of constraints, such as matroid \citep{lee09,calinescu11} or knapsack \citep{chekuri11} constraints; and for the adaptive setting \citep{golovin11,gotovos15}.
+
 
 
 \section{Probabilistic Models, Inference, and Learning}
