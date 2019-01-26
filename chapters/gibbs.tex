@@ -21,7 +21,6 @@ Furthermore, we have introduced a scaling parameter $\beta \geq 0$, which is ref
 Intuitively, $\beta$ controls the concentration of $p$ around the high-value sets of $F$.
 When $\beta = 0$, $p$ is the uniform distribution over $2^V$; when $\beta \to \infty$, the mass of $p$ fully concentrates around the maximizers of $F$.
 
-
 \paragraph{Marginal inference.}
 Our goal is to perform marginal inference for the distributions described above.
 Concretely, for some fixed $A \subseteq B \subseteq V$, we would like to compute the probability of sets $S$ that contain all elements of $A$, but no elements outside of $B$, that is, $p(A \subseteq S \subseteq B)$.
@@ -32,14 +31,6 @@ Also, for any $D \subseteq V$, define the restriction of $F$ to $D$, $F^D : 2^D 
 If $F$ is submodular, then its contractions and restrictions are also submodular, and, thus, $(F_C)^D$ is submodular.
 Finally, it is easy to see that $p(S \mid C \subseteq S \subseteq D) \propto \exp(\beta (F_C)^D(S))$.
 In our experiments, we consider computing marginals of the form $p(i \in S \mid C \subseteq S \subseteq D)$, for some $i \in V$, which correspond to $A = \{i\}$, and $B = V$.
-
-\paragraph{Submodular decomposition.}
-In some of our following results we will use the fact that any submodular function $F$ can be written as
-\begin{align} \label{eq:decomp}
-  F = c + m + f,
-\end{align}
-where $c \in \mathbb{R}$ is a constant that has no effect on distributions defined by \eqref{eq:pdef}; $m$ is a normalized ($m(\varnothing) = 0$) modular function; and $f$ is a normalized ($f(\varnothing) = 0$) monotone submodular function, that is, it additionally satisfies the monotonicity property $f(i\mid S) \geq 0$, for all $i \in V$, and all $S \subseteq V$.
-A similar decomposition is possible for any supermodular function as well.
 
 \paragraph{The Gibbs sampler.}
 We first set up some notation that is used throughout this chapter.
@@ -198,11 +189,8 @@ As we will see, the conditions depend crucially on the following quantity, which
   \zf \defeq \max_{A, B \subseteq V} \left|F(A) + F(B) - F(A \cup B) - F(A \cap B) \right|.
 \end{align*}
 Intuitively, $\zf$ quantifies a notion of distance to modularity.
-To see this, note that a function $F$ is modular if and only if $F(A) + F(B) = F(A \cup B) + F(A \cap B)$, for all $A, B \subseteq V$.
-For modular functions, therefore, we have $\zf = 0$.
-Furthermore, a function $F$ is submodular if and only if $F(A) + F(B) \geq F(A \cup B) + F(A \cap B)$, for all $A, B \subseteq V$.
-Similarly, $F$ is supermodular if the above holds with the sign reversed.
-It follows that for submodular and supermodular functions, $\zf$ represents the worst-case amount by which $F$ violates the modular equality.
+For submodular and supermodular functions, $\zf$ represents the worst-case amount by which $F$ violates the submodular inequality, and $\zf = 0$ if $F$ is modular (cf. \sectref{sect:bg_submod}).
+
 It is also important to note that, for submodular and supermodular functions, $\zf$ depends only on the monotone part of $F$; if we decompose $F$ according to \eqref{eq:decomp}, then it is easy to see that $\zf = \zeta_f$.
 A trivial upper bound on $\zf$, therefore, is $\zf \leq f(V)$.
 Another quantity that has been used in the past to quantify the deviation of a submodular function from modularity is the curvature \cite{conforti84}, defined as $\kappa_F \defeq 1 - \min_{i \in V} \left(F(i\mid V\setminus\{i\}) / F(i)\right)$.
@@ -660,9 +648,12 @@ Furthermore, we demonstrated that, in practice, the Gibbs sampler compares favor
 
 \paragraph{Further related work.}
 In contemporary work to ours, Rebeschini and Karbasi \citep{rebeschini15} analyzed the mixing times of log-submodular models.
-Using a method based on matrix norms, which was previously introduced by \cite{dyer09}, and is closely related to path coupling, they arrive at a similar, though not directly comparable, condition to the one we presented in \theoremref{thm:fast}.
+Using a method based on matrix norms, which was previously introduced by \cite{dyer09}, and is closely related to path coupling, they arrived at a similar, though not directly comparable, condition to the one we presented in \theoremref{thm:fast}.
+
+\cite{li16} extended our polynomial-time mixing result of \theoremref{thm:poly} to the problem of sampling from a distribution under specific constraints.
+In particular, they used a similar to ours canonical path argument involving an analogous quantity to our $\zf$ to prove mixing bounds under uniform and partition matroid constraints.
 
 The canonical path method for bounding mixing times has been previously used in a number of theoretical results, such as approximating the partition function of ferromagnetic Ising models \citep{jerrum93}, approximating matrix permanents \citep{jerrum89,jerrum04perm}, and counting matchings in graphs \citep{jerrum03}.
 
-Coupling-based methods have been most prominently used for counting $k$-colorings in low-degree graphs \cite{jerrum95,bubley98,jerrum03}.
+Coupling-based methods have been most prominently used for counting $k$-colorings in low-degree graphs \citep{jerrum95,bubley98,jerrum03}.
 Other applications of coupling include counting independent sets in graphs \citep{dyer00}, and approximating the partition function of various subclasses of Ising models at high temperatures \citep{levin08book}.

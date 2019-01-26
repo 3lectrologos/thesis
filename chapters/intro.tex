@@ -22,29 +22,33 @@ In \figref{fig:bamat_2} we show a permuted version of the previous matrix, which
 Searching for such groups in data sets containing hundreds or thousands of mutations is a combinatorially daunting task.
 Crucially, the available data is quite limited---TCGA data sets range from a few hundred to a couple of thousand patients---, and contains significant noise introduced by the employed measurement and preprocessing procedures.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/intro/example1_rep.pdf}\\[1em]
 \caption{The binary mutation matrix of the previous figure with permuted rows and columns to illustrate the mutual exclusivity between the first four mutations.}
 \label{fig:bamat_2}
 \end{figure}
 
-Discrete probabilistic models are an ideal fit for this setting.
-Constraining ourselves to specific model classes offers a way to incorporate prior assumptions about the data structure, and alleviate the scarce data issue.
-Furthermore, the probabilistic nature of such models offers a way to deal with noise, and provides a flexible framework to robustly answer queries pertaining to the data (e.g., given that mutation $A$ is present, what is the probability that mutations $B$ and $C$ are also present).
-More importantly, it suggests a principled approach for succinctly encoding the interactions present in the data, namely learning such a probabilistic model by maximizing the likelihood of its parameters.
+Many practical machine learning problems are of discrete nature, that is, like the problem described above, they consist in choosing a subset out of a set of finite elements.
+Examples include sensor placement \citep{krause06}, active learning \citep{golovin11}, influence maximization \citep{kempe03}, image segmentation \citep{jegelka11}, and document summarization \citep{lin11}.
+While discrete optimization methods have been successful in many of these applications, it is often advantageous to go beyond optimization, and consider discrete probabilistic models.
 
-\section{Probabilistic Submodular Models}
-Past research on discrete probabilistic models has primarily focused on such models defined by pairwise interactions, such as Markov random fields \cite{koller09}.
+The probabilistic nature of such models offers a way to deal with noisy data, and provides a flexible framework to robustly answer queries pertaining to the problem at hand.
+Rather than having a single optimum as the solution, we have a way to quantify our uncertainty, and make more robust decisions based on computing various marginal and conditional probabilities of interest (e.g., given that element $A$ is present, what is the probability that elements $B$ and $C$ are also present).
+Maybe more importantly, probabilistic models suggest a principled approach for succinctly encoding the potentially complex interactions present in the data, namely learning such models by maximizing the likelihood of their parameters.
+Finally, constraining ourselves to specific model classes allows us to incorporate prior assumptions about the structure of the problem, and alleviate the scarce data issue.
+
+\section{Thesis Topic and Contributions}
+Past research on discrete probabilistic models has primarily focused on models defined by pairwise interactions, such as Markov random fields \cite{koller09}.
 In many applications, however, it is of importance to directly capture higher-order dependencies between larger groups of variables.
-For example, in our aforementioned application, being able to directly encode larger groups of mutually exclusive mutations, provides a potentially sparser and easier to interpret representation, while at the same time allowing for a richer structure of interactions.
+For example, in our aforementioned application, being able to directly encode larger groups of mutually exclusive mutations provides a potentially sparser and easier to interpret representation, while at the same time allowing for a richer structure of interactions.
 
 On the other hand, in the context of discrete optimization, there has been extensive research on submodular set functions.
 Submodularity is a diminishing returns property that has been used to encode repulsiveness or diversity; it can, thus, be applied to model mutual exlusivity between mutations in our application.
 Analogously, its counterpart, supermodularity, has been used to encode attractiveness or cooperation, and can be used to model co-occurence of mutations in our application.
 Notably, there exist well-known efficient algorithms for both approximate submodular maximization, as well as submodular minimization.
 
-The preceding discussion naturally leads us to consider \emph{probabilistic submodular models} \citep{djolonga14,gotovos15}, a class of discrete probabilistic models defined by submodular (or supermodular) functions.
+Merging these two directions naturally leads us to consider \emph{probabilistic submodular models} \citep{djolonga14,gotovos15}, a class of discrete probabilistic models defined by submodular (or supermodular) functions.
 More concretely, given a ground set $V = \{1,\ldots n\}$, a probabilistic submodular model is a distribution over subset of $V$ of the form
 \begin{align*}
 p(S; \btheta) = \frac{1}{Z(\btheta)} \exp\left( F(S; \btheta) \right),
@@ -52,7 +56,7 @@ p(S; \btheta) = \frac{1}{Z(\btheta)} \exp\left( F(S; \btheta) \right),
 for all $S \subseteq V$, where $F$ is a submodular or supermodular function parameterized by $\btheta$, and $Z(\btheta)$ is the normalizer of the distribution.
 Distributions of this form generalize some well-studied model classes, such as Ising models, and determinantal point processes.
 
-\paragraph{Thesis topic.} Both learning the parameters $\btheta$ from data, as well as quantifying uncertainty and making decisions with the learned distribution, boil down to being able to perform probabilistic inference, that is, compute marginal and conditional probabilities, a problem that is known to be, in general, computationally hard.
+\paragraph{Thesis topic.} Both learning the parameters $\btheta$ from data, as well as quantifying uncertainty and making decisions with the learned distribution, boil down to being able to perform probabilistic inference, that is, compute marginal and conditional probabilities in such distributions, a problem that is known to be computationally hard in general.
 The main topic of this thesis is to use sampling as a means of performing approximate inference in probabilistic submodular models.
 
 \paragraph{Contributions.} The primary contributions of this thesis are as follows.

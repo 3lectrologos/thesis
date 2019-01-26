@@ -1,31 +1,78 @@
 \chapter{Background} \label{ch:background}
 
-\section{Submodularity and Submodular Optimization}
-We start by considering set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $|V| = n$.
-Without loss of generality, if not otherwise stated, we will hereafter assume that $V = [n] \defeq \{1, 2, \ldots,n\}$.
-The marginal gain obtained by adding element $v \in V$ to set $S \subseteq V$ is defined as $F(v|S) \defeq F(S \cup \{v\}) - F(S)$.
-%Intuitively, submodularity expresses a notion of diminishing returns; that is, adding an element to a larger set provides less benefit than adding it to a smaller one.
-%More formally, $F$ is submodular if, for any $S \subseteq T \subseteq V$, and any $v \in V \setminus T$, it holds that $F(v|T) \leq F(v|S)$.
-%Supermodularity is defined analogously by reversing the sign of this inequality.
-%In particular, if a function $F$ is submodular, then the function $-F$ is supermodular.
-%If a function $m$ is both submodular and supermodular, then it is called modular, and may be written in the form $m(S) = c + \sum_{v \in S} m_v$, where $c \in \mathbb{R}$, and $m_v \in \mathbb{R}$, for all $v \in V$.
+\section{Submodularity and Submodular Optimization} \label{sect:bg_submod}
 
-Submodularity expresses a notion of diminishing returns; that is, adding an element to a larger set provides less benefit than adding that same element to a smaller set.
-More formally, $F$ is submodular if, for any $S \subseteq R \subseteq V$, and any $v \in V \setminus R$, it holds that $F(R \cup \{v\}) - F(R) \leq F(S \cup \{v\}) - F(S)$.
-Supermodularity is defined in a similar way by reversing the sign of this inequality.
-The resulting models of the form \eqref{eq:pdef} are referred to as log-submodular and log-supermodular respectively.
-Many commonly used models fall under these categories; Ising and Potts models, including our example in the previous section, are log-supermodular, while determinantal point processes and facility location diversity models are log-submodular.
+Modeling notions such as coverage, representativeness, or diversity is an important challenge in many machine learning problems.
+These notions are well captured by submodular set functions.
+Analogously, supermodular functions capture notions of smoothness, regularity, or cooperation. 
+As a result, submodularity and supermodularity have found numerous applications in machine learning problems of discrete nature, akin to concavity and convexity for continuous optimization.
+
+\subsection{Basics}
+More concretely, we consider set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $|V| = n$.
+Without loss of generality, if not otherwise stated, we will hereafter assume that $V = [n] \defeq \{1, 2, \ldots,n\}$.
+Adding an element $i$ to a set $S$ results in a difference in the value of $F$ that is called marginal gain, and is defined as follows.
+\begin{definition}[Marginal gain]
+For any $i \in V$, and $S \subseteq V$, the marginal gain of adding $i$ to $S$ is
+\begin{align*}
+F(i \mid S) \defeq F(S \cup \{i\}) - F(S).
+\end{align*}
+\end{definition}
+
+Intuitively, submodularity expresses a notion of diminishing returns; that is, adding an element to a larger set provides less benefit than adding it to a smaller one.
+\begin{definition}[Submodularity]
+$F$ is submodular if, for any $S \subseteq T \subseteq V$, and any $v \in V \setminus T$, it holds that
+\begin{align*}
+F(v\mid T) \leq F(v\mid S).
+\end{align*}
+\end{definition}
+\noindent The following is an equivalent definition of submodularity that will also be useful later in the thesis.
+\begin{definition}[Submodularity] \label{def:submod}
+$F$ if submodular if, for any $A, B \subseteq V$, it holds that
+\begin{align*}
+F(A \cup B) + F(A \cap B) \leq F(A) + F(B).
+\end{align*}
+\end{definition}
+
+Supermodularity is defined analogously by reversing the sign of the above inequalities.
+\begin{definition}[Supermodularity] \label{def:supermod}
+A function $F$ is supermodular if and only if $-F$ is submodular.
+\end{definition}
+
+If a function $m$ is both submodular and supermodular, then it is called modular.
+Modular functions can be seen as the discrete analogue of linear continuous functions, and can be defined using a sum over real-numbered ``utilities''.
+\begin{definition}[Modularity]
+A function $m$ is called modular if it is both submodular and supermodular; it can be written as
+\begin{align*}
+m(S) = c + \sum_{i \in S} m_i,
+\end{align*}
+where $c \in \mathbb{R}$, and $m_i \in \mathbb{R}$, for all $i \in V$.
+\end{definition}
+
+A function is called monotone when adding an element can never decrease its value.
+\begin{definition}[Monotonicity]
+A function $F$ is monotone if, for any $i \in V$, and $S \subseteq V$, it holds that
+\begin{align*}
+F(i \mid S) \geq 0.
+\end{align*}
+\end{definition}
+Furthermore, a function $F$ is called normalized if $F(\varnothing) = 0$.
+In some of our results we will use the fact that we can separate the non-normalized, and non-monotone parts of any submodular function according to the following decomposition.
+\begin{definition}[Submodular decomposition] \label{def:decomp}
+Any submodular function $F$ can be decomposed as
+\begin{align} \label{eq:decomp}
+  F(S) = c + m(S) + f(S),
+\end{align}
+for all $S \subseteq V$, where $c \in \mathbb{R}$ is a constant, $m$ is a normalized modular function, and $f$ is a normalized monotone submodular function.
+\end{definition}
+An analogous decomposition using a monotone supermodular function $f$ is possible for any supermodular function $F$ as well.
+
+\subsection{Optimization}
+
 
 \section{Probabilistic Models, Inference, and Learning}
 \todo{Exponential family}
 
 \todo{Contrastive divergence}
-
-Modeling notions such as coverage, representativeness, or diversity is an important challenge in many machine learning problems.
-These notions are well captured by submodular set functions.
-Analogously, supermodular functions capture notions of smoothness, regularity, or cooperation. 
-As a result, submodularity and supermodularity, akin to concavity and convexity, have found numerous applications in machine learning.
-The majority of previous work has focused on optimizing such functions, including the development and analysis of algorithms for minimization \cite{fujishige05} and maximization \cite{nemhauser78,feige07}, as well as the investigation of practical applications, such as sensor placement \cite{krause06}, active learning \cite{golovin11}, influence maximization \cite{kempe03}, and document summarization \cite{lin11}.
 
 Beyond optimization, though, it is of interest to consider probabilistic models defined via submodular functions, that is, distributions over finite sets (or, equivalently, binary random vectors) defined as $p(S) \propto \exp(\beta F(S)),$ where $F : 2^V \to \mathbb{R}$ is a submodular or supermodular function (equivalently, either $F$ or $-F$ is submodular), and $\beta \geq 0$ is a scaling parameter.
 Finding most likely sets in such models captures classical submodular optimization.
@@ -40,6 +87,9 @@ We present two theoretical conditions that respectively guarantee polynomial-tim
 An alternative and equivalent way of defining distributions of the above form is via binary random vectors $X \in \{0, 1\}^n$.
 If we define $V(X) \defeq \sdef{v \in V}{X_v = 1}$, it is easy to see that the distribution $p_X(X) \propto \exp(\beta F(V(X)))$ over binary vectors is isomorphic to the distribution over sets of \eqref{eq:pdef}.
 With a slight abuse of notation, we will use $F(X)$ to denote $F(V(X))$, and use $p$ to refer to both distributions.
+
+The resulting models of the form \eqref{eq:pdef} are referred to as log-submodular and log-supermodular respectively.
+Many commonly used models fall under these categories; Ising and Potts models, including our example in the previous section, are log-supermodular, while determinantal point processes and facility location diversity models are log-submodular.
 
 Iyer and Bilmes \citep{iyer15} recently considered a different class of probabilistic models, called submodular point processes, which are also defined through submodular functions, and have the form $p(S) \propto F(S)$.
 They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
