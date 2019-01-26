@@ -22,7 +22,7 @@ Given a data set of $N$ sets, $\mathcal{D} \defeq (D_1,\ldots,D_N)$, $D_1,\ldots
            &= \sum_{i=1}^N \left( F(D_i; \btheta) - \log Z(\btheta) \right)\\
            &= \sum_{i=1}^N F(D_i; \btheta) - N \log Z(\btheta).
 \end{align*}
-The gradient of the log-likelihood with respect to the parameters $\btheta$ is
+The gradient of the log-likelihood with respect to the parameters $\btheta$ is (cf. \citealp{wainwright08})
 \begin{align*}
                  \*g(\btheta) &\defeq \nabla_{\btheta} \ell(\btheta)\\
                               &= \sum_{i=1}^N \nabla_{\btheta} F(D_i; \btheta) - N \nabla_{\btheta} \log Z(\btheta)\\
@@ -62,7 +62,7 @@ We, therefore, propose learning the parameters $\btheta$ using an approximate gr
 \paragraph{Gradients of the \fldc{} model.}
 Since we will be focusing on the \fldc{} model for the remainder of this chapter, we derive here the gradients of its potential function with respect to its parameters.
 For simplicity, we assume that we use an equal number of $L$ dimensions for both the repulsive and the attractive matrices.
-As a reminder, the \fldc{} model is then defined via the following potential \citep{djolonga16mixed},
+As a reminder, the \fldc{} model is in that case defined via the following function \citep{djolonga16mixed},
 \begin{align*}
 F(S; \bu, \bw, \bv) = \sum_{i \in S} u_i + \sum_{j=1}^{L} \left(\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}\right) - \sum_{j=1}^{L} \left(\max_{i \in S} v_{ij} - \sum_{i \in S} v_{ij}\right).
 \end{align*}

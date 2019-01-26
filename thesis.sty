@@ -33,6 +33,7 @@
 \newcommand{\figsref}[1]{\hyperref[#1]{Figures \ref*{#1}}}
 \newcommand{\tabref}[1]{\hyperref[#1]{ Table \ref*{#1}}}
 \newcommand{\algoref}[1]{\hyperref[#1]{Algorithm \ref*{#1}}}
+\newcommand{\exampleref}[1]{\hyperref[#1]{Example \ref*{#1}}}
 \newcommand{\defref}[1]{\hyperref[#1]{Definition \ref*{#1}}}
 \newcommand{\theoremref}[1]{\hyperref[#1]{Theorem \ref*{#1}}}
 \newcommand{\lemmaref}[1]{\hyperref[#1]{Lemma \ref*{#1}}}
@@ -110,6 +111,7 @@
 \RequirePackage{amsthm}
 \newtheorem{definition}{Definition}
 \numberwithin{definition}{chapter}
+\newtheorem{example}[definition]{Example}
 \newtheorem{theorem}[definition]{Theorem}
 \newtheorem{lemma}[definition]{Lemma}
 \newtheorem{cor}[definition]{Corollary}

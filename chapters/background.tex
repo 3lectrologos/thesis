@@ -92,40 +92,37 @@ F(S^*) \geq \left(1 - \frac{1}{e}\right) \max_{S \subseteq V, |S| \leq k} F(S).
   \Return{$S$}\;
 \end{algorithm}
 
-Numerous extensions of this result have been studied, including results for the non-monotone setting \citep{feige11,buchbinder14}; for different kinds of constraints, such as matroid \citep{lee09,calinescu11} or knapsack \citep{chekuri11} constraints; and for the adaptive setting \citep{golovin11,gotovos15}.
+Numerous extensions and generalizations of this result have been studied, including approximation guarantees for the non-monotone setting \citep{feige11,buchbinder14}; for different kinds of constraints, such as matroid \citep{lee09,calinescu11} and knapsack \citep{chekuri11}; and for the adaptive setting \citep{golovin11,gotovos15}.
 
 
-
-\section{Probabilistic Models, Inference, and Learning}
-\todo{Exponential family}
-
-\todo{Contrastive divergence}
-
-Beyond optimization, though, it is of interest to consider probabilistic models defined via submodular functions, that is, distributions over finite sets (or, equivalently, binary random vectors) defined as $p(S) \propto \exp(\beta F(S)),$ where $F : 2^V \to \mathbb{R}$ is a submodular or supermodular function (equivalently, either $F$ or $-F$ is submodular), and $\beta \geq 0$ is a scaling parameter.
-Finding most likely sets in such models captures classical submodular optimization.
-However, going beyond point estimates, that is, performing general probabilistic (e.g., marginal) inference in them, allows us to quantify uncertainty given some observations, as well as learn such models from data.
-Only few special cases belonging to this class of models have been extensively studied in the past; most notably, Ising models \cite{koller09}, which are log-supermodular in the usual case of attractive (ferromagnetic) potentials, or log-submodular under repulsive (anti-ferromagnetic) potentials and determinantal point processes \cite{kulesza12}, which are log-submodular.
-
-Recently, \citet{djolonga14} considered a more general treatment of such models, and proposed a variational approach for performing approximate probabilistic inference for them.
-It is natural to ask to what degree the usual alternative to variational methods, namely Monte Carlo sampling, is applicable to these models, and how it performs in comparison.
-To this end, in this paper we consider a simple Markov chain Monte Carlo (MCMC) algorithm on log-submodular and log-supermodular models, and provide a first analysis of its performance.
-We present two theoretical conditions that respectively guarantee polynomial-time and fast ($\mathcal{O}(n \log n)$) mixing in such models, and experimentally compare against the variational approximations on three examples.
-
+\section{Discrete Probabilistic Models, Inference, and Learning}
+As stated in the introduction, in the interest of venturing beyond discrete optimization, we consider discrete probabilistic models, that is, distributions over finite subsets of the ground set $V$ defined as
+\begin{align*}
+p(S; \btheta) = \frac{1}{Z(\btheta)} \exp\left( F(S; \btheta) \right),
+\end{align*}
+for all $S \subseteq V$.
+The function $F$ is parameterized by a (possibly to be learned) vector $\btheta$, and $Z(\btheta)$ denotes the normalizing constant of the distribution, which is also often referred to as the partition function, and defined as
+\begin{align*}
+Z(\btheta) \defeq \sum_{S \subseteq V} \exp\left( F(S; \btheta) \right).
+\end{align*}
 An alternative and equivalent way of defining distributions of the above form is via binary random vectors $X \in \{0, 1\}^n$.
-If we define $V(X) \defeq \sdef{v \in V}{X_v = 1}$, it is easy to see that the distribution $p_X(X) \propto \exp(\beta F(V(X)))$ over binary vectors is isomorphic to the distribution over sets of \eqref{eq:pdef}.
+If we define $V(X) \defeq \sdef{v \in V}{X_v = 1}$, it is easy to see that the distribution $p_X(X) \propto \exp(\beta F(V(X)))$ over binary vectors is isomorphic to the above distribution over sets.
 With a slight abuse of notation, we will use $F(X)$ to denote $F(V(X))$, and use $p$ to refer to both distributions.
 
-The resulting models of the form \eqref{eq:pdef} are referred to as log-submodular and log-supermodular respectively.
-Many commonly used models fall under these categories; Ising and Potts models, including our example in the previous section, are log-supermodular, while determinantal point processes and facility location diversity models are log-submodular.
+For large parts of this thesis, we will focus on such distributions with $F$ being submodular or supermodular.
+\begin{definition}[Probabilistic submodular model]
+A probabilistic submodular model \citep{djolonga14,gotovos15} is a distribution of the form
+\begin{align*}
+p(S; \btheta) \propto \exp\left( F(S; \btheta) \right),
+\end{align*}
+for all $S \subseteq V$, where $F$ is a submodular or supermodular function.
+\end{definition}
+The resulting models of this form are also referred to as log-submodular and log-supermodular distributions respectively.
+Note that the most likely configurations in these distributions directly correspond to the maximizers of the corresponding sub- or supermodular function $F$.
+Some commonly used discrete models fall under these categories; for example, the standard Ising and Potts models are log-supermodular, while determinantal point processes are log-submodular.
+We now present some examples models in more detail.
 
-Iyer and Bilmes \citep{iyer15} recently considered a different class of probabilistic models, called submodular point processes, which are also defined through submodular functions, and have the form $p(S) \propto F(S)$.
-They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
-
-\todo{Add Chengtao constrained etc. paper}
-\todo{Add DPP -- Rayleigh papers}
-
-
-\paragraph{Example models}
+\begin{example}[Product distribution]
 Perhaps the simplest family of such models are log-modular distributions, which describe a collection of independent binary random variables.
 Equivalently, they are distributions of the form \eqref{eq:pdef} where $F$ is a modular function, that is, a function of the form $F(S) = c + \sum_{v \in S}m_v$, where $c, m_v \in \mathbb{R}$, for all $v \in V$.
 The partition function of a log-modular distribution can be derived in closed form as $Z_m = \exp(c) \prod_{v \in V} \left( 1 + \exp(m_v) \right)$.
@@ -133,21 +130,51 @@ Consequently, the corresponding log-modular distribution is
 \begin{align*}
   p_m(S) = \frac{\exp\big( \sum_{v \in S} m_v \big)}{\prod_{v \in V} \left( 1 + \exp(m_v) \right)}.
 \end{align*}
+\end{example}
 
+\begin{example}[Ising model]
+\citep{ising}
 The (ferromagnetic) Ising model is an example of a log-supermodular model.
 In its simplest form, it is defined through an undirected graph $(V, E)$, and a set of pairwise potentials $\sigma_{v,w}(S) \defeq 4(\mathds{1}_{\{v \in S\}}-0.5)(\mathds{1}_{\{w \in S\}}-0.5)$.
 Its distribution has the form $p(S) \propto \exp(\beta\sum_{\{v,w\} \in E} \sigma_{v,w}(S))$, and is log-supermodular, because $F(S) = \sum_{\{v,w\} \in E} \sigma_{v,w}(S)$ is supermodular. (Each $\sigma_{v,w}$ is supermodular, and supermodular functions are closed under addition.)
+\end{example}
 
+\begin{example}[Determinantal point process]
+\citep{lyons03,kulesza12}
 Determinantal point processes (DPPs) are examples of log-submodular models.
 A DPP is defined via a positive semidefinite matrix $K \in \mathbb{R}^{n \times n}$, and has a distribution of the form $p(S) \propto \det(K_S)$, where $K_S$ denotes the square submatrix indexed by $S$.
 Since $F(S) = \ln \det(K_S)$ is a submodular function, $p$ is log-submodular.
+\end{example}
+
+\begin{example}[\flid{}]
+\citep{tschiatschek16}
 Another example of log-submodular models are those defined through facility location functions, which have the form $F(S) = \sum_{\ell \in [L]} \max_{v \in S}w_{v,\ell}$, where $w_{v,\ell} \geq 0$, and are submodular.
 If $w_{v,\ell} \in \{0, 1\}$, then $F$ represents a set cover function.
+\end{example}
+
+\begin{example}[\fldc{}]
+\citep{djolonga16mixed}
+\end{example}
 
 Note that, both the facility location model and the Ising model use decomposable functions, that is, functions that can be written as a sum of simpler submodular (resp. supermodular) functions $F_{\ell}$:
 \begin{align} \label{eq:fdec}
 F(S) = \sum_{\ell \in [L]} F_{\ell}(S).
 \end{align}
+
+
+\subsection{Inference}
+
+Recently, \citet{djolonga14} considered a more general treatment of such models, and proposed a variational approach for performing approximate probabilistic inference for them.
+
+\todo{Exponential family}
+
+\todo{Contrastive divergence}
+
+Iyer and Bilmes \citep{iyer15} recently considered a different class of probabilistic models, called submodular point processes, which are also defined through submodular functions, and have the form $p(S) \propto F(S)$.
+They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
+
+\todo{Add Chengtao constrained etc. paper}
+\todo{Add DPP -- Rayleigh papers}
 
 \section{Sampling and Mixing Times}
 
