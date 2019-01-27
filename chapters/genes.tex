@@ -22,7 +22,7 @@ Given a data set of $N$ sets, $\mathcal{D} \defeq (D_1,\ldots,D_N)$, $D_1,\ldots
            &= \sum_{i=1}^N \left( F(D_i; \btheta) - \log Z(\btheta) \right)\\
            &= \sum_{i=1}^N F(D_i; \btheta) - N \log Z(\btheta).
 \end{align*}
-The gradient of the log-likelihood with respect to the parameters $\btheta$ is (cf. \citealp{wainwright08})
+The gradient of the log-likelihood with respect to the parameters $\btheta$ is
 \begin{align*}
                  \*g(\btheta) &\defeq \nabla_{\btheta} \ell(\btheta)\\
                               &= \sum_{i=1}^N \nabla_{\btheta} F(D_i; \btheta) - N \nabla_{\btheta} \log Z(\btheta)\\
@@ -33,7 +33,7 @@ The gradient of the log-likelihood with respect to the parameters $\btheta$ is (
                               &= \sum_{i=1}^N \nabla_{\btheta} F(D_i; \btheta) - N\,\E_{p}\left[ \nabla_{\btheta} F(S; \btheta) \right]\\
                               &= \frac{1}{N}\sum_{i=1}^N \nabla_{\btheta} F(D_i; \btheta) - \E_{p}\left[ \nabla_{\btheta} F(S; \btheta) \right].
 \end{align*}
-This shows that the maximum likelihood parameters satisfy a generalized version of the well-known moment matching condition for exponential family models; cf. \cite[Ch. 20]{koller09}.
+This shows that the maximum likelihood parameters satisfy a generalized version of the well-known moment matching condition for exponential family models \citep{wainwright08,koller09}.
 That is, at the maximum, the empirical mean of the function gradient over the data set will match the expected gradient over the model distribution.
 
 While the expectation term in the log-likelihood gradient is, in general, infeasible to compute exactly, we can straightforwardly approximate it using the sampling methods discussed in the previous chapters.
@@ -77,7 +77,18 @@ In particular, for all $i \in V$, $j \in [L]$, we have
 \citet{tschiatschek16} used an alternative set of subgradients, involving randomization over the choice of the ``$\argmax$'' at each gradient step.
 We have noticed that our choice often results in slightly improved learning performance in practice.
 
-\clearpage
+\paragraph{Related work.}
+Most of the previous work on learning discrete probabilistic models has focused on (pairwise) Markov random fields.
+Using a maximum likelihood approach to learn such models, or more generally, exponential family models, is fundamentally very similar to what we described above.
+As we mentioned, the moment matching condition requires approximating marginals, which has been accomplished in the past using a variety of sampling \citep{geyer91}, and variational \citep{wainwright08} methods.
+The method of contrastive divergence \citep{condiv} has been notable for making further approximations to the sampling procedure to speed up the learning process.
+
+Alternative approaches seek to optimize different objectives than the likelihood to avoid performing inference altogether.
+Examples of other objectives include the pseudolikelihood \citep{pseudolik}, which involves easy to compute conditional probabilities; the noise-contrastive objective that aims to differentiate real data from noise \cite{nce,tschiatschek16}; and the objective proposed by \cite{domke13} that is directly based on marginal probabilites.
+
+The problem of learning submodular functions has also been approached from non-probabilistic viewpoints.
+For example, \cite{balcan} investigate learning such a function when given a black-box oracle of its value. \cite{tschiatscheck14} learn mixtures of submodular functions, and \cite{deepsubmod} learn submodular functions defined by deep architectures, both using large-margin approaches.
+
 \section{Modeling Interactions of Gene Mutations in Cancer}
 One of the goals of cancer genomics research is identifying so-called driver mutations, that is, somatic mutations that are responsible for various forms of cancer, and distinguishing them from randomly occurring passenger mutations.
 While sequencing data from large-scale projects, such as The Cancer Genome Atlas \citep{tcga}, has been available in increasing quantities, analyzing the occurence combinations of mutations is a combinatorially daunting task.
@@ -96,22 +107,13 @@ While CoMEt requires prespecifying the number and size of groups to be searched 
 
 \subsection{Our Approach}
 Assume that we are given a ground set $V = \{1,\ldots,n\}$ of possible gene mutations, and a data set of $N$ patients, $\mathcal{D} \defeq (D_1,\ldots,D_N)$, where $D_i \subseteq V$ is the combination of mutations that were present in patient $i$.
-The data is commonly represented in the literature using a binary alteration matrix, as shown in \figref{fig:bamats} (top), where each row represents a mutation, and each column a patient.
-Our goal is to discover groups of mutations $M_1, M_2, \ldots$, $M_i \subseteq V$, with the property that mutations that belong to the same group rarely occur together in the same patient.
-\figref{fig:bamats} (bottom) depicts a permuted version of the previous matrix, where the highlighted group of four mutations appears to be highly mutually exclusive.
-
-\begin{figure}[htb]
-\centering
-\includegraphics[width=\textwidth]{figures/genes/example1.pdf}\\[1em]
-\includegraphics[width=\textwidth]{figures/genes/example1_rep.pdf}\\[1em]
-\caption{(top) An example binary alteration matrix, where each shaded entry $(i, j)$ indicates that mutation $i$ occured in patient $j$. (bottom) The same matrix with permuted rows and columns to illustrate the high degree of mutual exclusivity of the highlighted group of four mutations.}
-\label{fig:bamats}
-\end{figure}
+The data is commonly represented in the literature using a binary alteration matrix, where each row represents a mutation, and each column a patient (see \figref{fig:bamat_1}).
+Our goal is to discover groups of mutations $M_1, M_2, \ldots$, $M_i \subseteq V$, with the property that mutations that belong to the same group rarely occur together in the same patient (see \figref{fig:bamat_2}).
 
 We propose using the patient data $\mathcal{D}$ to learn an \fldc{} model over the mutation space $V$.
 Based on the definiton of the \fldc{} potential, we expect the columns of the $\bw$ and $\bv$ matrices to encode groups of repulsive and attractive mutations respectively.
 For the purposes of this thesis, we propose extracting potential groups by thesholding each matrix at a specified level; these groups can then be further assessed for mutual exclusivity or co-occurence using some of the previously proposed statistical tests.
-More generally, one can perform marginal/conditional inference in the learned model to compute arbitrary probabilistic quantities that may be useful in specific biological applications.
+More generally, one can perform inference in the learned model to compute various probabilistic quantities that may be useful in specific biological applications.
 
 Our approach offers several advantages over previous work.
 First, it inherently uses higher-order potentials to directly capture mutation interactions of arbitrary size, without any need to specify the number or sizes of the groups in advance.

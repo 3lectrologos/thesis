@@ -204,7 +204,7 @@ In this sense, the model encodes two approximately mutually exlusive groups, nam
 \end{figure}
 \end{example}
 
-\begin{example}[\fldc{}]
+\begin{example}[\fldc{}] \label{ex:fldc}
 \cite{djolonga16mixed} extended the \flid{} model described above to include an additional matrix $\bv$ that encodes ``attraction'' between groups of elements.
 The additional term is analogous to the original facility location function, except that its sign is reversed.
 The corresponding function of the resulting facility location diversity and complements (\fldc{}) model is of the following form,
@@ -239,22 +239,32 @@ While the only function values that change from before are $F(\{1, 3\})$ and $F(
 
 
 \subsection{Inference}
+The basic tasks we would like to perform in a given discrete probabilistic model are computing various marginal probabilities of interest, and computing the partition function $Z$.
+These two tasks are more often that not tightly related to each other, and many algorithms that accomplish one of them can also accomplish the other with minor modifications.
+We therefore refer to them jointly as \emph{probabilistic inference}.
+There are very few classes of discrete probabilistic models that are known to be amenable to tractable exact inference.
+The most prominent such class are determinantal point processes that we described above.
 
-Recently, \citet{djolonga14} considered a more general treatment of such models, and proposed a variational approach for performing approximate probabilistic inference for them.
+On the other hand, is well known that performing exact inference in general probabilistic submodular models is a computationally intractable problem.
+In fact, even for Ising models, \cite{jerrum93} showed that exactly computing the partition function is a \#P-hard problem.
+Worse than that, they showed that there can be no FPRAS for these models unless RP = NP.
+However, they also proposed a sampling-based procedure for performing approximate inference in ferromagnetic Ising models under some conditions.
+Several other conditional results for approximate sampling-based inference are known for Ising models (Ch. 15, \citealp{levin08book}).
+A generalization of determinantal point processes, called strongly Rayleigh distributions \citep{borcea08}, are the result of a long line of research into the notion of negative dependence between random variables \citep{pemantle00,liggett02,wagner08}.
+It has been shown that one can efficiently sample from strongly Rayleigh distributions using a simple Metropolis sampler \citep{anari16,li16}.
 
-\todo{Exponential family}
-
-\todo{Contrastive divergence}
-
-Iyer and Bilmes \citep{iyer15} recently considered a different class of probabilistic models, called submodular point processes, which are also defined through submodular functions, and have the form $p(S) \propto F(S)$.
+\cite{iyer15} have considered a different class of probabilistic models, called submodular point processes, which are also defined via submodular functions, and are of the form $p(S) \propto F(S)$.
 They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
 
-\todo{Add Chengtao constrained etc. paper}
-\todo{Add DPP -- Rayleigh papers}
+Besides sampling, the primary alternative for performing approximate inference in discrete models have been variational methods.
+The fundamental idea of these methods is to choose a distribution among a tractable class to approximate the true distribution at hand.
+There has been extensive research on variational methods for low-order models, particularly for exponential families, and many well-known algorithms, such as belief propagation, or mean-field methods, fall under this category. (For an introductory treatment we refer to the monograph by \cite{wainwright08}.)
+More recently, \citet{djolonga14} have proposed a variational approach for performing approximate probabilistic inference in probabilistic submodular models, based on log-modular approximations of the distribution.
+
 
 \section{Sampling}
 In this thesis, we focus on Markov chain Monte Carlo sampling algorithms, which are based on performing randomly selected moves in a state space $\ss$ to approximate probabilistic quantities of interest.
-The visited states $(X_0, X_1,\ldots)$ form a Markov chain, which under mild conditions (e.g., Theorem 4.9, \citealp{levin08book}) converges to a stationary distribution $p$.
+The visited states $(X_0, X_1,\ldots)$ form a Markov chain, which under mild conditions converges to a stationary distribution $p$ (see Theorem 4.9, \citealp{levin08book}).
 Crucially, the probabilities of transitioning from one state to another are carefully chosen to ensure that the stationary distribution is identical to the distribution of interest.
 In our case, the state space is the powerset of our ground set, that is, $\ss \defeq 2^V$, and we want to construct a chain over subsets of $V$ that has stationary distribution $p$.
 We denote by $P : \Omega \times \Omega \to \mathbb{R}$ the transition matrix of a Markov chain, i.e., for all $S, R \in \Omega$, $P(S, R) \defeq \P\left[ X_{t+1} = R \mid X_t = S \right]$.
@@ -395,4 +405,4 @@ where $d(t)$ denotes the worst-case (over the starting state $X_0$ of the chain)
 \begin{align*}
 d(t) \defeq \max_{X_0 \in \ss} \| P^t(X_0, \cdot) - p \|_{\mathrm{TV}}.
 \end{align*}
-A generalization of Chebyshev's inequality to correlated Markov chain samples (see Theorem 12.19, \citealp{levin08book}) shows that upper bounding the mixing time is sufficient to guarantee efficient approximate sampling-based inference.
+A generalization of Chebyshev's inequality to correlated Markov chain samples (see Theorem 12.19, \citealp{levin08book}) shows that upper bounding the mixing time is sufficient to guarantee efficient approximate sampling-based marginal inference.
