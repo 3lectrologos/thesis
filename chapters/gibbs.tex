@@ -12,7 +12,7 @@ Our goal is to establish theoretical conditions that guarantee rapid mixing of t
 
 \section{Problem Setup} \label{sect:setup}
 In this chapter, we focus on distributions of the form
-\begin{align}\label{eq:pdef}
+\begin{align}\label{eq:gibbs_pdef}
 p(S) = \frac{\exp(\beta F(S))}{Z},
 \end{align}
 for all $S \subseteq V$, where $F$ is submodular or supermodular.
@@ -99,7 +99,7 @@ Intuitively, adding elements to our set always leads to higher values.
 For the purposes of the following proposition, we will use a Metropolis chain, rather than a Gibbs chain, to simplify the exposition.
 While the two chains are not identical, they share the same principle of making local moves by considering ratios of probabilities of neighboring states.
 \begin{prop}
-There is a family of monotone submodular functions $(F_n)_n$, such that, for the corresponding log-submodular family of distributions $(p_n)_n$ defined as in \eqref{eq:pdef}, the Metropolis chain has mixing time
+There is a family of monotone submodular functions $(F_n)_n$, such that, for the corresponding log-submodular family of distributions $(p_n)_n$ defined as in \eqref{eq:gibbs_pdef}, the Metropolis chain has mixing time
 \begin{align*}
   \tm  = \Omega(2^{n/2}),
 \end{align*}
@@ -191,9 +191,9 @@ As we will see, the conditions depend crucially on the following quantity, which
 Intuitively, $\zf$ quantifies a notion of distance to modularity.
 For submodular and supermodular functions, $\zf$ represents the worst-case amount by which $F$ violates the submodular inequality, and $\zf = 0$ if $F$ is modular (cf. \sectref{sect:bg_submod}).
 
-It is also important to note that, for submodular and supermodular functions, $\zf$ depends only on the monotone part of $F$; if we decompose $F$ according to \eqref{eq:decomp}, then it is easy to see that $\zf = \zeta_f$.
+It is also important to note that, for submodular and supermodular functions, $\zf$ depends only on the monotone part of $F$; if we decompose $F$ according to \defref{def:decomp}, then it is easy to see that $\zf = \zeta_f$.
 A trivial upper bound on $\zf$, therefore, is $\zf \leq f(V)$.
-Another quantity that has been used in the past to quantify the deviation of a submodular function from modularity is the curvature \cite{conforti84}, defined as $\kappa_F \defeq 1 - \min_{i \in V} \left(F(i\mid V\setminus\{i\}) / F(i)\right)$.
+Another quantity that has been used in the past to quantify the deviation of a submodular function from modularity is the curvature \citep{conforti84}, defined as $\kappa_F \defeq 1 - \min_{i \in V} \left(F(i\mid V\setminus\{i\}) / F(i)\right)$.
 Although of similar intuitive meaning, the multiplicative nature of its definition makes it significantly different from $\zf$, which is defined additively.
 
 \paragraph{Examples.}
@@ -205,11 +205,11 @@ where $\phi : \mathbb{R} \to \mathbb{R}$ is a bounded concave function, for exam
 Functions of this form are submodular, and have been used in applications such as document summarization to encourage diversity \citep{lin11}.
 It is easy to see that, for such functions, $\zf \leq L\phi_{\max}$, that is, $\zf$ is independent of $n$.
 
-For the \flid{} model \todo{ref}, we have $f(S) = \sum_{j=1}^L \max_{i \in S} w_{ij}$, therefore we get $\zf \leq f(V) = \sum_{j=1}^L w_j^{\mathrm{max}}$, where $w_j^{\mathrm{max}} = \max_{i \in V} w_{ij}$.
+For the \flid{} model (see \exampleref{ex:flid}), we have $f(S) = \sum_{j=1}^L \max_{i \in S} w_{ij}$, therefore we get $\zf \leq f(V) = \sum_{j=1}^L w_j^{\mathrm{max}}$, where $w_j^{\mathrm{max}} = \max_{i \in V} w_{ij}$.
 Since the values of $\bw$ depend primarily on the number of repulsive groups, rather than the size of the ground set, we expect $\zf$ to grow much slower than $n$ in most practical applications.
 
 \vspace{1.5em}
-\noindent The following theorem establishes a bound on the mixing time of the Gibbs sampler run on models of the form \eqref{eq:pdef}.
+\noindent The following theorem establishes a bound on the mixing time of the Gibbs sampler run on models of the form \eqref{eq:gibbs_pdef}.
 The bound is exponential in $\zf$, but polynomial in $n$.
 \begin{theorem} \label{thm:poly}
   For any function $F : 2^V \to \mathbb{R}$, the mixing time of the Gibbs sampler is bounded by
@@ -232,7 +232,7 @@ Our proof of \theoremref{thm:poly} is based on the method of \emph{canonical pat
 The high-level idea of this method is to view the state space as a graph, and try to construct a path between each pair of states, which carries a certain amount of flow specified by the stationary distribution under consideration.
 Depending on the choice of these paths and the resulting load on the edges of the graph we can derive bounds on the mixing time of the Markov chain.
 
-More concretely, let us assume that for some set function $F$ and corresponding distribution $p$ as in \eqref{eq:pdef}, we construct the Gibbs chain on state space $\ss = 2^V$ with transition matrix $P$.
+More concretely, let us assume that for some set function $F$ and corresponding distribution $p$ as in \eqref{eq:gibbs_pdef}, we construct the Gibbs chain on state space $\ss = 2^V$ with transition matrix $P$.
 We can view the state space as a directed graph that has vertex set $\ss$, and for any $A, B \in \ss$, contains edge $(S, S')$ if and only if $S \sim S'$, that is, if and only if $S$ and $S'$ differ by exactly one element.
 Now, for any pair of states $A, B \in \ss$, we define a \emph{canonical path}
 \begin{align*}
@@ -411,14 +411,14 @@ and define the following quantity,
 \end{align*}
 which quantifies the (maximum) total influence of an element $r \in V$ on the values of $F$.
 For example, if the inclusion of $r$ makes no difference with respect to other elements of the ground set, we will have $\gf = 0$.
-The following theorem establishes conditions for fast mixing of the Gibbs sampler when run on models of the form \eqref{eq:pdef}.
+The following theorem establishes conditions for fast mixing of the Gibbs sampler when run on models of the form \eqref{eq:gibbs_pdef}.
 
 \begin{theorem} \label{thm:fast}
   For any set function $F : 2^V \to \mathbb{R}$, if $\gf < 1$, then the mixing time of the Gibbs sampler is bounded by
   \begin{align*}
   	\tme \leq \frac{1}{1 - \gf}n(\log n + \log \frac{1}{\epsilon}).
   \end{align*}
-  If $F$ is additionally submodular or supermodular, and is decomposed according to \eqref{eq:decomp}, then
+  If $F$ is additionally submodular or supermodular, and is decomposed according to \defref{def:decomp}, then
   \begin{align*}
   	\tme \leq \frac{1}{1 - \gsf}n(\log n + \log \frac{1}{\epsilon}).
   \end{align*}
@@ -518,14 +518,14 @@ The specialization of \theoremref{thm:fast} to sub- or supermodular functions is
   \end{align*}
 \end{proof}
 
-\subsection{Decomposable Functions}
-We have seen that some commonly used models, such as \flid{}, are based on decomposable functions that can be written in the form
-\begin{align}\label{eq:fdecgibbs}
-F(S) = \sum_{j=1}^L F_{j}(S).
+\subsection{Additively Decomposable Functions}
+Some commonly used models, such as the Ising model and \flid{}, can be written as a sum of simpler supermodular (resp. submodular) functions $F_{j}$,
+\begin{align} \label{eq:fdec}
+F(S) = \sum_{j \in [L]} F_{j}(S).
 \end{align}
-We prove the following corollary that provides an easy to check condition for fast mixing of the Gibbs sampler when $F$ is a decomposable submodular function.
+We prove the following corollary that provides an easy to check condition for fast mixing of the Gibbs sampler when $F$ can be additively decomposed as above.
 \begin{cor} \label{cor:fast}
-  For any submodular function $F$ that can be written in the form of \eqref{eq:fdecgibbs}, with $f$ being its monotone (also decomposable) part according to \eqref{eq:decomp}, if we define
+  For any submodular function $F$ that can be written in the form of \eqref{eq:fdec}, with $f$ being its monotone (also additively decomposable) part according to \defref{def:decomp}, if we define
   \begin{align*}
   	\theta_f \defeq \max_{i \in V} \sum_{j\in [L]} \sqrt{f_{j}(\{i\})} \hspace{1em}\textrm{and}\hspace{1em} \lambda_f \defeq \max_{j\in [L]} \sum_{i \in V} \sqrt{f_{j}(\{i\})},
   \end{align*}
@@ -564,7 +564,7 @@ As a special case, if we consider the class of set cover functions ($w_{ij} \in 
 Note, that the corollary can be trivially applied to any submodular function by taking $L=1$, but may, in general, result in a loose bound if used that way.
 
 \section{Experiments}
-In the following two experiments, we compare the Gibbs sampler against the variational approach proposed by Djolonga and Krause \cite{djolonga14} for performing inference in probabilistic submodular models.
+In the following two experiments, we compare the Gibbs sampler against the variational approach proposed by \cite{djolonga14} for performing inference in probabilistic submodular models.
 In particular, the authors propose two variational approximations, denoted in the following by ``upper'' and ``lower'', which are obtained from factorized distributions associated with modular upper and lower bounds respectively.
 
 \paragraph{Estimating the log-partition function.}

@@ -157,19 +157,19 @@ Ising models, and Potts models \citep{potts}, which generalize Ising models from
 \end{example}
 
 \begin{example}[Determinantal point process]
-A determinantal point process \citep{lyons03,kulesza12} is defined via a positive semidefinite matrix $L \in \mathbb{R}^{n \times n}$, and has a distribution of the form
+A determinantal point process \citep{lyons03,kulesza12} is defined via a positive semidefinite matrix $\*L \in \mathbb{R}^{n \times n}$, and has a distribution of the form
 \begin{align*}
-p(S) = \frac{\det(L_S)}{\det(L + I)},
+p(S) = \frac{\det(\*L_S)}{\det(\*L + \*I)},
 \end{align*}
-where $L_S$ denotes the square submatrix indexed by set $S$, and $I$ is the $n \times n$ identity matrix.
-(We only describe here the form known as an $L$-ensemble.)
-Since $F(S) = \log \det(L_S)$ is a submodular function, determinantal point processes (DPPs) are log-submodular distributions.
-Interestingly, as we can see from the above equation, the partition function $Z = \det(L + I)$ can be easily computed, which makes DPPs one of very few known tractable higher-order models.
+where $\*L_S$ denotes the square submatrix indexed by set $S$, and $I$ is the $n \times n$ identity matrix.
+(We only describe here the form known as an $\*L$-ensemble.)
+Since $F(S) = \log \det(\*L_S)$ is a submodular function, determinantal point processes (DPPs) are log-submodular distributions.
+Interestingly, as we can see from the above equation, the partition function $Z = \det(\*L + \*I)$ can be easily computed, which makes DPPs one of very few known tractable higher-order models.
 
 DPPs also originate in statistical physics, but have been used to encourage diversity in various machine learning applications, such as image and video summarization \citep{kulesza12,gong14}.
 \end{example}
 
-\begin{example}[\flid{}]
+\begin{example}[\flid{}] \label{ex:flid}
 \cite{tschiatschek16} defined the class of facility location diversity (\flid) models by means of facility location functions, that is, functions of the form
 \begin{align*}
 F(S) = \sum_{i \in S} u_i + \sum_{j=1}^{L} \left(\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}\right),
@@ -193,30 +193,49 @@ In this sense, the model encodes two approximately mutually exlusive groups, nam
   \centering
   \begin{subfigure}[b]{\subflen}
     \centering
-    \includegraphics[width=\textwidth]{figures/background/flid.pdf}
+    \includegraphics[width=0.9\textwidth]{figures/background/flid.pdf}
   \end{subfigure}\\[1.5em]
   \begin{subfigure}[b]{\subflen}
     \centering
     \hspace{-2.65em}\includegraphics[width=1.07\textwidth]{figures/background/flid_dist.pdf}
   \end{subfigure}\\[1em]
-  \caption{An example \flid{} model on ground set $V = \{1, 2, 3\}$, the corresponding values of the facility location function $F(S)$, for all $S \subseteq V$, and the resulting distribution $p(S) \propto \exp(F(S))$.}
+  \caption{An example \flid{} model with $L = 2$ dimensions on ground set $V = \{1, 2, 3\}$, the corresponding values of the facility location function $F(S)$, for all $S \subseteq V$, and the resulting distribution $p(S) \propto \exp(F(S))$.}
   \label{fig:flid}
 \end{figure}
 \end{example}
 
 \begin{example}[\fldc{}]
-\citep{djolonga16mixed}
+\cite{djolonga16mixed} extended the \flid{} model described above to include an additional matrix $\bv$ that encodes ``attraction'' between groups of elements.
+The additional term is analogous to the original facility location function, except that its sign is reversed.
+The corresponding function of the resulting facility location diversity and complements (\fldc{}) model is of the following form,
 \begin{align*}
 F(S) = \sum_{i \in S} u_i + \sum_{j=1}^{L} \left(\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}\right) - \sum_{j=1}^{K} \left(\max_{i \in S} v_{ij} - \sum_{i \in S} v_{ij}\right).
 \end{align*}
+We have now $L$ latent dimensions encoding diversity or mutual exclusivity, and $K$ latent dimensions encoding complementarity or co-occurrence.
+Note that the added term is a supermodular function, therefore $F(S)$ is neither submodular nor supermodular anymore.
+It follows that the distribution $F(S) \propto \exp(F(S))$ is not a probabilistic submodular model.
+
+In \figref{fig:fldc}, we show an example \fldc{} model, which has the same $\bu$ and $\bw$ as our previous \flid{} example, but additionally contains an attractive matrix $\bv$ of dimension $K = 1$.
+The single latent dimension encodes co-occurrence between elements $1$ and $3$.
+While the only function values that change from before are $F(\{1, 3\})$ and $F(V)$, note that all probabilities $p(S)$ are different than those of \figref{fig:flid}, because of the new partition function $Z$.
+
+\renewcommand{\subflen}{\textwidth}
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \includegraphics[width=\textwidth]{figures/background/fldc.pdf}
+  \end{subfigure}\\[1.5em]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \hspace{-2.65em}\includegraphics[width=1.07\textwidth]{figures/background/fldc_dist.pdf}
+  \end{subfigure}\\[1em]
+  \caption{An example \fldc{} model with $L = 2$ and $K = 1$ dimensions on ground set $V = \{1, 2, 3\}$, the corresponding values of $F(S)$, for all $S \subseteq V$, and the resulting distribution $p(S) \propto \exp(F(S))$.
+  The two function values $F(\{1, 3\})$ and $F(V)$ are the only ones that change compared to the previous \flid{} example.
+  }
+  \label{fig:fldc}
+\end{figure}
 \end{example}
-
-
-\paragraph{Additively decomposable functions.}
-Note that, both the Ising model, and \flid{} use additively decomposable functions, that is, functions that can be written as a sum of simpler supermodular (resp. submodular) functions $F_{j}$,
-\begin{align} \label{eq:fdec}
-F(S) = \sum_{j \in [L]} F_{j}(S).
-\end{align}
 
 
 \subsection{Inference}

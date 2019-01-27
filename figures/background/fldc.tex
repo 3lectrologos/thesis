@@ -38,16 +38,25 @@ yscale=1.5
     \fill[col1!50!white] (\i,\j) rectangle (\i+1,\j+1);
   }
 
+  \foreach \i/\j in {
+3/0,3/2
+  } {
+    \fill[col2] (\i,\j) rectangle (\i+1,\j+1);
+  }
+
 
 \draw[step=1cm,white,line width=1.5pt] (-2,0) grid (-1,3);
 \draw[draw=black,line width=0.4pt] (-2.07,-0.07) rectangle (-1+0.07,3+0.07);
 
 \draw[step=1cm,white,line width=1.5pt] (0,0) grid (2,3);	
-
 \draw[draw=black,line width=0.4pt] (-0.07,-0.07) rectangle (2+0.07,3+0.07);
+
+\draw[step=1cm,white,line width=1.5pt] (3,0) grid (4,3);	
+\draw[draw=black,line width=0.4pt] (3-0.07,-0.07) rectangle (4+0.07,3+0.07);
 
 \node[text=textcolor] at (-1.5,3.4) {\Large $\*u$};
 \node[text=textcolor] at (1,3.4) {\Large $\*w$};
+\node[text=textcolor] at (3.5,3.4) {\Large $\*v$};
 
 \node[text=textcolor] at (-2.4,2.5) {\Large \sffamily 1};
 \node[text=textcolor] at (-2.4,1.5) {\Large \sffamily 2};
@@ -64,15 +73,19 @@ yscale=1.5
 \node[text=textcolor] at (-1.5,1.5) {\large \sffamily -1.0};
 \node[text=textcolor] at (-1.5,2.5) {\large \sffamily -1.0};
 
-\node[text=textcolor,anchor=west] at (3.2,2.7) {\large $F(\varnothing) = 0$};
-\node[text=textcolor,anchor=west] at (3.2,1.9) {\large $F(\{1\}) = -1$};
-\node[text=textcolor,anchor=west] at (3.2,1.1) {\large $F(\{2\}) = -1$};
-\node[text=textcolor,anchor=west] at (3.2,0.3) {\large $F(\{3\}) = 1$};
+\node[text=textcolor] at (3.5,0.5) {\large \sffamily 2.0};
+\node[text=textcolor] at (3.5,1.5) {\large \sffamily 0.0};
+\node[text=textcolor] at (3.5,2.5) {\large \sffamily 2.0};
 
-\node[text=textcolor,anchor=west] at (5.5,2.7) {\large $F(\{1,2\}) = -3$};
-\node[text=textcolor,anchor=west] at (5.5,1.9) {\large $F(\{1,3\}) = 0$};
-\node[text=textcolor,anchor=west] at (5.5,1.1) {\large $F(\{2,3\}) = -2$};
-\node[text=textcolor,anchor=west] at (5.5,0.3) {\large $F(V) = -4$};
+\node[text=textcolor,anchor=west] at (4.7,2.7) {\large $F(\varnothing) = 0$};
+\node[text=textcolor,anchor=west] at (4.7,1.9) {\large $F(\{1\}) = -1$};
+\node[text=textcolor,anchor=west] at (4.7,1.1) {\large $F(\{2\}) = -1$};
+\node[text=textcolor,anchor=west] at (4.7,0.3) {\large $F(\{3\}) = 1$};
+
+\node[text=textcolor,anchor=west] at (6.7,2.7) {\large $F(\{1,2\}) = -3$};
+\node[text=textcolor,anchor=west,draw=black] at (6.7,1.9) {\large $F(\{1,3\}) = 2$};
+\node[text=textcolor,anchor=west] at (6.7,1.1) {\large $F(\{2,3\}) = -2$};
+\node[text=textcolor,anchor=west,draw=black] at (6.7,0.3) {\large $F(V) = -2$};
 
 \end{tikzpicture}
 \end{document}
