@@ -43,7 +43,7 @@ Modular functions can be seen as the discrete analogue of linear continuous func
 \begin{definition}[Modularity]
 A function $m$ is called modular if it is both submodular and supermodular; it can be written as
 \begin{align*}
-m(S) = c + \sum_{i \in S} m_i,
+F(S) = c + \sum_{i \in S} m_i,
 \end{align*}
 where $c \in \mathbb{R}$, and $m_i \in \mathbb{R}$, for all $i \in V$.
 \end{definition}
@@ -118,42 +118,78 @@ p(S; \btheta) \propto \exp\left( F(S; \btheta) \right),
 for all $S \subseteq V$, where $F$ is a submodular or supermodular function.
 \end{definition}
 The resulting models of this form are also referred to as log-submodular and log-supermodular distributions respectively.
-Note that the most likely configurations in these distributions directly correspond to the maximizers of the corresponding sub- or supermodular function $F$.
+Note that the most likely configurations in these distributions directly correspond to the maximizers of the sub- or supermodular function $F$.
 Some commonly used discrete models fall under these categories; for example, the standard Ising and Potts models are log-supermodular, while determinantal point processes are log-submodular.
 We now present some examples models in more detail.
 
 \begin{example}[Product distribution]
-Perhaps the simplest family of such models are log-modular distributions, which describe a collection of independent binary random variables.
-Equivalently, they are distributions of the form \eqref{eq:pdef} where $F$ is a modular function, that is, a function of the form $F(S) = c + \sum_{v \in S}m_v$, where $c, m_v \in \mathbb{R}$, for all $v \in V$.
-The partition function of a log-modular distribution can be derived in closed form as $Z_m = \exp(c) \prod_{v \in V} \left( 1 + \exp(m_v) \right)$.
-Consequently, the corresponding log-modular distribution is
+Product or log-modular distributions describe a collection of $n$ independent binary random variables.
+The corresponding function $F$ is modular, that is, $F(S) = c + \sum_{i \in S} m_i$, and the partition function can be derived in closed form as
 \begin{align*}
-  p_m(S) = \frac{\exp\big( \sum_{v \in S} m_v \big)}{\prod_{v \in V} \left( 1 + \exp(m_v) \right)}.
+Z = \exp(c) \prod_{i \in V} \left( 1 + \exp(m_i) \right).
 \end{align*}
+Consequently, a log-modular distribution can be written as
+\begin{align*}
+  p(S) = \frac{\exp\big( \sum_{i \in S} m_i \big)}{\prod_{i \in V} \left( 1 + \exp(m_i) \right)}.
+\end{align*}
+Note that the constant $c$ does not appear in the distribution.
+More generally, the discrete models we consider are invariant to adding a constant to $F$, since that constant gets cancelled by the partition function $Z$.
 \end{example}
 
 \begin{example}[Ising model]
-\citep{ising}
-The (ferromagnetic) Ising model is an example of a log-supermodular model.
-In its simplest form, it is defined through an undirected graph $(V, E)$, and a set of pairwise potentials $\sigma_{v,w}(S) \defeq 4(\mathds{1}_{\{v \in S\}}-0.5)(\mathds{1}_{\{w \in S\}}-0.5)$.
-Its distribution has the form $p(S) \propto \exp(\beta\sum_{\{v,w\} \in E} \sigma_{v,w}(S))$, and is log-supermodular, because $F(S) = \sum_{\{v,w\} \in E} \sigma_{v,w}(S)$ is supermodular. (Each $\sigma_{v,w}$ is supermodular, and supermodular functions are closed under addition.)
+In its simplest form, the (ferromagnetic) Ising model \citep{ising} is defined via an undirected graph $(V, E)$, and a set of ``attractive'' pairwise potentials
+\begin{align*}
+\sigma_{i,j}(S) \defeq 4\left(\llbracket\{i \in S\}\rrbracket - 0.5\right)(\llbracket\{j \in S\}\rrbracket - 0.5),
+\end{align*}
+for all $\{i, j\} \in E$, where we use $\llbracket \cdot \rrbracket$ to denote the Iverson bracket, which has value $1$ when the enclosed condition is true, and $0$ otherwise.
+We can see that $\sigma_{i,j}$ takes value $1$ if $S$ contains both or neither of $i, j$, and value $-1$ if it contains only one of $i$ or $j$.
+It follows that $\sigma_{i, j}$ is a supermodular set function.
+The Ising distribution is defined as
+\begin{align*}
+p(S) \propto \exp\left(\sum_{\{i,j\} \in E} \sigma_{i,j}(S)\right).
+\end{align*}
+It is log-supermodular, since each $\sigma_{i,j}$ is supermodular, and supermodular functions are closed under addition.
+
+We can also define the anti-ferromagnetic Ising model by a different set of ``repulsive'' pairwise potentials $\hat{\sigma}_{i,j}(S) \defeq \sigma_{i,j}(S)$.
+In this case, each $\hat{\sigma}_{i,j}$ is a submodular set function, and the resulting distribution is log-submodular.
+
+Ising models, and Potts models \citep{potts}, which generalize Ising models from binary to $k$-state variables, originate in statistical physics, but have also found numerous applications in computer vision \citep{wang13}.
 \end{example}
 
 \begin{example}[Determinantal point process]
-\citep{lyons03,kulesza12}
-Determinantal point processes (DPPs) are examples of log-submodular models.
-A DPP is defined via a positive semidefinite matrix $K \in \mathbb{R}^{n \times n}$, and has a distribution of the form $p(S) \propto \det(K_S)$, where $K_S$ denotes the square submatrix indexed by $S$.
-Since $F(S) = \ln \det(K_S)$ is a submodular function, $p$ is log-submodular.
+A determinantal point process \citep{lyons03,kulesza12} is defined via a positive semidefinite matrix $L \in \mathbb{R}^{n \times n}$, and has a distribution of the form
+\begin{align*}
+p(S) = \frac{\det(L_S)}{\det(L + I)},
+\end{align*}
+where $L_S$ denotes the square submatrix indexed by set $S$, and $I$ is the $n \times n$ identity matrix.
+(We only describe here the form known as an $L$-ensemble.)
+Since $F(S) = \log \det(L_S)$ is a submodular function, determinantal point processes (DPPs) are log-submodular distributions.
+Interestingly, as we can see from the above equation, the partition function $Z = \det(L + I)$ can be easily computed, which makes DPPs one of very few known tractable higher-order models.
+
+DPPs also originate in statistical physics, but have been used to encourage diversity in various machine learning applications, such as image and video summarization \citep{kulesza12,gong14}.
 \end{example}
 
 \begin{example}[\flid{}]
-\citep{tschiatschek16}
-Another example of log-submodular models are those defined through facility location functions, which have the form $F(S) = \sum_{\ell \in [L]} \max_{v \in S}w_{v,\ell}$, where $w_{v,\ell} \geq 0$, and are submodular.
-If $w_{v,\ell} \in \{0, 1\}$, then $F$ represents a set cover function.
+\cite{tschiatschek16} defined the class of facility location diversity (\flid) models by means of facility location functions, that is, functions of the form
+\begin{align*}
+F(S) = \sum_{i \in S} u_i + \sum_{j=1}^{L} \left(\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}\right),
+\end{align*}
+where $w_{ij} \geq 0$.
+This is a submodular set function, therefore the resulting distribution $p(S) \propto \exp(F(S))$ is log-submodular.
+
+The above function $F$ is parameterized by a utility vector $\bu \in \mathbb{R}^n$, and a diversity matrix $\bw \in \mathbb{R}^{n\times L}$.
+Increasing the utility $u_i$ of an element $i \in S$ intuitively increases the probability of all sets containing that element, therefore also increases its marginal probability.
+The diversity matrix $\bw$ can be thought of as consisting of $L$ dimensions (columns).
+Elements of the ground set that have large value in the same column $j$ will tend to appear together less frequently, since the term $\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}$ will be negative for sets $S$ that contain combinations of such items.
+
+\todo{Show 3-element example figure.}
 \end{example}
 
 \begin{example}[\fldc{}]
 \citep{djolonga16mixed}
+\begin{align*}
+F(S) = \sum_{i \in S} u_i + \sum_{j=1}^{L} \left(\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}\right) - \sum_{j=1}^{L} \left(\max_{i \in S} v_{ij} - \sum_{i \in S} v_{ij}\right).
+\end{align*}
 \end{example}
 
 Note that, both the facility location model and the Ising model use decomposable functions, that is, functions that can be written as a sum of simpler submodular (resp. supermodular) functions $F_{\ell}$:
