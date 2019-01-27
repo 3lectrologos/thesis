@@ -95,7 +95,7 @@ F(S^*) \geq \left(1 - \frac{1}{e}\right) \max_{S \subseteq V, |S| \leq k} F(S).
 Numerous extensions and generalizations of this result have been studied, including approximation guarantees for the non-monotone setting \citep{feige11,buchbinder14}; for different kinds of constraints, such as matroid \citep{lee09,calinescu11} and knapsack \citep{chekuri11}; and for the adaptive setting \citep{golovin11,gotovos15}.
 
 
-\section{Discrete Probabilistic Models, Inference, and Learning}
+\section{Discrete Probabilistic Models}
 As stated in the introduction, in the interest of venturing beyond discrete optimization, we consider discrete probabilistic models, that is, distributions over finite subsets of the ground set $V$ defined as
 \begin{align*}
 p(S; \btheta) = \frac{1}{Z(\btheta)} \exp\left( F(S; \btheta) \right),
@@ -106,7 +106,7 @@ The function $F$ is parameterized by a (possibly to be learned) vector $\btheta$
 Z(\btheta) \defeq \sum_{S \subseteq V} \exp\left( F(S; \btheta) \right).
 \end{align*}
 An alternative and equivalent way of defining distributions of the above form is via binary random vectors $X \in \{0, 1\}^n$.
-If we define $V(X) \defeq \sdef{v \in V}{X_v = 1}$, it is easy to see that the distribution $p_X(X) \propto \exp(\beta F(V(X)))$ over binary vectors is isomorphic to the above distribution over sets.
+If we define $V(X) \defeq \sdef{v \in V}{X_v = 1}$, it is easy to see that the distribution $p_X(X) \propto \exp(F(V(X)))$ over binary vectors is isomorphic to the above distribution over sets.
 With a slight abuse of notation, we will use $F(X)$ to denote $F(V(X))$, and use $p$ to refer to both distributions.
 
 For large parts of this thesis, we will focus on such distributions with $F$ being submodular or supermodular.
@@ -252,37 +252,147 @@ They showed that inference in SPPs is, in general, also a hard problem, and prov
 \todo{Add Chengtao constrained etc. paper}
 \todo{Add DPP -- Rayleigh papers}
 
-\section{Sampling and Mixing Time}
+\section{Sampling}
+In this thesis, we focus on Markov chain Monte Carlo sampling algorithms, which are based on performing randomly selected moves in a state space $\ss$ to approximate probabilistic quantities of interest.
+The visited states $(X_0, X_1,\ldots)$ form a Markov chain, which under mild conditions (e.g., Theorem 4.9, \citealp{levin08book}) converges to a stationary distribution $p$.
+Crucially, the probabilities of transitioning from one state to another are carefully chosen to ensure that the stationary distribution is identical to the distribution of interest.
+In our case, the state space is the powerset of our ground set, that is, $\ss \defeq 2^V$, and we want to construct a chain over subsets of $V$ that has stationary distribution $p$.
+We denote by $P : \Omega \times \Omega \to \mathbb{R}$ the transition matrix of a Markov chain, i.e., for all $S, R \in \Omega$, $P(S, R) \defeq \P\left[ X_{t+1} = R \mid X_t = S \right]$.
+
+We next present two well-known chains that we will use throughout this thesis.
+Both of them are by construction reversible with respect to $p(\cdot) \propto \exp(F(\cdot))$, that is, they satisfy the detailed balance conditions
+\begin{align*}
+p(S) P(S, R) = p(R) P(R, S),
+\end{align*}
+for all $S, R \in \ss$.
+It follows that they asymptotically converge to the unique stationary distribution $p$.
 
 \paragraph{Gibbs sampler.}
-One of the most commonly used chains is the (single-site) Gibbs sampler, which adds or removes a single element %of the ground set
-at a time.
-It first selects uniformly at random an element $v \in V$; subsequently, it adds or removes $v$ to the current state $X_t$ according to the probability of the resulting state.
-We denote by $P : \Omega \times \Omega \to \mathbb{R}$ the transition matrix of a Markov chain, that is, for all $S, R \in \Omega$, $P(S, R) \defeq \P\left[ X_{t+1} = R \mid X_t = S \right]$.
-Then, if we define
+One of the most commonly used chains is the (single-site) Gibbs sampler, also known as the Glauber dynamics, which adds or removes a single element at a time.
+It first selects uniformly at random an element $i \in V$; subsequently, it adds or removes $i$ to the current state $X_t$ according to the probability of the resulting state, as shown in \algoref{alg:gibbs}.
+More concretely, we define an adjacency relation $S \sim R$ on the elements of the state space, which denotes that $S$ and $R$ differ by exactly one element, i.e., $\big||R| - |S|\big| = 1$.
+It follows that each $S \in \ss$ has exactly $n$ neighbors.
+We also define
 \begin{align*}
-p_{S \rightarrow R} = \displaystyle\frac{\exp(F(R))}{\exp(F(R)) + \exp(F(S))},
+p_{S \rightarrow R} = \displaystyle\frac{\exp(F(R))}{\exp(F(R)) + \exp(F(S))}.
 \end{align*}
-and denote by $S \sim R$ states that differ by exactly one element (i.e., $\big||R| - |S|\big| = 1$),
-the transition matrix $\Pg$ of the Gibbs sampler is
+Then, the transition matrix $\Pg$ of the Gibbs sampler is
 \begin{align*}
   \Pg(S, R) = 
   \threepartdefo{\displaystyle\frac{1}{n}p_{S \rightarrow R}}{R \sim S}{1 - \displaystyle\sum_{T \sim S} \displaystyle\frac{1}{n}p_{S \rightarrow T}}{R = S}{0}.
 \end{align*}
 
-\paragraph{Approximating the log-partition function.}
-There are two straightforward methods for estimating the log-partition function using sampling.
-The first one, importance sampling (IS) \citep{ais}, assumes that we have a normalized distribution $\pi$ from which we draw $M$ samples $\{x\}$
+In \figref{fig:gibbs} we illustrate one step of the Gibbs sampler on a small ground set $V = \{1, 2, 3\}$.
+Assuming that the current state is $X_t = \{2\}$, there are three potential new next states, namely $\varnothing$, $\{1, 2\}$, or $\{2, 3\}$, which are the three neighbors of $X_t$ in the state space.
+The Gibbs sampler first selects one of the neighbors uniformly at random, and then either stays at $X_t$ or moves to that neighbor according to the corresponding conditional probability.
 
-The second, reverse important sampling (RIS) \citep{ris},
+\begin{algorithm}[p]
+    \setstretch{1.3}
+    \DontPrintSemicolon
+	\caption{\strut The Gibbs sampler for probabilistic submodular models.}
+	\label{alg:gibbs}
+    \vspace{0.5em}
+    \SetKwInOut{Input}{Input}
+    \Input{Ground set $V$, distribution $p(\cdot) \propto \exp(F(\cdot))$}
+	$X_0$ $\gets$ random subset of $V$\\
+	\For{$t = 0$ \KwTo $M$}{
+	  Draw $i \sim \mathrm{Unif}(V)$\;
+	  $p_{\mathrm{add}}$ $\gets$ $\exp(\Delta_F(i \mid X_t))/(1 + \exp(\Delta_F(i \mid X_t)))$\;
+	  Draw $z \sim \mathrm{Unif}([0,1])$\;
+	  \uIf{$z \leq p_{\mathrm{add}}$}{
+        $X_{t+1}$ $\gets$ $X_t \cup \{i\}$\;
+      } \Else{
+        $X_{t+1} \gets X_t \setminus \{i\}$\;
+      }}
+\end{algorithm}
 
-\paragraph{Mixing times.}
-Approximating quantities of interest using MCMC methods is based on using time averages to estimate expectations over the desired distribution.
-In particular, we estimate the expected value of function $f : \ss \to \mathbb{R}$ by $\E_p[f(X)] \approx (1/T)\sum_{r=1}^{T} f(X_{s + r})$.
-For example, to estimate the marginal $p(v \in S)$, for some $v \in V$, we would define $f(x) = \mathds{1}_{\{x_v = 1\}}$, for all $x \in \ss$.
-The choice of burn-in time $s$ and number of samples $T$ in the above expression presents a tradeoff between computational efficiency and approximation accuracy.
-It turns out that the effect of both $s$ and $T$ is largely dependent on a fundamental quantity of the chain called \emph{mixing time} \cite{levin08}.
+\vspace{1em}
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.5\textwidth]{figures/gibbs/lattice_gibbs_2.pdf}\\[1em]
+\caption{An illustration of a single Gibbs step on ground set $V = \{1, 2, 3\}$, and current state $X_t = \{2\}$.
+We first choose one of the neighbors of $X_t$ uniformly at random, and then either stay at $X_t$ or move to that neighbor according to the corresponding conditional probability.}
+\label{fig:gibbs}
+\end{figure}
 
-The mixing time of a chain quantifies the number of iterations $t$ required for the distribution of $X_t$ to be close to the stationary distribution $\pi$.
-More formally, it is defined as $\tme \defeq \min \sdef{t}{d(t) \leq \epsilon}$, where $d(t)$ denotes the worst-case (over the starting state $X_0$ of the chain) total variation distance between the distribution of $X_t$ and $\pi$.
-Establishing upper bounds on the mixing time of our Gibbs sampler is, therefore, sufficient to guarantee efficient approximate marginal inference (e.g., see Theorem 12.19 of \citet{levin08}).
+It is important to note here that the computed conditional probabilities do not depend on the partition function $Z$, thus the chain can be simulated efficiently, even though $Z$ is unknown and hard to compute.
+Moreover, it is easy to see that
+\begin{align*}
+\Delta_F(i \mid X_t) = \llbracket i\not\in X_t\rrbracket F(i \mid X_t) + \llbracket i\in X_t\rrbracket F(i \mid X_t\setminus\{i\}).
+\end{align*}
+Therefore, the Gibbs sampler only requires a black box for the marginal gains of $F$, which are often faster to compute in practice than the values of $F$ itself.
+Finally, it is easy to show that the stationary distribution of the chain constructed this way is $p$.
+
+\paragraph{Metropolis sampler.}
+Another well-studied chain is the Metropolis chain \citep{metropolis,hastings}, which, like the Gibbs sampler, also performs local moves between neighboring states, but does so following a somewhat different procedure.
+The Metropolis chain first draws a candidate next state according to a proposal distribution $q(\cdot \mid X_t)$; then, it either accepts the proposed state or not according to the probability ratio of the two states corrected by the proposal ratio, as shown in \algoref{alg:metropolis}.
+
+\begin{algorithm}[tbp]
+    \setstretch{1.3}
+    \DontPrintSemicolon
+	\caption{\strut The Metropolis sampler for prob. submodular models.}
+	\label{alg:metropolis}
+    \vspace{0.5em}
+    \SetKwInOut{Input}{Input}
+    \Input{Ground set $V$, distribution $p(\cdot) \propto \exp(F(\cdot))$, proposal $q$}
+	$X_0$ $\gets$ random subset of $V$\\
+	\For{$t = 0$ \KwTo $M$}{
+	  Draw $S \sim q(\cdot \mid X_t)$\;
+	  $p_{\textrm{acc}} \gets \min\left\{1, \frac{q(S \mid R)\,\exp(F(R))}{q(R \mid S)\,\exp(F(S))}\right\}$\;
+	  Draw $z \sim \mathrm{Unif}([0,1])$\;
+	  \uIf{$z \leq p_{\textrm{acc}}$}{
+        $X_{t+1}$ $\gets$ $S$\;
+      } \Else{
+        $X_{t+1} \gets X_t$\;
+      }}
+\end{algorithm}
+
+More concretely, if we define the acceptance probability
+\begin{align*}
+  p_{\textrm{acc}}(S, R) \defeq \min\left\{1, \displaystyle\frac{q(S \mid R)\,p(R)}{q(R \mid s)\,p(S)}\right\} = \min\left\{1, \displaystyle\frac{q(S \mid R)\,\exp(F(R))}{q(R \mid s)\,\exp(F(S))}\right\},
+\end{align*}
+then the transition matrix of the Metropolis chain can be defined as follows,
+\begin{align*}
+  \Pm(S, R) = \twopartdefo{q(R \mid S)\,p_{\textrm{acc}}(S, R)}{R \neq S\vspace{1em}}{1 - \displaystyle\sum_{T \neq S} q(T \mid S)\,p_{\textrm{acc}}(S, T)}.
+\end{align*}
+As with the Gibbs sampler, the computed acceptance probabilities do not depend on the partition function $Z$, therefore the chain can be simulated efficiently.
+
+\paragraph{Approximating expectations.}
+Approximating quantities of interest using MCMC methods is largely based on using time averages to estimate expectations over the desired distribution.
+In particular, we estimate the expected value of function $g : \ss \to \mathbb{R}$ by
+\begin{align} \label{eq:exp_approx}
+\E_p[g(X)] \approx \frac{1}{M}\sum_{r=1}^{M} g(X_{s + r}).
+\end{align}
+The point in time $s \in \mathbb{N}$, after which we start taking samples into account, is often referred to as the burn-in time of the chain.
+For example, to estimate the marginal probability $\P(i \in S)$, for some $i \in V$, we would define $g(S) = \llbracket i \in S \rrbracket$, for all $S \in \ss$.
+
+\paragraph{Approximating the partition function.}
+There are two straightforward methods for estimating the partition function $Z$ using sampling.
+The first, importance sampling (IS) \citep{ais}, assumes that we have a tractable distribution $\pi : 2^V \to \mathbb{R}$, from which we draw $M$ samples $\{x_{s+1}, \ldots, x_{s+M}\}$.
+Then, we can estimate the partition function of $p(\cdot) \propto \exp(F(\cdot))$ by
+\begin{align} \label{eq:is}
+Z_{\textrm{IS}} \defeq \frac{1}{M} \sum_{r = 1}^{M} \frac{\exp(F(x_{s+r}))}{\pi(x_{s+r})}.
+\end{align}
+Although this is known to be an unbiased estimator of $Z$, it often has high variance, and tends to underestimate the true value of the partition function.
+
+The second method, reverse important sampling (RIS) \citep{ris}, works in the opposite direction, by first sampling $M$ samples $\{x_{s+1}, \ldots, x_{s+M}\}$ from the target distribution $p$, and then estimating the partition function by
+\begin{align} \label{eq:ris}
+Z_{\textrm{RIS}} \defeq \left(\frac{1}{M} \sum_{r = 1}^{M} \frac{\pi(x_{s+r})}{\exp(F(x_{s+r}))}\right)^{-1}.
+\end{align}
+Similarly to the IS estimator, the RIS estimator also often has high variance, but it tends to overestimate the true value of the partition function.
+Taking the average $0.5 Z_{\textrm{IS}} + 0.5 Z_{\textrm{RIS}}$ is then a natural way to obtain an estimate, while other more involved related methods have also been proposed \citep{burda15,liu15}.
+
+\paragraph{Mixing time.}
+The choice of burn-in time $s$ and number of samples $M$ in \eqref{eq:exp_approx}--\eqref{eq:ris} presents a tradeoff between computational efficiency and approximation accuracy.
+It turns out that the effect of both $s$ and $M$ is largely dependent on a fundamental quantity of the chain called \emph{mixing time} \citep{levin08book}.
+
+The mixing time of a chain quantifies the number of iterations $t$ required for the distribution of $X_t$ to get close to the stationary distribution $p$.
+More formally, it is defined as
+\begin{align*}
+\tme \defeq \min \sdef{t}{d(t) \leq \epsilon},
+\end{align*}
+where $d(t)$ denotes the worst-case (over the starting state $X_0$ of the chain) total variation distance between the distribution of $X_t$ and $\pi$, that is,
+\begin{align*}
+d(t) \defeq \max_{X_0 \in \ss} \| P^t(X_0, \cdot) - p \|_{\mathrm{TV}}.
+\end{align*}
+A generalization of Chebyshev's inequality to correlated Markov chain samples (see Theorem 12.19, \citealp{levin08book}) shows that upper bounding the mixing time is sufficient to guarantee efficient approximate sampling-based inference.

@@ -62,7 +62,7 @@ We, therefore, propose learning the parameters $\btheta$ using an approximate gr
 \paragraph{Gradients of the \fldc{} model.}
 Since we will be focusing on the \fldc{} model for the remainder of this chapter, we derive here the gradients of its potential function with respect to its parameters.
 For simplicity, we assume that we use an equal number of $L$ dimensions for both the repulsive and the attractive matrices.
-As a reminder, the \fldc{} model is in that case defined via the following function \citep{djolonga16mixed},
+As a reminder, the \fldc{} model is in that case defined via the following function (cf. \exampleref{ex:flcd}),
 \begin{align*}
 F(S; \bu, \bw, \bv) = \sum_{i \in S} u_i + \sum_{j=1}^{L} \left(\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}\right) - \sum_{j=1}^{L} \left(\max_{i \in S} v_{ij} - \sum_{i \in S} v_{ij}\right).
 \end{align*}
