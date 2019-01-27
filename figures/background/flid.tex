@@ -1,0 +1,78 @@
+
+\documentclass[border={1pt 1pt 1pt 1pt}]{standalone}
+
+\usepackage{../../core}
+
+\def\xoff{-0.5}
+
+\begin{document}
+\begin{tikzpicture}[
+xscale=1.5,
+yscale=1.5
+]
+  \foreach \i/\j in {
+0/1,0/2
+  } {
+    \fill[col1!50!white] (\i,\j) rectangle (\i+1,\j+1);
+  }
+  
+  \foreach \i/\j in {
+1/0,1/1
+  } {
+    \fill[col1] (\i,\j) rectangle (\i+1,\j+1);
+  }
+
+  \foreach \i/\j in {
+-2/0
+  } {
+    \fill[col1] (\i,\j) rectangle (\i+1,\j+1);
+  }
+  \foreach \i/\j in {
+-2/1
+  } {
+    \fill[col1!50!white] (\i,\j) rectangle (\i+1,\j+1);
+  }
+  \foreach \i/\j in {
+-2/2
+  } {
+    \fill[col1!50!white] (\i,\j) rectangle (\i+1,\j+1);
+  }
+
+
+\draw[step=1cm,white,line width=1.5pt] (-2,0) grid (-1,3);
+\draw[draw=black,line width=0.4pt] (-2.07,-0.07) rectangle (-1+0.07,3+0.07);
+
+\draw[step=1cm,white,line width=1.5pt] (0,0) grid (2,3);	
+
+\draw[draw=black,line width=0.4pt] (-0.07,-0.07) rectangle (2+0.07,3+0.07);
+
+\node[text=textcolor] at (-1.5,3.4) {\Large $\*u$};
+\node[text=textcolor] at (1,3.4) {\Large $\*w$};
+
+\node[text=textcolor] at (-2.4,2.5) {\Large \sffamily 1};
+\node[text=textcolor] at (-2.4,1.5) {\Large \sffamily 2};
+\node[text=textcolor] at (-2.4,0.5) {\Large \sffamily 3};
+
+\node[text=textcolor] at (0.5,0.5) {\large \sffamily 0.0};
+\node[text=textcolor] at (0.5,1.5) {\large \sffamily 1.0};
+\node[text=textcolor] at (0.5,2.5) {\large \sffamily 1.0};
+\node[text=textcolor] at (1.5,0.5) {\large \sffamily 2.0};
+\node[text=textcolor] at (1.5,1.5) {\large \sffamily 2.0};
+\node[text=textcolor] at (1.5,2.5) {\large \sffamily 0.0};
+
+\node[text=textcolor] at (-1.5,0.5) {\large \sffamily 1.0};
+\node[text=textcolor] at (-1.5,1.5) {\large \sffamily -1.0};
+\node[text=textcolor] at (-1.5,2.5) {\large \sffamily -1.0};
+
+\node[text=textcolor,anchor=west] at (3.4,2.7) {\large $F(\varnothing) = 0$};
+\node[text=textcolor,anchor=west] at (3.2,1.9) {\large $F(\{1\}) = -1$};
+\node[text=textcolor,anchor=west] at (3.2,1.1) {\large $F(\{2\}) = -1$};
+\node[text=textcolor,anchor=west] at (3.2,0.3) {\large $F(\{3\}) = 1$};
+
+\node[text=textcolor,anchor=west] at (5.5,2.7) {\large $F(\{1,2\}) = -3$};
+\node[text=textcolor,anchor=west] at (5.5,1.9) {\large $F(\{1,3\}) = 0$};
+\node[text=textcolor,anchor=west] at (5.5,1.1) {\large $F(\{2,3\}) = -2$};
+\node[text=textcolor,anchor=west] at (5.95,0.3) {\large $F(V) = -4$};
+
+\end{tikzpicture}
+\end{document}

@@ -59,9 +59,9 @@ Furthermore, a function $F$ is called normalized if $F(\varnothing) = 0$.
 In some of our results we will use the fact that we can separate the non-normalized, and non-monotone parts of any submodular function according to the following decomposition.
 \begin{definition}[Submodular decomposition] \label{def:decomp}
 Any submodular function $F$ can be decomposed as
-\begin{align} \label{eq:decomp}
+\begin{align*} %\label{eq:decomp}
   F(S) = c + m(S) + f(S),
-\end{align}
+\end{align*}
 for all $S \subseteq V$, where $c \in \mathbb{R}$ is a constant, $m$ is a normalized modular function, and $f$ is a normalized monotone submodular function.
 \end{definition}
 An analogous decomposition using a monotone supermodular function $f$ is possible for any supermodular function $F$ as well.
@@ -179,22 +179,43 @@ This is a submodular set function, therefore the resulting distribution $p(S) \p
 
 The above function $F$ is parameterized by a utility vector $\bu \in \mathbb{R}^n$, and a diversity matrix $\bw \in \mathbb{R}^{n\times L}$.
 Increasing the utility $u_i$ of an element $i \in S$ intuitively increases the probability of all sets containing that element, therefore also increases its marginal probability.
-The diversity matrix $\bw$ can be thought of as consisting of $L$ dimensions (columns).
+The diversity matrix $\bw$ can be thought of as consisting of $L$ latent dimensions (columns).
 Elements of the ground set that have large value in the same column $j$ will tend to appear together less frequently, since the term $\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}$ will be negative for sets $S$ that contain combinations of such items.
+The structure of these models make them ideal for capturing mutual exclusivity, since the high-valued entries of each column of the $\bw$ matrix intuitively encode a group of approximately mutually exclusive elements.
 
-\todo{Show 3-element example figure.}
+In \figref{fig:flid}, we show an example \flid{} model on ground set $V = \{1, 2, 3\}$.
+Note how the high value of $u_3 = 1$ increases the probability of sets containing element $3$, but the high values of $w_{22} = w_{32} = 2$ significantly decrease the probability of sets $\{2, 3\}$ and $V$.
+Similar observations can be made about the lower probability of set $\{1, 2\}$ due to $w_{11} = w_{21} = 1$.
+In this sense, the model encodes two approximately mutually exlusive groups, namely $\{1, 2\}$, and $\{2, 3\}$.
+
+\renewcommand{\subflen}{\textwidth}
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \includegraphics[width=\textwidth]{figures/background/flid.pdf}
+  \end{subfigure}\\[1.5em]
+  \begin{subfigure}[b]{\subflen}
+    \centering
+    \hspace{-2.65em}\includegraphics[width=1.07\textwidth]{figures/background/flid_dist.pdf}
+  \end{subfigure}\\[1em]
+  \caption{An example \flid{} model on ground set $V = \{1, 2, 3\}$, the corresponding values of the facility location function $F(S)$, for all $S \subseteq V$, and the resulting distribution $p(S) \propto \exp(F(S))$.}
+  \label{fig:flid}
+\end{figure}
 \end{example}
 
 \begin{example}[\fldc{}]
 \citep{djolonga16mixed}
 \begin{align*}
-F(S) = \sum_{i \in S} u_i + \sum_{j=1}^{L} \left(\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}\right) - \sum_{j=1}^{L} \left(\max_{i \in S} v_{ij} - \sum_{i \in S} v_{ij}\right).
+F(S) = \sum_{i \in S} u_i + \sum_{j=1}^{L} \left(\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}\right) - \sum_{j=1}^{K} \left(\max_{i \in S} v_{ij} - \sum_{i \in S} v_{ij}\right).
 \end{align*}
 \end{example}
 
-Note that, both the facility location model and the Ising model use decomposable functions, that is, functions that can be written as a sum of simpler submodular (resp. supermodular) functions $F_{\ell}$:
+
+\paragraph{Additively decomposable functions.}
+Note that, both the Ising model, and \flid{} use additively decomposable functions, that is, functions that can be written as a sum of simpler supermodular (resp. submodular) functions $F_{j}$,
 \begin{align} \label{eq:fdec}
-F(S) = \sum_{\ell \in [L]} F_{\ell}(S).
+F(S) = \sum_{j \in [L]} F_{j}(S).
 \end{align}
 
 
@@ -212,7 +233,7 @@ They showed that inference in SPPs is, in general, also a hard problem, and prov
 \todo{Add Chengtao constrained etc. paper}
 \todo{Add DPP -- Rayleigh papers}
 
-\section{Sampling and Mixing Times}
+\section{Sampling and Mixing Time}
 
 \paragraph{Gibbs sampler.}
 One of the most commonly used chains is the (single-site) Gibbs sampler, which adds or removes a single element %of the ground set
