@@ -122,7 +122,8 @@
 \mainmatter
 \pagestyle{mainmatter}
 \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-%\renewcommand{\chaptermark}[1]{\markright{\thechapter #1}}
+%\renewcommand{\chaptermark}[1]{\markboth{Ch. \thechapter\quad#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ \ #1}}
 
 \input{chapters/intro.tex}
 \input{chapters/background.tex}

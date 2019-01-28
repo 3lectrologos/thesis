@@ -48,7 +48,7 @@ We, therefore, propose learning the parameters $\btheta$ using an approximate gr
   \caption{Approximate maximum likelihood maximization}
   \label{alg:grad}
     \begin{algorithmic}[1]
-      \REQUIRE Data $\mathcal{D}$, iterations $n_{\mathrm{iter}}$, samples $M$, step $(\gamma_i)_i$, gradient oracle $\nabla_{\btheta} F(S; \btheta)$
+      \REQUIRE Data $\mathcal{D}$, iterations $n_{\mathrm{iter}}$, samples $M$, step $(\gamma_i)_i$, grad. oracle $\nabla_{\btheta} F(S; \btheta)$
       \STATE Initialize $\theta$
       \FOR{$i = 1$ \TO $n_{\mathrm{iter}}$}
         \LET{$\mathcal{S}$}{sample $M$ sets from $p(\cdot\,; \theta)$}

@@ -227,12 +227,28 @@
 }
 
 \fancypagestyle{mainmatter}{%
-  \renewcommand{\headrulewidth}{0.4pt}% No header rule
+  \renewcommand{\headrulewidth}{0pt}% Header rule
   \renewcommand{\footrulewidth}{0pt}% No footer rule
   \fancyhf{} % clear all header fields
-  \fancyhead[LE]{\textsf{\thepage\quad\quad Sampling from Probabilistic Submodular Models}}
-  \fancyhead[RO]{\textsf{\leftmark\quad\quad\thepage}}
-  \fancyheadoffset[LE,RO]{2em}
+  \fancyhead[LE]{%
+    \begin{tikzpicture}[font=\sffamily]%[overlay,baseline={(0,0)},anchor=center]
+      \node[circle,anchor=east,minimum height=1.5em,draw=none,fill=col1!20!white,inner sep=4pt] (A) at (0,0) {\thepage};
+      \node[anchor=east,right=0.44cm of A,minimum height=1.5em,draw=col1!80!black,fill=col1!20!white,inner sep=4pt] (B) {\ \ \ \strut\leftmark\ \ \ \ };
+      \node[anchor=east,circle,right=14.2cm of A,minimum height=0.5em,draw=none,fill=col1!20!white,inner sep=1pt] (C) {};
+      \draw[col1!80!black] (A) -- (B);
+      \draw[col1!80!black] (B) -- (C);
+    \end{tikzpicture}%
+  }
+  \fancyhead[RO]{%
+    \begin{tikzpicture}[font=\sffamily]%[overlay,baseline={(0,0)},anchor=center]
+      \node[circle,anchor=east,minimum height=1.5em,draw=none,fill=col1!20!white,inner sep=4pt] (A) at (0,0) {\thepage};
+      \node[anchor=east,left=0.5cm of A,minimum height=1.5em,draw=col1!80!black,fill=col1!20!white,inner sep=4pt] (B) {\ \ \ \strut\rightmark\ \ \ \ };
+      \node[anchor=east,circle,left=14.23cm of A,minimum height=0.5em,draw=none,fill=col1!20!white,inner sep=1pt] (C) {};
+      \draw[col1!80!black] (A) -- (B);
+      \draw[col1!80!black] (B) -- (C);
+    \end{tikzpicture}%
+  }
+  \fancyheadoffset[LE,RO]{3em}
 }
 
 \fancypagestyle{plain}{%
