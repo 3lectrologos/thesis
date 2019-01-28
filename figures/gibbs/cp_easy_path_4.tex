@@ -18,12 +18,12 @@
   \node[NN,draw=col1!50!white,fill=col1!50!white] (S3) at (25bp,50bp) {$3$};
   \node[NN,draw=col1!50!white,fill=col1!50!white] (S4) at (75bp,50bp) {$4$};
   \node[NN,draw=col1!50!white,fill=col1!50!white] (S12) at (-125bp,100bp) {$12$};
-  \node[NN,draw=col4,fill=col1!50!white] (S13) at (-75bp,100bp) {$13$};
-  \node[text=col4,font=\LARGE] (txt) at (-92bp,100bp) {\Huge\sffamily\bfseries B};
+  \node[NN,draw=gcol3,fill=col1!50!white] (S13) at (-75bp,100bp) {$13$};
+  \node[text=gcol3,font=\LARGE] (txt) at (-92bp,100bp) {\Huge\sffamily\bfseries B};
   \node[NN,draw=col1!50!white,fill=col1!50!white] (S14) at (-25bp,100bp) {$14$};
   \node[NN,draw=col1!50!white,fill=col1!50!white] (S23) at (25bp,100bp) {$23$};
-  \node[NN,draw=col4,fill=col1!50!white] (S24) at (75bp,100bp) {$24$};
-  \node[text=col4,font=\LARGE] (txt) at (92bp,100bp) {\Huge\sffamily\bfseries A};
+  \node[NN,draw=gcol3,fill=col1!50!white] (S24) at (75bp,100bp) {$24$};
+  \node[text=gcol3,font=\LARGE] (txt) at (92bp,100bp) {\Huge\sffamily\bfseries A};
   \node[NN,draw=col1!50!white,fill=col1!50!white] (S34) at (125bp,100bp) {$34$};
   \node[NN,draw=col1!50!white,fill=col1!50!white] (S123) at (-75bp,150bp) {$123$};
   \node[NN,draw=col1!50!white,fill=col1!50!white] (S124) at (-25bp,150bp) {$124$};
@@ -65,10 +65,10 @@
   \draw [LL] (S134) -- (S1234);
   \draw [LL] (S234) -- (S1234);
   
-  \draw [->,LL,draw=col4,line width=4pt] (S24) -- (S124);
-  \draw [->,LL,draw=col4,line width=4pt] (S124) -- (S14);
-  \draw [->,LL,draw=col4,line width=4pt] (S14) -- (S134);
-  \draw [->,LL,draw=col4,line width=4pt] (S134) -- (S13);
+  \draw [->,LL,draw=gcol3,line width=4pt] (S24) -- (S124);
+  \draw [->,LL,draw=gcol3,line width=4pt] (S124) -- (S14);
+  \draw [->,LL,draw=gcol3,line width=4pt] (S14) -- (S134);
+  \draw [->,LL,draw=gcol3,line width=4pt] (S134) -- (S13);
 \end{tikzpicture}
 
 \end{document}
