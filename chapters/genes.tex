@@ -1,28 +1,31 @@
 \chapter{Learning Prob. Submodular Models} \label{ch:genes}
 
 \section{Introduction}
-As discussed at the very beginning of the thesis, learning probabilistic models from data is one of the main motivations of our work.
-The probabilistic framework we employ suggests a principled way to estimate the model parameters given a data set, namely by maximizing the model likelihood under the data.
-Unfortunately, the maximum likelihood problem for the model class we consider is, in general, non-convex; even worse, evaluating the likelihood function or its gradient with respect to the model parameters boils down to computing expectations over the distribution at hand, which we have already seen to be a hard problem.
-We show in this chapter how we can use sampling to approximate the likelihood gradient, and, thus, perform an approximate gradient ascent procedure that converges to a local optimum of the model likelihood.
-Then, we focus on applying this learning procedure to the application of modeling the interactions between gene mutations in cancer patients.
-We evaluate our method on synthetic and real cancer data, visualize the results in several ways, and compare them to the state of the art.
+As discussed before, learning probabilistic models from data is one of the main motivations of our work.
+The probabilistic framework we have considered throughout the thesis suggests a principled way to estimate model parameters given a data set, namely by maximizing the likelihood of those parameters under the given data.
 
+Evaluating the likelihood or computing its gradient with respect to the model parameters boils down performing inference, in particular, computing expectations over the model distribution.
+This brings us back to the familiar setting of the previous chapters.
+We show how we can use the sampling procedures discussed before to approximate the likelihood gradients, and, thus, perform an approximate gradient ascent procedure.
+Unfortunately, the likelihood functions of probabilistic submodular models are generally non-convex, therefore the optimization is only guaranteed to find a local optimum of the likelihood.
+
+The bulk of this chapter is then focused on applying this learning procedure to the application of modeling the interactions between gene mutations in cancer patients that we discussed in the introduction of the thesis.
+We evaluate our proposed method on synthetic and real cancer data, visualize the results in several ways, and compare them to the state of the art.
 
 \section{Approximate Maximum Likelihood Learning using Sampling} \label{sect:ml}
 
-As before, we consider a model of the form
+We reintroduce here the notation of explicitly stating the model parameters, and thus denote our distribution of interest by
 \begin{align*}
 p(S; \btheta) = \frac{1}{Z(\btheta)} \exp\left( F(S; \btheta) \right),
 \end{align*}
-parametrized by a vector $\btheta$, which we would like to learn.
-Given a data set of $N$ sets, $\mathcal{D} \defeq (D_1,\ldots,D_N)$, $D_1,\ldots,D_N \subseteq V$, the log-likelihood of the model is
+where $\btheta \in \mathbb{R}^d$ is parameter vector to be learned.
+Given a data set of $N$ sets, $\mathcal{D} \defeq \{D_1,\ldots,D_N\}$, with $D_1,\ldots,D_N \subseteq V$, the log-likelihood of the above model can be written as
 \begin{align*}
 \ell(\btheta) &\defeq \sum_{i=1}^N \log p(D_i; \btheta)\\
            &= \sum_{i=1}^N \left( F(D_i; \btheta) - \log Z(\btheta) \right)\\
            &= \sum_{i=1}^N F(D_i; \btheta) - N \log Z(\btheta).
 \end{align*}
-The gradient of the log-likelihood with respect to the parameters $\btheta$ is
+The gradient of the log-likelihood with respect to the parameters $\btheta$ is then
 \begin{align*}
                  \*g(\btheta) &\defeq \nabla_{\btheta} \ell(\btheta)\\
                               &= \sum_{i=1}^N \nabla_{\btheta} F(D_i; \btheta) - N \nabla_{\btheta} \log Z(\btheta)\\
@@ -33,11 +36,11 @@ The gradient of the log-likelihood with respect to the parameters $\btheta$ is
                               &= \sum_{i=1}^N \nabla_{\btheta} F(D_i; \btheta) - N\,\E_{p}\left[ \nabla_{\btheta} F(S; \btheta) \right]\\
                               &= \frac{1}{N}\sum_{i=1}^N \nabla_{\btheta} F(D_i; \btheta) - \E_{p}\left[ \nabla_{\btheta} F(S; \btheta) \right].
 \end{align*}
-This shows that the maximum likelihood parameters satisfy a generalized version of the well-known moment matching condition for exponential family models \citep{wainwright08,koller09}.
-That is, at the maximum, the empirical mean of the function gradient over the data set will match the expected gradient over the model distribution.
+This shows that the maximum likelihood parameters (when $\*g(\btheta) = 0$) satisfy a generalized version of the well-known moment matching condition for exponential family models \citep{wainwright08,koller09}.
+That is, at the maximum, the empirical mean of the function gradient over the data set matches the expected gradient over the model distribution.
 
 While the expectation term in the log-likelihood gradient is, in general, infeasible to compute exactly, we can straightforwardly approximate it using the sampling methods discussed in the previous chapters.
-In particular, if we have drawn samples $\mathcal{S} = \{ S_1,\ldots,S_M \}$, $S_1,\ldots,S_M \subseteq V$, from distribution $p$, we can approximate the gradient $\*g(\btheta)$ by
+In particular, if we have drawn samples $\mathcal{S} = \{ S_1,\ldots,S_M \}$, with $S_1,\ldots,S_M \subseteq V$, from distribution $p$, we can approximate the gradient $\*g(\btheta)$ by
 \begin{align*}
 \widetilde{\*g}(\btheta) \defeq \frac{1}{N}\sum_{i=1}^N \nabla_{\btheta} F(D_i; \btheta) - \frac{1}{M}\sum_{i=1}^M \nabla_{\btheta} F(S_i; \btheta).
 \end{align*}
@@ -66,8 +69,8 @@ As a reminder, the \fldc{} model is in that case defined via the following funct
 \begin{align*}
 F(S; \bu, \bw, \bv) = \sum_{i \in S} u_i + \sum_{j=1}^{L} \left(\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}\right) - \sum_{j=1}^{L} \left(\max_{i \in S} v_{ij} - \sum_{i \in S} v_{ij}\right).
 \end{align*}
-$F$ is differentiable almost everywhere, due to the presence of the two ``$\max$'' functions.
-For the points where it is not differentiable, we define subgradients that give equal contribution to all elements that belong to the corresponding ``$\argmax$''.
+Due to the presence of the two ``$\max$'' functions, $F$ is differentiable only almost everywhere.
+For the points where it is not differentiable, we define subgradients that give equal contribution to all elements that belong to the corresponding set of maximizers.
 In particular, for all $i \in V$, $j \in [L]$, we have
 \begin{align*}
 \nabla_{u_i} F(S; \bu, \bw, \bv) &= \llbracket i \in S\rrbracket\\
@@ -91,19 +94,19 @@ For example, \cite{balcan} investigate learning such a function when given a bla
 
 \section{Modeling Interactions of Gene Mutations in Cancer}
 One of the goals of cancer genomics research is identifying so-called driver mutations, that is, somatic mutations that are responsible for various forms of cancer, and distinguishing them from randomly occurring passenger mutations.
-While sequencing data from large-scale projects, such as The Cancer Genome Atlas \citep{tcga}, has been available in increasing quantities, analyzing the occurence combinations of mutations is a combinatorially daunting task.
+While sequencing data from large projects, such as The Cancer Genome Atlas \citep{tcga}, has been available in increasing quantities, analyzing the occurence combinations of mutations is a combinatorially daunting task.
 
 Driver mutations often occur in a limited number of key biological pathways, and it has been observed that multiple mutations involved in the same pathway tend to not occur together in the same patient \citep{yeang08}.
 As a result, it is of interest to discover groups of gene alterations that are (approximately) mutually exclusive.
-Finding such a group is then be indication that the participating mutations are part of the same cancer-related pathway.
+Finding such a group is then an indication that the participating mutations are part of the same cancer-related pathway.
 Since most existing pathway databases lack in detail and accuracy, there has been particular interest in \emph{de novo} methods, that is, methods that analyze the existing patient data without using any prior biological knowledge, and try to identify new potentially significant combinations of mutations.
 For a general review of the topic, we refer to \cite{raphael14}.
 
 Previous \emph{de novo} methods have used different combinatorial or statistical scores to assess the degree of mutual exclusivity of a group of mutuations.
 These are then paired with some discovery algorithm that exhaustively enumerates groups \citep{muex,yeang08}, progressively builds up larger groups from smaller ones \citep{mutex,rme,memo,timex}, or performs a randomized search in the group space \citep{dendrix,multidendrix,comet}.
-As a result, these methods either scale poorly in the number of mutations at hand, or require a prior assumption on the exact or maximum size of the groups to be discovered.
+As a result, these methods either scale poorly in the number of mutations at hand, or require prior assumptions on the exact or maximum size of the groups to be discovered.
 In the following sections, we compare our results against the CoMEt algorithm \citep{comet}, which is a state-of-the-art method for discovering multiple groups of mutually exclusive mutations.
-While CoMEt requires prespecifying the number and size of groups to be searched for, it is able to produce in the end a consensus of arbitrarily sized groups.
+While CoMEt requires prespecifying the number and size of groups to be searched for, it is able to ultimately put together a consensus of arbitrarily sized groups.
 
 \subsection{Our Approach}
 Assume that we are given a ground set $V = \{1,\ldots,n\}$ of possible gene mutations, and a data set of $N$ patients, $\mathcal{D} \defeq (D_1,\ldots,D_N)$, where $D_i \subseteq V$ is the combination of mutations that were present in patient $i$.
@@ -111,15 +114,16 @@ The data is commonly represented in the literature using a binary alteration mat
 Our goal is to discover groups of mutations $M_1, M_2, \ldots$, $M_i \subseteq V$, with the property that mutations that belong to the same group rarely occur together in the same patient (see \figref{fig:bamat_2}).
 
 We propose using the patient data $\mathcal{D}$ to learn an \fldc{} model over the mutation space $V$.
-Based on the definiton of the \fldc{} potential, we expect the columns of the $\bw$ and $\bv$ matrices to encode groups of repulsive and attractive mutations respectively.
+Based on the definiton of this model, we expect the columns of the $\bw$ and $\bv$ matrices to encode groups of repulsive and attractive mutations respectively.
 For the purposes of this thesis, we propose extracting potential groups by thesholding each matrix at a specified level; these groups can then be further assessed for mutual exclusivity or co-occurence using some of the previously proposed statistical tests.
-More generally, one can perform inference in the learned model to compute various probabilistic quantities that may be useful in specific biological applications.
+More generally, one could perform inference in the learned model to compute various probabilistic quantities that may be useful in specific biological applications.
 
 Our approach offers several advantages over previous work.
-First, it inherently uses higher-order potentials to directly capture mutation interactions of arbitrary size, without any need to specify the number or sizes of the groups in advance.
-Second, in addition to mutual exclusivity, it also models mutation co-occurence, which may also be useful in cancer research \citep{yeang08,raphael14}.
+First, it inherently uses higher-order potentials to directly capture mutation interactions of arbitrary size, without any need to specify the number of groups or size of each group in advance.
+Second, in addition to mutual exclusivity, it also models mutation co-occurence, a property that may also provide useful information in cancer research \citep{yeang08,raphael14}.
 Finally, in terms of computational complexity, the only potentially super-linear component in our learning procedure is the number of samples required to get an accurate gradient approximation.
-As we have previously seen, proving general bounds on the mixing time is a hard endeavour, but practical experience shows that our algorithm only takes a few minutes to run on data sets of hundreds of mutations.
+This further justifies the pursuit of efficient sampling methods in the previous chapters.
+In practice, our algorithm only takes a few minutes to run on real cancer data sets containing hundreds of mutations.
 
 
 \section{Experiments}
