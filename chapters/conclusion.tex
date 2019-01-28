@@ -1,1 +1,33 @@
 \chapter{Conclusion} \label{ch:conclusion}
+
+In this thesis, we focused on discrete probabilistic models defined via submodular or supermodular functions, and investigated the use of Markov chain Monte Carlo sampling techniques to perform inference in such models.
+
+We analyzed the mixing behavior of the Gibbs sampler on probabilistic submodular models, and showed that under conditions that quantify the distance from modularity or the influence of element on the function values, we can guarantee polynomial-time or $\mathcal{O}(n\log n)$ mixing, respectively.
+These conditions also showed how sub- or supermodularity can lead to improved mixing bounds.
+
+We then proposed a novel sampling procedure that combines the Gibbs sampler with a Metropolis chain that performs global moves to avoid state-space bottlenecks.
+The construction of this chain involved creating a mixture of semigradient-based log-modular distributions, and illustrated how concepts from discrete optimization may be leveraged in probabilistic inference.
+
+Finally, we showed how we can use sampling to approximate the likelihood gradients, and perform an approximate likelihood maximization using gradient ascent.
+We applied this learning procedure to the problem of modeling interactions of genetic mutations in cancer patients, in particular mutual exclusivity and co-occurence.
+Our results illustrated that our probabilistic framework provides a flexible way to encode such interactions without the need to specify the number or size of the groups that are being searched for.
+Moreover, in real cancer data we discovered significant groups of mutations that previous state-of-the-art methods failed to find.
+
+\section{Future Work}
+We list here a few promising directions for future work related to this thesis.
+
+\paragraph{Learning models with efficiency guarantees.}
+Our approach in \chapref{ch:gibbs} was to provide conditions for efficient sampling in general probabilistic submodular models.
+On the other hand, the learning approach \chapref{ch:genes} cannot guarantee that these conditions will hold in the resulting model.
+It is interesting to consider the problem of directly incorporating conditions for guaranteed inference efficiency into the learning process, in order to make sure that the learned models are amenable to inference.
+There has been little work in this direction for a limited model class \citep{domke15}.
+
+\paragraph{Continuous sampling for discrete inference.}
+Sampling methods for continuous domains, such as Hamiltonian Monte Carlo, have received increasing attention in the past few years, for their ability to combine gradient information with random momentum to perform more efficient moves in the state space.
+There has been some promising recent work on embedding discrete models into suitable continous domains, then using a continuous sampler, and finally converting the samples back to the discrete domain \citep{zhang12,pakman13,dinh17,nishimura18}.
+It is also interesting to investigate whether it is possible to directly define discrete counterparts of momentum and gradients, and, as a result, a discrete version of Hamiltonian Monte Carlo.
+
+\paragraph{Strongly Rayleigh distributions.}
+Strongly Rayleigh distributions \citep{borcea08} capture a strong notion of negative dependence between elements, and have been shown to allow for efficient sampling \citep{anari16,li16}.
+Except for determinantal point processes, only very few interesting classes of parametric distributions are known to be strongly Rayleigh \citep{li17}.
+It is interesting to investigate under what conditions some well-known model classes are strongly Rayleigh, and to find efficient ways to represent and learn more general strongly Rayleigh models.
