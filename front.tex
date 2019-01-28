@@ -23,6 +23,25 @@ More specifically, we apply our learning procedure to the problem of modeling in
 \cleardoublepage
 \section*{\centering Zusammenfassung}
 \vspace{1em}
+Praktische Probleme diskreter Natur sind weit verbreitet im maschinellen Lernen.
+Anwendungsbereiche umfassen unter anderen Computer Vision (z.B. Bildsegmentierung), sequentielle Entscheidungsfindung (z.B. aktives Lernen), soziale Netzwerkanalyse (z.B. Einflussmaximierung), sowie maschinelle Sprachverarbeitung (z.B. Dokumentzusammenfassung).
+Submodulare Mengenfunktionen werden in diesen Bereichen häufig aufgrund ihrer Fähigkeit, Überdeckungsprobleme, Diversität oder Exklusivität zu modellieren, eingesetzt.
+Analog werden Supermodulare Mengenfunktionen verwendet, um Regularität, Glattheit oder das gemeinsame Auftreten verschiedener Elemente zu modellieren.
+
+Insbesondere der Themenbereich Submodulare Optimierung hat einige Aufmerksamkeit erregt, dabei können submodulare Funktionen ebenso der Definition diskreter probabilistischer Modelle dienen, auch bekannt unter dem Namen Probabilistische Submodulare Modelle.
+Über ihre Optimierung hinaus ermöglichen sie uns auch, stochastische Unsicherheit zu quantifizieren und legen eine Maximum-Likelihood-Methode nahe, um sie auf Basis verrauschter Daten zu lernen.
+Berühmte Beispiele Probabilistischer Submodularer Modelle sind vor allem Ising und Potts Modelle sowie Determinantal Point Processes.
+Doch die generelle Modellklasse ist um einiges reichhaltiger und weniger gut untersucht. 
+
+Allerdings ist allgemeint bekannt, dass die Inferenz dieser Modelle im Allgemeinen rechnerisch unmöglich ist.
+Deshalb untersuchen wir in dieser Dissertation die Markov-Ketten-Monte-Carlo (MCMC) Verfahren zur approximativen Inferenz Probabilistischer Submodularer Modelle.
+
+Zunächst analysieren wir Gibbs Sampling und etablieren theoretische Voraussetzungen, unter denen dieser Algorithmus bei Probabilistischen Submodularen Modellen effizient konvergiert.
+Als nächstes stellen wir ein neuartiges Verfahren zur Stichprobenentnahme vor, die diskrete Halbgradienten gebraucht, um effiziente globale Schritte zu unternehmen.
+Dies vermeidet sogenannte Zustandsraumengpässe (bottlenecks) und führt zu verbessertem Konvergenzverhalten.
+Letztendlich benutzen wir zuvor erwähnte Sampling Methoden, um Likelihood-Gradienten zu approximieren und unsere Modelle aus Daten zu lernen.
+Konkret verwenden wir unser Lernverfahren, um die Interaktionen genetischer Mutationen in Krebspatienten zu modellieren.
+Sowohl für synthetische als auch echte Daten erzielen wir erhebliche Verbesserungen in vielen unserer Experimente im Vergleich zum neuesten Stand der Forschung.
 
 
 \cleardoublepage
