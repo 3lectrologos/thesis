@@ -262,7 +262,7 @@ There has been extensive research on variational methods for low-order models, p
 More recently, \citet{djolonga14} have proposed a variational approach for performing approximate probabilistic inference in probabilistic submodular models, based on log-modular approximations of the distribution.
 
 
-\section{Sampling}
+\section{Sampling} \label{sect:sampling}
 In this thesis, we focus on Markov chain Monte Carlo sampling algorithms, which are based on performing randomly selected moves in a state space $\ss$ to approximate probabilistic quantities of interest.
 The visited states $(X_0, X_1,\ldots)$ form a Markov chain, which under mild conditions converges to a stationary distribution $p$ (see Theorem 4.9, \citealp{levin08book}).
 Crucially, the probabilities of transitioning from one state to another are carefully chosen to ensure that the stationary distribution is identical to the distribution of interest.

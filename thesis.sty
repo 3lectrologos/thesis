@@ -22,8 +22,8 @@
   colorlinks=true,
   linkcolor=col1dark,
   citecolor=col1dark,
-  filecolor=Plum!80!black,
-  urlcolor=Plum!80!black,
+  filecolor=col1dark,
+  urlcolor=col1dark,
   pdfview=FitH}
 
 % Custom commands
@@ -231,24 +231,25 @@
   \renewcommand{\footrulewidth}{0pt}% No footer rule
   \fancyhf{} % clear all header fields
   \fancyhead[LE]{%
-    \begin{tikzpicture}[font=\sffamily]%[overlay,baseline={(0,0)},anchor=center]
-      \node[circle,anchor=east,minimum height=1.5em,draw=none,fill=col1!20!white,inner sep=4pt] (A) at (0,0) {\thepage};
-      \node[anchor=east,right=0.44cm of A,minimum height=1.5em,draw=col1!80!black,fill=col1!20!white,inner sep=4pt] (B) {\ \ \ \strut\leftmark\ \ \ \ };
-      \node[anchor=east,circle,right=14.2cm of A,minimum height=0.5em,draw=none,fill=col1!20!white,inner sep=1pt] (C) {};
-      \draw[col1!80!black] (A) -- (B);
-      \draw[col1!80!black] (B) -- (C);
+    \begin{tikzpicture}[font=\sffamily,text centered]
+      \node[circle,anchor=east,minimum height=1.5em,draw=none,fill=col1!15!white,inner sep=3pt,font={\sffamily\small}] (A) at (0,0) {\thepage};
+      \node[anchor=east,right=0.5cm of A,minimum height=1.5em,draw=col1!90!black,fill=col1!15!white,inner sep=2pt] (B) {\rule{0pt}{12pt}\strut\ \ \ \ \leftmark\ \ \ \ };
+      \node[circle,anchor=east,right=14.5cm of A,minimum height=4pt,minimum width=4pt,draw=none,fill=none,inner sep=0.5pt] (C) {};
+      \draw[col1!90!black] (A) -- (B);
+      \draw[col1!90!black] (B) -- (C);
     \end{tikzpicture}%
   }
   \fancyhead[RO]{%
-    \begin{tikzpicture}[font=\sffamily]%[overlay,baseline={(0,0)},anchor=center]
-      \node[circle,anchor=east,minimum height=1.5em,draw=none,fill=col1!20!white,inner sep=4pt] (A) at (0,0) {\thepage};
-      \node[anchor=east,left=0.5cm of A,minimum height=1.5em,draw=col1!80!black,fill=col1!20!white,inner sep=4pt] (B) {\ \ \ \strut\rightmark\ \ \ \ };
-      \node[anchor=east,circle,left=14.23cm of A,minimum height=0.5em,draw=none,fill=col1!20!white,inner sep=1pt] (C) {};
-      \draw[col1!80!black] (A) -- (B);
-      \draw[col1!80!black] (B) -- (C);
+    \begin{tikzpicture}[font=\sffamily,text centered]
+      \node[circle,anchor=east,minimum height=1.5em,draw=none,fill=col1!15!white,inner sep=3pt,font={\sffamily\small}] (A) at (0,0) {\thepage};
+      \node[anchor=east,left=0.5cm of A,minimum height=1.5em,draw=col1!90!black,fill=col1!15!white,inner sep=2pt] (B) {\rule{0pt}{12pt}\strut\ \ \ \ \rightmark\ \ \ \ };
+      \node[circle,anchor=east,left=14.5cm of A,minimum height=4pt,minimum width=4pt,draw=none,fill=none,inner sep=0.5pt] (C) {};
+      \draw[col1!90!black] (A) -- (B);
+      \draw[col1!90!black] (B) -- (C);
     \end{tikzpicture}%
   }
   \fancyheadoffset[LE,RO]{3em}
+  \fancyheadoffset[LO,RE]{2em}
 }
 
 \fancypagestyle{plain}{%
