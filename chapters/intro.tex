@@ -38,7 +38,7 @@ Rather than having a single optimum as the solution, we have a way to quantify o
 In addition, the use of probabilistic models suggests a principled approach for learning the potentially complex interactions present in the data, namely maximizing the likelihood of the model parameters.
 Finally, constraining ourselves to specific model classes allows us to incorporate prior assumptions about the problem structure, and alleviate the scarce data issue.
 
-\section{Thesis Topic}
+\section{Probabilistic Submodular Models}
 Past research on discrete probabilistic models has primarily focused on models defined by pairwise interactions, such as Markov random fields \cite{koller09}.
 In many applications, however, it is of importance to directly capture higher-order dependencies between larger groups of variables.
 For example, in our aforementioned application, being able to directly encode larger groups of mutually exclusive mutations provides a potentially sparser and easier to interpret representation, while at the same time allowing for a richer structure of interactions.
@@ -56,11 +56,10 @@ p(S; \btheta) = \frac{1}{Z(\btheta)} \exp\left( F(S; \btheta) \right),
 for all $S \subseteq V$, where $F$ is a submodular or supermodular function parameterized by $\btheta$, and $Z(\btheta)$ is the normalizer of the distribution.
 Distributions of this form generalize some well-studied model classes, such as Ising models, and determinantal point processes.
 
-\paragraph{Thesis topic.} Both learning the parameters $\btheta$ from data, as well as quantifying uncertainty and making decisions with the learned distribution, boil down to the fundamental task of probabilistic inference, that is, computing marginal probabilities or the normalizer $Z$ in such distributions, a problem that is known to be computationally intractable in general.
+\section{Thesis Topic \& Contributions}
+Both learning the model parameters $\btheta$ from data, as well as quantifying uncertainty and making decisions with the learned distribution, boil down to the fundamental task of probabilistic inference, that is, computing the normalizer $Z$ or various marginal probabilities of such distributions, a problem that is known to be computationally intractable in general.
 The main topic of this thesis is to investigate the use of Markov chain Monte Carlo sampling as a means of performing approximate inference in probabilistic submodular models.
 
-\newpage
-\section{Contributions}
 The primary contributions of this thesis can be summarized as follows.
 \begin{itemize}[leftmargin=3.5em]
 \item[\textsf{Chapter 3}] We analyze the Gibbs sampler in probabilistic submodular models, and prove sufficient theoretical conditions for polynomial-time, and fast---$\mathcal{O}(n\log n)$---mixing.
