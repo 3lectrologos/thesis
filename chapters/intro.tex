@@ -38,7 +38,7 @@ Rather than having a single optimum as the solution, we have a way to quantify o
 In addition, the use of probabilistic models suggests a principled approach for learning the potentially complex interactions present in the data, namely maximizing the likelihood of the model parameters.
 Finally, constraining ourselves to specific model classes allows us to incorporate prior assumptions about the problem structure, and alleviate the scarce data issue.
 
-\section{Thesis Topic \& Contributions}
+\section{Thesis Topic}
 Past research on discrete probabilistic models has primarily focused on models defined by pairwise interactions, such as Markov random fields \cite{koller09}.
 In many applications, however, it is of importance to directly capture higher-order dependencies between larger groups of variables.
 For example, in our aforementioned application, being able to directly encode larger groups of mutually exclusive mutations provides a potentially sparser and easier to interpret representation, while at the same time allowing for a richer structure of interactions.
@@ -60,7 +60,8 @@ Distributions of this form generalize some well-studied model classes, such as I
 The main topic of this thesis is to investigate the use of Markov chain Monte Carlo sampling as a means of performing approximate inference in probabilistic submodular models.
 
 \newpage
-\paragraph{Contributions.} The primary contributions of this thesis can be summarized as follows.
+\section{Contributions}
+The primary contributions of this thesis can be summarized as follows.
 \begin{itemize}[leftmargin=3.5em]
 \item[\textsf{Chapter 3}] We analyze the Gibbs sampler in probabilistic submodular models, and prove sufficient theoretical conditions for polynomial-time, and fast---$\mathcal{O}(n\log n)$---mixing.
 \item[\textsf{Chapter 4}] We propose a novel sampler that makes use of discrete semigradients to perform efficient global moves in the state space to avoid bottlenecks, thus leading to improved mixing over the Gibbs sampler.
@@ -68,8 +69,8 @@ The main topic of this thesis is to investigate the use of Markov chain Monte Ca
 Many of our results demonstrate considerable improvement over the state of the art.
 \end{itemize}
 
-\paragraph{Collaborators.}
+\section{Collaborators}
 The topic of sampling from probabilistic submodular models was conceived by my advisor, Prof. Andreas Krause, who has also contributed to most parts of this thesis by providing invaluable input and feedback over the years.
-Parts of the theoretical analysis in \chapref{ch:gibbs}, and \chapref{ch:m3} were done in collaboration with Prof. Hamed Hassani.
+Parts of the theoretical analysis in \chapref{ch:gibbs} and \chapref{ch:m3} were done in collaboration with Prof. Hamed Hassani.
 The work of \chapref{ch:m3} was done under the guidance of Prof. Stefanie Jegelka, who also contributed to the theoretical analysis of this chapter.
-Finally, regarding the application of \chapref{ch:genes}, I have had fruitful discussions with Gideon Dresdner, Dr. Kjong Lehmann, and Prof. Gunnar Rätsch.
+Finally, regarding the application presented in \chapref{ch:genes}, I have had fruitful discussions with Gideon Dresdner, Dr. Kjong Lehmann, and Prof. Gunnar Rätsch.
