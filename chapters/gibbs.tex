@@ -143,19 +143,29 @@ A trivial upper bound on $\zf$, therefore, is $\zf \leq f(V)$.
 Another quantity that has been used in the past to quantify the deviation of a submodular function from modularity is the curvature \citep{conforti84}, defined as $\kappa_F \defeq 1 - \min_{i \in V} \left(F(i\mid V\setminus\{i\}) / F(i)\right)$.
 Although of similar intuitive meaning, the multiplicative nature of its definition makes it significantly different from $\zf$, which is defined additively.
 
-\paragraph{Examples.}
-As an example of a function class with $\zf$ that do not depend on $n$, assume a ground set $V = \bigcup_{\ell = 1}^L V_{\ell}$, and consider functions of the form
+\subsection{Examples}
+\paragraph{Concave over modular.}
+As an example of a function class with $\zf$ independent of $n$, assume a ground set $V = \bigcup_{\ell = 1}^L V_{\ell}$, and consider functions of the form
 \begin{align*}
 F(S) = \sum_{\ell = 1}^L \phi(|S \cap V_{\ell}|),
 \end{align*}
-where $\phi : \mathbb{R} \to \mathbb{R}$ is a bounded concave function, for example, $\phi(x) = \min\{\phi_{\max}, x\}$.
+where $\phi : \mathbb{R} \to \mathbb{R}$ is a bounded concave function, e.g, $\phi(x) = \min\{\phi_{\max}, x\}$.
 Functions of this form are submodular, and have been used in applications such as document summarization to encourage diversity \citep{lin11}.
-It is easy to see that, for such functions, $\zf \leq L\phi_{\max}$, that is, $\zf$ is independent of $n$.
+It is easy to see that $\zf \leq L\phi_{\max}$, which shows that $\zf$ is independent of $n$.
 
+\paragraph{\flid{}.}
 For the \flid{} model (see \exampleref{ex:flid}), we have $f(S) = \sum_{j=1}^L \max_{i \in S} w_{ij}$, therefore we get $\zf \leq f(V) = \sum_{j=1}^L w_j^{\mathrm{max}}$, where $w_j^{\mathrm{max}} = \max_{i \in V} w_{ij}$.
 Since the values of $\bw$ depend primarily on the number of repulsive groups, rather than the size of the ground set, we expect $\zf$ to grow much slower than $n$ in most practical applications.
 
-\vspace{1.5em}
+\paragraph{\fldc{}.}
+For the \fldc{} model (see \exampleref{ex:fldc}), although $F$ is neither submodular nor supermodular in general, we can still write it as
+\begin{align*}
+F(S) = m(S) + g(S) + h(S),
+\end{align*}
+where $m$ is a modular function, $g(S) \defeq \sum_{j=1}^L \max_{i \in S} w_{ij}$ is submodular, and $h(S) \defeq -\sum_{j=1}^K \max_{i \in S} v_{ij}$ is supermodular.
+Using the triangle inequality in the definition of $\zf$, we get that $\zf \leq g(V) + h(V) = \sum_{j=1}^L w_j^{\mathrm{max}} + \sum_{j=1}^K v_j^{\mathrm{max}}$, where $w_j^{\mathrm{max}} = \max_{i \in V} w_{ij}$, and $v_j^{\mathrm{max}} = \max_{i \in V} v_{ij}$.
+
+\subsection{Mixing Time Bound}
 \noindent The following theorem establishes a bound on the mixing time of the Gibbs sampler run on models of the form \eqref{eq:gibbs_pdef}.
 The bound is exponential in $\zf$, but polynomial in $n$.
 \begin{theorem} \label{thm:poly}
@@ -595,7 +605,7 @@ Furthermore, we demonstrated that, in practice, the Gibbs sampler compares favor
 
 \paragraph{Further related work.}
 In contemporary work to ours, Rebeschini and Karbasi \citep{rebeschini15} analyzed the mixing times of log-submodular models.
-Using a method based on matrix norms, which was previously introduced by \cite{dyer09}, and is closely related to path coupling, they arrived at a similar, though not directly comparable, condition to the one we presented in \theoremref{thm:fast}.
+Using a method based on matrix norms, which was previously introduced by \cite{dyer09}, and is closely related to path coupling, they arrived at a similar, though not directly comparable, condition to that of \theoremref{thm:fast}.
 
 \cite{li16} extended our polynomial-time mixing result of \theoremref{thm:poly} to the problem of sampling from a distribution under specific constraints.
 In particular, they used a similar to ours canonical path argument involving an analogous quantity to our $\zf$ to prove mixing bounds under uniform and partition matroid constraints.
