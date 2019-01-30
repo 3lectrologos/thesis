@@ -9,44 +9,29 @@ In fact, we show that even for probabilistic submodular models defined by monoto
 
 Our goal is to establish theoretical conditions that guarantee rapid mixing of the Gibbs sampler in probabilistic submodular models, and at the same time, investigate in what way the properties of sub- and supermodularity affect the resulting conditions.
 
-
-\section{Problem Setup} \label{sect:setup}
-In this chapter, we focus on distributions of the form
+We focus on distributions of the form
 \begin{align}\label{eq:gibbs_pdef}
 p(S) = \frac{\exp(\beta F(S))}{Z},
 \end{align}
 for all $S \subseteq V$, where $F$ is submodular or supermodular.
-We currently assume that $F$ is already learned or given, and omit the parameter vector $\btheta$ from the notation.
+For now we assume that $F$ is already learned or given, and omit the parameter vector $\btheta$ from the notation.
 Furthermore, we have introduced a scaling parameter $\beta \geq 0$, which is referred to as inverse temperature, and will be useful for our subsequent theoretical analysis.
 Intuitively, $\beta$ controls the concentration of $p$ around the high-value sets of $F$.
 When $\beta = 0$, $p$ is the uniform distribution over $2^V$; when $\beta \to \infty$, the mass of $p$ fully concentrates around the maximizers of $F$.
 
-\paragraph{Marginal inference.}
-Our goal is to perform marginal inference for the distributions described above.
-Concretely, for some fixed $A \subseteq B \subseteq V$, we would like to compute the probability of sets $S$ that contain all elements of $A$, but no elements outside of $B$, that is, $p(A \subseteq S \subseteq B)$.
-More generally, we are interested in computing conditional probabilities of the form $p(A \subseteq S \subseteq B \mid C \subseteq S \subseteq D)$.
-This computation can be reduced to computing unconditional marginals as follows.
-For any $C \subseteq V$, define the contraction of $F$ on $C$, $F_C : 2^{V \setminus C} \to \mathbb{R}$, by $F_C(S) = F(S \cup C) - F(S)$, for all $S \subseteq V \setminus C$.
-Also, for any $D \subseteq V$, define the restriction of $F$ to $D$, $F^D : 2^D \to \mathbb{R}$, by $F^D(S) = F(S)$, for all $S \subseteq D$.
-If $F$ is submodular, then its contractions and restrictions are also submodular, and, thus, $(F_C)^D$ is submodular.
-Finally, it is easy to see that $p(S \mid C \subseteq S \subseteq D) \propto \exp(\beta (F_C)^D(S))$.
-In our experiments, we consider computing marginals of the form $p(i \in S \mid C \subseteq S \subseteq D)$, for some $i \in V$, which correspond to $A = \{i\}$, and $B = V$.
-
 \section{Hardness of Inference}
 Performing exact inference in probabilistic submodular models is, in general, computationally infeasible.
 Only for very few exceptions, such as determinantal point processes, is exact inference possible in polynomial time \citep{kulesza12}.
-As we mentioned before, even approximating the partition function of general Ising models---a subclass of PSMs---is a hard problem; in particular, there is no FPRAS for this problem, unless RP = NP \citep{jerrum93}.
-This implies that the mixing time of any Markov chain with such a stationary distribution will, in general, be exponential in $n$.
+As we mentioned before, even approximating the partition function of general Ising models---a subclass of probabilistic submodular models---is a hard problem; in particular, there is no FPRAS for this problem, unless RP = NP \citep{jerrum93}.
+This implies that the mixing time of any Markov chain with such a stationary distribution will, in general, be exponential in the size $n$ of the ground set.
 
 \subsection{Example: Log-submodular Grid}
 To further highlight the hardness of inference in the general models we consider, we show that even for distributions defined through a seemingly benign subclass of submodular functions, mixing times can be exponential in $n$.
-We say that a set function $F : 2^V \to \mathbb{R}$ is monotone, if $F(i \mid S) \geq 0$, for all $i \in V$, and all $S \subseteq V$.
-Intuitively, adding elements to our set always leads to higher values.
 
 For the purposes of the following proposition, we will use a Metropolis chain (see \sectref{sect:sampling}), rather than a Gibbs chain, to simplify the exposition.
 While the two chains are not identical, they share the same principle of making local moves by considering ratios of probabilities of neighboring states.
 \begin{prop}
-There is a family of monotone submodular functions $(F_n)_n$, such that, for the corresponding log-submodular family of distributions $(p_n)_n$ defined as in \eqref{eq:gibbs_pdef}, the Metropolis chain has mixing time
+There is a family of monotone submodular functions $(F_n)_n$, such that, for the corresponding log-submodular family of distributions $(p_n)_n$, the Metropolis chain has mixing time
 \begin{align*}
   \tm  = \Omega(2^{n/2}),
 \end{align*}
@@ -56,7 +41,7 @@ for any value of $\beta$.
 \begin{proof}
 The functions used to prove the above lemma are based on the following construction.
 For any even $n \geq 2$, let $V_n = \{1,\ldots,n\}$, $R_n = \{1,\ldots,n/2\}$, and $C_n = \{n/2+1,\ldots,n\}$.
-To define function $F_n : 2^{V_n} \to \mathbb{R}$, we conceptually use a $n/2 \times n/2$ square grid, whose rows are indexed by $R$ and columns by $C$.
+To define function $F_n : 2^{V_n} \to \mathbb{R}$, we conceptually use a $n/2 \times n/2$ square grid, whose rows are indexed by $R_n$ and columns by $C_n$.
 Each cell $(i, j)$ of the grid is considered to be covered, if either row $i \in R$ or column $j \in C$ is selected.
 Formally, we define $F_n$ by
 \begin{align*}
@@ -68,7 +53,7 @@ for any $S \subseteq V_n$, which results in $F_n(V_n) = 1$.
 \begin{figure}[htb]
   \centering
   \input{figures/gibbs/grid.tex}\\[1em]
-  \caption{Example grid for $n = 8$ with the cells corresponding to $F_8(\{1,3,7\}) = 10/16$ shown shaded.}
+  \caption{Example grid for $n = 8$ with the cells that correspond to $F_8(\{1,3,7\}) = 10/16$ shown shaded.}
   \label{fig:submod_grid}
 \end{figure}
 
@@ -91,33 +76,37 @@ To prove a lower bound on the mixing time of this chain, we are going to upper b
 \end{align*}
 where $\htn^c = 2^V \setminus \htn$ is the complement of $\htn$. We now compute or bound each of the terms $\pi(\htn)$, $Q(\htn, \hcn)$, and $Q(\htn, \hkn)$.
 
-\paragraph{Computing $\pi(\htn)$.}
+\vspace{0.8em}
+\noindent $\bullet\ $ Computing $\pi(\htn)$:
 \begin{align*}
   \pi(\htn) &= |\htn| \frac{e^{\beta}}{Z} \tag*{by \eqref{eq:prop3}} \\
          &= (2^{n/2} - 1) \frac{e^{\beta}}{Z}. \tag*{by \eqref{eq:prop1}}
 \end{align*}
-Note that, by an analogous derivation, we get $\pi(\hcn \setminus \{V\}) = \pi(\htn)$ and, by \eqref{eq:prop2},
+\noindent Note that, by an analogous derivation, we get $\pi(\hcn \setminus \{V\}) = \pi(\htn)$ and, by \eqref{eq:prop2},
 \begin{align*}
   &\pi(\htn) + \pi(\hcn \setminus \{V\}) < 1 \\
   \Rightarrow\ \ &\pi(\htn) < 0.5.
 \end{align*}
-  
-\paragraph{Computing $Q(\htn, \hcn)$.}
+
+\vspace{0.8em}
+\noindent $\bullet\ $ Computing $Q(\htn, \hcn)$:
 \begin{align*}
   Q(\htn, \hcn) &= \sum_{x \in \htn} Q(x, \hcn) \\
                 &= \sum_{x \in \htn} Q(x, \{V\}) \tag*{by \eqref{eq:prop2}} \\
                 &= \sum_{x \in \htn} \frac{1}{2n} \frac{e^{\beta}}{Z} \tag*{by \eqref{eq:prop3}} \\
                 &= n \frac{1}{2n} \frac{e^{\beta}}{Z} = \frac{e^{\beta}}{2Z}.
 \end{align*}
-    
-\paragraph{Bounding $Q(\htn, \hkn)$.}
+
+\vspace{0.8em}
+\noindent $\bullet\ $ Bounding $Q(\htn, \hkn)$:
 \begin{align*}
   Q(\htn, \hkn) &= \sum_{x \in \htn} Q(x, \hkn) \\
                 &\leq \sum_{x \in \htn} \frac{1}{2n} \frac{e^{\beta - 4\beta/n^2}}{Z} \tag*{by \eqref{eq:prop4}} \\
                 &= \frac{2^{n/2} - 1}{2n} \frac{e^{\beta - 4\beta/n^2}}{Z}. \tag*{by \eqref{eq:prop1}}
 \end{align*}
 
-\paragraph{Bounding $\Phi(\htn)$.}
+\vspace{0.8em}
+\noindent $\bullet\ $ Bounding $\Phi(\htn)$:
 \begin{align*}
   \Phi(\htn) &\leq \frac{1}{2^{n/2} - 1}\left(\frac{1}{2} + \frac{(2^{n/2} - 1) e^{-4\beta/n^2}}{2n}\right)\\
           &= \frac{1}{2(2^{n/2} - 1)} + \frac{e^{-4\beta/n^2}}{2n}.
@@ -130,13 +119,13 @@ Using Theorem 7.3 \citep{levin08book}, it follows that
 \end{proof}
 
 \section{Polynomial-time Mixing} \label{sect:poly}
-Our first result provides conditions that guarantee polynomial mixing times in the size of the ground set $n$.
-As we will see, the conditions depend crucially on the following quantity, which is defined for any set function $F : 2^V \to \mathbb{R}$:
+Our first result provides conditions that guarantee polynomial mixing times in the size $n$ of the ground set.
+As we will see, the conditions depend crucially on the following quantity, which is defined for any set function $F : 2^V \to \mathbb{R}$,
 \begin{align*}
   \zf \defeq \max_{A, B \subseteq V} \left|F(A) + F(B) - F(A \cup B) - F(A \cap B) \right|.
 \end{align*}
 Intuitively, $\zf$ quantifies a notion of distance to modularity.
-For submodular and supermodular functions, $\zf$ represents the worst-case amount by which $F$ violates the submodular inequality, and $\zf = 0$ if $F$ is modular (cf. \sectref{sect:bg_submod}).
+For submodular and supermodular functions, $\zf$ represents the worst-case amount by which $F$ violates the submodular inequality, and $\zf = 0$ if and only if $F$ is modular (cf. \sectref{sect:bg_submod}).
 
 It is also important to note that, for submodular and supermodular functions, $\zf$ depends only on the monotone part of $F$; if we decompose $F$ according to \defref{def:decomp}, then it is easy to see that $\zf = \zeta_f$.
 A trivial upper bound on $\zf$, therefore, is $\zf \leq f(V)$.
@@ -181,10 +170,10 @@ The bound is exponential in $\zf$, but polynomial in $n$.
 \end{theorem}
 Note that, since the factor of two that constitutes the difference between the two statements of the theorem lies in the exponent, it can have a significant impact on the above bounds.
 The dependence on $p_{\min}$ is related to the (worst-case) starting state of the chain, and can be eliminated if we have a way to guarantee a high-probability starting state.
-If $F$ is submodular or supermodular, this is usually straightforward to accomplish by using one of the standard constant-factor optimization algorithms \citep{nemhauser78,fujishige05} as a preliminary step.
+If $F$ is submodular or supermodular, this is usually straightforward to accomplish by using one of the standard constant-factor optimization algorithms (see \sectref{sect:bg_submod}) as a preliminary step.
 More generally, if $F$ is bounded by $0 \leq F(S) \leq F_{\max}$, for all $S \subseteq V$, then $\log (1/p_{\min}) = \mathcal{O}(n \beta F_{\max})$.
 
-\paragraph{Canonical paths}
+\subsection{Proof of \theoremref{thm:poly}}
 Our proof of \theoremref{thm:poly} is based on the method of \emph{canonical paths} \citep{jerrum03,sinclair92,jerrum89,diaconis91}.
 The high-level idea of this method is to view the state space as a graph, and try to construct a path between each pair of states, which carries a certain amount of flow specified by the stationary distribution under consideration.
 Depending on the choice of these paths and the resulting load on the edges of the graph we can derive bounds on the mixing time of the Markov chain.
@@ -254,7 +243,6 @@ where $p_{\mathrm{min}} \defeq \displaystyle\min_{S \in \ss}p(S)$.
   \label{fig:cong}
 \end{figure}
 
-\subsection{Proof of \theoremref{thm:poly}}
 To apply \theoremref{thm:cpath} to our class of distributions, we need to construct a set of canonical paths in the corresponding state space $2^V$, and upper bound the resulting congestion.
 First, note that, to transition from state $A \in \ss$ to state $B \in \ss$, in our case, it is enough to remove the elements of $A \setminus B$ and add the elements of $B \setminus A$.
 Each removal and addition corresponds to an edge in the state space graph, and the order of these operations identify a canonical path in this graph that connects $A$ to $B$.
@@ -382,7 +370,7 @@ The following theorem establishes conditions for fast mixing of the Gibbs sample
 \end{theorem}
 Note that, in the second part of the theorem, $\gsf$ depends only on the monotone part of $F$. 
 
-\paragraph{Coupling.}
+\subsection{Proof of \theoremref{thm:fast}}
 Our proof of \theoremref{thm:fast} is based on the \emph{coupling} technique \citep{aldous83}; more specifically, we use the \emph{path coupling} method \citep{bubley97,levin08,jerrum03}.
 Given a Markov chain $(Z_t)$ on state space $\ss$ with transition matrix $P$, a coupling for $(Z_t)$ is a new Markov chain $(X_t, Y_t)$ on state space $\ss \times \ss$, such that both $(X_t)$ and $(Y_t)$ are by themselves Markov chains with transition matrix $P$.
 The idea is to construct the coupling in such a way that, even when the starting points $X_0$ and $Y_0$ are different, the chains $(X_t)$ and $(Y_t)$ tend to coalesce.
@@ -404,7 +392,6 @@ Then, the mixing time of the original chain $(Z_t)$ is bounded by
 \end{align*}
 \end{theorem}
 
-\subsection{Proof of \theoremref{thm:fast}}
 In our case, the path metric $d$ is the Hamming distance between the binary vectors representing the states (equivalently, the number of elements by which two sets differ).
 We need to construct a suitable coupling $(X_t, Y_t)$ for any pair of states $x \sim y$.
 Consider the two corresponding sets $S, R \subseteq V$ that differ by exactly one element, and assume that $R = S \cup \{r\}$, for some $r \in V$. (The case $S = R \cup \{s\}$ for some $s \in V$ is completely analogous.)
@@ -450,11 +437,13 @@ For any $S, R \subseteq V$ with $R = S \cup \{r\}$,
     &= \left|\frac{\exp(\beta (\D_F(i\mid S) - \D_F(i\mid R))) - 1}{\exp(\beta (\D_F(i\mid S) - \D_F(i\mid R))) + 1}\right|\\[0.8em]
     &= \tanh \left(\frac{\beta}{2}\big|(\D_F(i\mid S) - \D_F(i\mid R)) \big|\right).
   \end{align*}
-  The lemma follows by the definition of $\gf$, and the fact that $R = S \cup \{r\}$.
+  The lemma follows by definition of $\gf$, and the fact that $R = S \cup \{r\}$.
 \end{proof}
 \noindent Applying this lemma, we get
 \begin{align*}
-  \E[d(S', R')] = 1 -\frac{1}{n} + \frac{1}{n}\sum_{i \neq r}p_{\mathrm{dif}}(i) \leq 1 - \frac{1}{n}(1 - \gf) \leq \exp\left(-\frac{1-\gf}{n}\right),
+  \E[d(S', R')] &= 1 -\frac{1}{n} + \frac{1}{n}\sum_{i \neq r}p_{\mathrm{dif}}(i)\\
+                &\leq 1 - \frac{1}{n}(1 - \gf)\\
+                &\leq \exp\left(-\frac{1-\gf}{n}\right),
 \end{align*}
 and the result of \theoremref{thm:fast} follows from applying \theoremref{thm:pc} with $\alpha = \gf/n$, and noting that $\mathrm{diam}(\ss) = n$.
 
@@ -499,9 +488,9 @@ We prove the following corollary that provides an easy to check condition for fa
   	&\sum_{i \neq r} \tanh \left(\frac{\beta}{2}\big|(\D_f(i\mid S) - \D_f(i\mid R)) \big|\right)\\
     &\leq \sum_{i \neq r} \frac{\beta}{2}\big|(\D_f(i\mid S) - \D_f(i\mid R)) \big| \tag*{by $\tanh(x) \leq x$, for all $x \geq 0$}\\
     &\leq \sum_{i \neq r} \frac{\beta}{2}(\D_f(i\mid S) - \D_f(i\mid R)) \tag*{by submodularity of $f$}\\
-    &= \frac{\beta}{2}\sum_{i \neq r}(f(S \cup \{i\}) - f(S \setminus \{i\}) - f(S \cup \{r\} \cup \{i\}) + f(S \cup \{r\} \setminus \{i\}))\\
-    &= \frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}(f_{j}(S \cup \{i\}) - f_{j}(S \setminus \{i\}) - f_{j}(S \cup \{r\} \cup \{i\}) + f_{j}(S \cup \{r\} \setminus \{i\}))\\
-    &\leq \frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}\min\big\{f_{j}(S \cup \{i\}) - f_{j}(S \setminus \{i\}), f_{j}(S \cup \{r\} \setminus \{i\}) - f_{j}(S \setminus \{i\})\big\} \tag*{by monotonicity of $f_{j}$}\\
+    &= \medmath{\frac{\beta}{2}\sum_{i \neq r}(f(S \cup \{i\}) - f(S \setminus \{i\}) - f(S \cup \{r\} \cup \{i\}) + f(S \cup \{r\} \setminus \{i\}))}\\
+    &= \medmath{\frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}(f_{j}(S \cup \{i\}) - f_{j}(S \setminus \{i\}) - f_{j}(S \cup \{r\} \cup \{i\}) + f_{j}(S \cup \{r\} \setminus \{i\}))}\\
+    &\leq \medmath{\frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}\min\big\{f_{j}(S \cup \{i\}) - f_{j}(S \setminus \{i\}),f_{j}(S \cup \{r\} \setminus \{i\}) - f_{j}(S \setminus \{i\})\big\}} \tag*{by monotonicity of $f_{j}$}\\
     &\leq \frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}\min\big\{f_{j}(i), f_{j}(r)\big\} \tag*{by submodularity of $f_{j}$}\\
     &\leq \frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}\sqrt{f_{j}(i) f_{j}(r)}\\
     &= \frac{\beta}{2}\sum_{j \in [L]}\sqrt{f_{j}(r)}\sum_{i \neq r}\sqrt{ f_{j}(i)}.
@@ -530,10 +519,10 @@ We start with approximating the normalizers $\log(Z)$ for a family of (log-submo
 These \flid{} models are learned from synthetic data that we describe in \sectref{sect:syn_single}.
 In short, each model represents a single approximately mutually exclusive group of three genes together with five frequently and independently occurring genes, as well as a number of random noise genes.
 
-We obtain estimates for $\log(Z)$ via a Gibbs-sampler based reverse importance sampling procedure \sectref{sect:sampling}, using $200$, $1000$, and $5000$ samples.
+We obtain estimates for $\log(Z)$ via a Gibbs-based reverse importance sampling procedure (see \sectref{sect:sampling}), using $200$, $1000$, and $5000$ samples.
 For each model we repeat the sampling procedure $100$ times to get standard error estimates.
 Since estimating the exact value of $\log(Z)$ is infeasible for $n > 20$, we obtain an accurate estimate by computing the averaged importance sampling and reverse importance sampling estimates when run with $2\cdot 10^6$ samples.
-\figref{fig:gibbs_zest} shows the estimation errors with respect to this approximately true value; errorbars depict two standard errors.
+\figref{fig:gibbs_zest} shows the estimation errors with respect to this approximately true value; error bars depict two standard errors.
 As is natural, more Gibbs samples result in more accurate estimates, and we can also observe that reverse importance sampling tends to produce overestimates of the log-partition function.
 We also see that the two variational approaches, which guarantee upper and lower bounds respectively, are considerably less accurate.
 
@@ -550,14 +539,14 @@ We also see that the two variational approaches, which guarantee upper and lower
 \paragraph{Estimating marginals.}
 We now repeat the experiments performed by \cite{djolonga14} to estimate marginals, and use the same three models that they used.
 
-The first is a (log-submodular) \flid{} model, in which the manually added modular term penalizes the number of selected elements, that is, $p(S) \propto \exp(f(S)-2|S|)$, where $f$ is a submodular facility location function.
+The first is a \flid{} model, in which a manually added modular term penalizes the number of selected elements, that is, $p(S) \propto \exp(f(S)-2|S|)$, where $f$ is a submodular facility location function.
 The model is constructed from randomly subsampling real data from a problem of sensor placement in a water distribution network \citep{krause08}.
 In the experiments, we iteratively condition on random observations for each variable in the ground set.
 
-The second is a (log-supermodular) pairwise Markov random field, constructed by first randomly sampling points from a two-dimensional two-cluster Gaussian mixture model, and then introducing a pairwise potential for each pair of points with exponentially-decreasing weight in the distance of the pair.
+The second is a log-supermodular pairwise Markov random field, constructed by first randomly sampling points from a two-dimensional two-cluster Gaussian mixture model, and then introducing a pairwise potential for each pair of points with exponentially-decreasing weight in the distance of the pair.
 In the experiments, we iteratively condition on pairs of observations, one from each cluster.
 
-The third is a (log-supermodular) higher-order Markov random field, which is constructed by first generating a random Watts-Strogatz graph, and then creating one higher-order potential per node, which contains that node and all of its neighbors in the graph.
+The third is a log-supermodular higher-order Markov random field, which is constructed by first generating a random Watts-Strogatz graph, and then creating one higher-order potential per node, which contains that node and all of its neighbors in the graph.
 The strength of the potentials is controlled by a parameter $\mu$, which is closely related to the curvature of the functions that define them.
 In the experiments, we vary this parameter from $0$ (modular model) to $1$ (``strongly'' supermodular model).
 
@@ -567,7 +556,7 @@ The marginals we compute are of the form $p(i \in S \mid C \subseteq S \subseteq
 As before, we run the Gibbs sampler for $200$, $1000$, and $5000$ iterations on each problem instance.
 
 \figref{fig:gibbs_exp} compares the average absolute error of the approximate marginals with respect to the exact ones.
-The averaging is performed over $i \in V$, and over the different repetitions of each experiment; errorbars depict two standard errors.
+The averaging is performed over $i \in V$, and over the different repetitions of each experiment; error bars depict two standard errors.
 We notice a similar trend on all three models.
 For the regimes that correspond to less ``peaked'' posterior distributions (small number of conditioned variables, small $\mu$), even a few thousand Gibbs iterations outperform both variational approximations.
 On the other hand, the variational methods gain an advantage when the posterior is concentrated around only a few states, which happens after having conditioned on almost all variables in the first two models, or for $\mu$ close to $1$ in the third model.
@@ -601,11 +590,11 @@ On the other hand, the variational methods gain an advantage when the posterior 
 
 
 \section{Conclusion}
-In this chapter, we presented sufficient conditions that guarantee upper bounds on the mixing time of the Gibbs sampler in general probabilistic submodular models.
-Furthermore, we demonstrated that, in practice, the Gibbs sampler compares favorably to previously proposed variational approximations, at least in regimes of high uncertainty.
+In this chapter, we presented two conditions that guarantee upper bounds on the mixing time of the Gibbs sampler in probabilistic submodular models.
+Furthermore, we demonstrated that, in practice, the Gibbs sampler compares favorably to previously proposed variational approximations, particularly in regimes of high uncertainty.
 
 \paragraph{Further related work.}
-In contemporary work to ours, Rebeschini and Karbasi \citep{rebeschini15} analyzed the mixing times of log-submodular models.
+In contemporary work to ours, Rebeschini and Karbasi \citep{rebeschini15} analyzed the mixing times of log-sub\-mo\-du\-lar models.
 Using a method based on matrix norms, which was previously introduced by \cite{dyer09}, and is closely related to path coupling, they arrived at a similar, though not directly comparable, condition to that of \theoremref{thm:fast}.
 
 \cite{li16} extended our polynomial-time mixing result of \theoremref{thm:poly} to the problem of sampling from a distribution under specific constraints.

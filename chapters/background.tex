@@ -379,6 +379,14 @@ In particular, we estimate the expected value of function $g : \ss \to \mathbb{R
 \end{align}
 For example, to estimate the marginal probability $\P(i \in S)$, for some $i \in V$, we can define $g(S) = \llbracket i \in S \rrbracket$, for all $S \in \ss$.
 The point in time $s \in \mathbb{N}$, after which we start taking samples into account, is often referred to as the burn-in time of the chain.
+Our goal is to perform marginal inference for the distributions described above.
+Concretely, for some fixed $A \subseteq B \subseteq V$, we would like to compute the probability of sets $S$ that contain all elements of $A$, but no elements outside of $B$, that is, $p(A \subseteq S \subseteq B)$.
+%More generally, we are interested in computing conditional probabilities of the form $p(A \subseteq S \subseteq B \mid C \subseteq S \subseteq D)$.
+%This computation can be reduced to computing unconditional marginals as follows.
+%For any $C \subseteq V$, define the contraction of $F$ on $C$, $F_C : 2^{V \setminus C} \to \mathbb{R}$, by $F_C(S) = F(S \cup C) - F(S)$, for all $S \subseteq V \setminus C$.
+%Also, for any $D \subseteq V$, define the restriction of $F$ to $D$, $F^D : 2^D \to \mathbb{R}$, by $F^D(S) = F(S)$, for all $S \subseteq D$.
+%If $F$ is submodular, then its contractions and restrictions are also submodular, and, thus, $(F_C)^D$ is submodular.
+%Finally, it is easy to see that $p(S \mid C \subseteq S \subseteq D) \propto \exp(\beta (F_C)^D(S))$.
 
 \paragraph{Approximating the partition function.}
 There are two straightforward methods for estimating the partition function $Z$ using sampling.
