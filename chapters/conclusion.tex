@@ -9,7 +9,7 @@ We then proposed a novel sampling procedure that combines the Gibbs sampler with
 The construction of this chain involved creating a mixture of semigradient-based log-modular distributions, and illustrated how concepts from discrete optimization may be leveraged in probabilistic inference.
 
 Finally, we showed how we can use sampling to approximate the likelihood gradients, and perform an approximate likelihood maximization using gradient ascent.
-We applied this learning procedure to the problem of modeling interactions of genetic mutations in cancer patients, in particular mutual exclusivity and co-occurence.
+We applied this learning procedure to the problem of modeling interactions of genetic mutations in cancer patients, in particular mutual exclusivity and co-occurrence.
 Our results illustrated that our probabilistic framework provides a flexible way to encode such interactions without the need to specify the number or size of the groups that are being searched for.
 Moreover, in real cancer data we discovered significant groups of mutations that previous state-of-the-art methods failed to find.
 
@@ -24,7 +24,7 @@ There has been little work in this direction for a limited model class \citep{do
 
 \paragraph{Continuous sampling for discrete inference.}
 Sampling methods for continuous domains, such as Hamiltonian Monte Carlo, have received increasing attention in the past few years, for their ability to combine gradient information with random momentum to perform more efficient moves in the state space.
-There has been some promising recent work on embedding discrete models into suitable continous domains, then using a continuous sampler, and finally converting the samples back to the discrete domain \citep{zhang12,pakman13,dinh17,nishimura18}.
+There has been some promising recent work on embedding discrete models into suitable continuous domains, then using a continuous sampler, and finally converting the samples back to the discrete domain \citep{zhang12,pakman13,dinh17,nishimura18}.
 It is also interesting to investigate whether it is possible to directly define discrete counterparts of momentum and gradients, and, as a result, a discrete version of Hamiltonian Monte Carlo.
 
 \paragraph{Strongly Rayleigh distributions.}

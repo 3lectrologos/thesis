@@ -18,7 +18,7 @@ We reintroduce here the notation of explicitly stating the model parameters, and
 \begin{align*}
 p(S; \btheta) = \frac{1}{Z(\btheta)} \exp\left( F(S; \btheta) \right),
 \end{align*}
-where $\btheta \in \mathbb{R}^d$ is parameter vector to be learned.
+where $\btheta \in \mathbb{R}^d$ is a parameter vector to be learned.
 Given a data set of $N$ sets, $\mathcal{D} \defeq \{D_1,\ldots,D_N\}$, with $D_1,\ldots,D_N \subseteq V$, the log-likelihood of the above model can be written as
 \begin{align*}
 \ell(\btheta) &\defeq \sum_{i=1}^N \log p(D_i; \btheta)\\
@@ -36,7 +36,7 @@ The gradient of the log-likelihood with respect to the parameters $\btheta$ is t
                               &= \sum_{i=1}^N \nabla_{\btheta} F(D_i; \btheta) - N\,\E_{p}\left[ \nabla_{\btheta} F(S; \btheta) \right]\\
                               &= \frac{1}{N}\sum_{i=1}^N \nabla_{\btheta} F(D_i; \btheta) - \E_{p}\left[ \nabla_{\btheta} F(S; \btheta) \right].
 \end{align*}
-This shows that the maximum likelihood parameters (when $\*g(\btheta) = 0$) satisfy a generalized version of the well-known moment matching condition for exponential family models \citep{wainwright08,koller09}.
+This shows that the maximum likelihood parameters (when $\*g(\btheta) = \*0$) satisfy a generalized version of the well-known moment matching condition for exponential family models \citep{wainwright08,koller09}.
 That is, at the maximum, the empirical mean of the function gradient over the data set matches the expected gradient over the model distribution.
 
 While the expectation term in the log-likelihood gradient is, in general, infeasible to compute exactly, we can straightforwardly approximate it using the sampling methods discussed in the previous chapters.
@@ -87,14 +87,14 @@ As we mentioned, the moment matching condition requires approximating marginals,
 The method of contrastive divergence \citep{condiv} has been notable for making further approximations to the sampling procedure to speed up the learning process.
 
 Alternative approaches seek to optimize different objectives than the likelihood to avoid performing inference altogether.
-Examples of other objectives include the pseudolikelihood \citep{pseudolik}, which involves easy to compute conditional probabilities; the noise-contrastive objective that aims to differentiate real data from noise \cite{nce,tschiatschek16}; and the objective proposed by \cite{domke13} that is directly based on marginal probabilites.
+Examples of other objectives include the pseudolikelihood \citep{pseudolik}, which involves easy to compute conditional probabilities; the noise-contrastive objective that aims to differentiate real data from noise \cite{nce,tschiatschek16}; and the objective proposed by \cite{domke13} that is directly based on marginal probabilities.
 
 The problem of learning submodular functions has also been approached from non-probabilistic viewpoints.
 For example, \cite{balcan} investigate learning such a function when given a black-box oracle of its value. \cite{tschiatscheck14} learn mixtures of submodular functions, and \cite{deepsubmod} learn submodular functions defined by deep architectures, both using large-margin approaches.
 
 \section{Modeling Interactions of Gene Mutations in Cancer}
 One of the goals of cancer genomics research is identifying so-called driver mutations, that is, somatic mutations that are responsible for various forms of cancer, and distinguishing them from randomly occurring passenger mutations.
-While sequencing data from large projects, such as The Cancer Genome Atlas \citep{tcga}, has been available in increasing quantities, analyzing the occurence combinations of mutations is a combinatorially daunting task.
+While sequencing data from large projects, such as The Cancer Genome Atlas \citep{tcga}, has been available in increasing quantities, analyzing mutation interactions is a combinatorially daunting task.
 
 Driver mutations often occur in a limited number of key biological pathways, and it has been observed that multiple mutations involved in the same pathway tend to not occur together in the same patient \citep{yeang08}.
 As a result, it is of interest to discover groups of gene alterations that are (approximately) mutually exclusive.
@@ -102,7 +102,7 @@ Finding such a group is then an indication that the participating mutations are 
 Since most existing pathway databases lack in detail and accuracy, there has been particular interest in \emph{de novo} methods, that is, methods that analyze the existing patient data without using any prior biological knowledge, and try to identify new potentially significant combinations of mutations.
 For a general review of the topic, we refer to \cite{raphael14}.
 
-Previous \emph{de novo} methods have used different combinatorial or statistical scores to assess the degree of mutual exclusivity of a group of mutuations.
+Previous \emph{de novo} methods have used different combinatorial or statistical scores to assess the degree of mutual exclusivity of a group of mutations.
 These are then paired with some discovery algorithm that exhaustively enumerates groups \citep{muex,yeang08}, progressively builds up larger groups from smaller ones \citep{mutex,rme,memo,timex}, or performs a randomized search in the group space \citep{dendrix,multidendrix,comet}.
 As a result, these methods either scale poorly in the number of mutations at hand, or require prior assumptions on the exact or maximum size of the groups to be discovered.
 In the following sections, we compare our results against the CoMEt algorithm \citep{comet}, which is a state-of-the-art method for discovering multiple groups of mutually exclusive mutations.
@@ -110,17 +110,17 @@ While CoMEt requires prespecifying the number and size of groups to be searched 
 
 \subsection{Our Approach}
 Assume that we are given a ground set $V = \{1,\ldots,n\}$ of possible gene mutations, and a data set of $N$ patients, $\mathcal{D} \defeq (D_1,\ldots,D_N)$, where $D_i \subseteq V$ is the combination of mutations that were present in patient $i$.
-The data is commonly represented in the literature using a binary alteration matrix, where each row represents a mutation, and each column a patient (see \figref{fig:bamat_1}).
-Our goal is to discover groups of mutations $M_1, M_2, \ldots$, $M_i \subseteq V$, with the property that mutations that belong to the same group rarely occur together in the same patient (see \figref{fig:bamat_2}).
+The data is commonly represented in the literature using a binary alteration matrix, where each row represents a mutation, and each column a patient.
+Our goal is to discover groups of mutations $M_1, M_2, \ldots$, $M_i \subseteq V$, with the property that mutations that belong to the same group rarely occur together in the same patient (see \figref{fig:bamat}).
 
 We propose using the patient data $\mathcal{D}$ to learn an \fldc{} model over the mutation space $V$.
-Based on the definiton of this model, we expect the columns of the $\bw$ and $\bv$ matrices to encode groups of repulsive and attractive mutations respectively.
-For the purposes of this thesis, we propose extracting potential groups by thesholding each matrix at a specified level; these groups can then be further assessed for mutual exclusivity or co-occurence using some of the previously proposed statistical tests.
-More generally, one could perform inference in the learned model to compute various probabilistic quantities that may be useful in specific biological applications.
+Based on the definition of this model, we expect the columns of the $\bw$ and $\bv$ matrices to encode groups of mutually exclusive and co-occurring mutations respectively.
+For the purposes of this thesis, we propose extracting potential groups by thresholding each matrix at a specified level; these groups can then be further assessed for mutual exclusivity or co-occurrence using some of the previously proposed statistical tests.
+More generally, one can perform inference in the learned model to compute various probabilistic quantities that may be useful in specific biological applications.
 
 Our approach offers several advantages over previous work.
 First, it inherently uses higher-order potentials to directly capture mutation interactions of arbitrary size, without any need to specify the number of groups or size of each group in advance.
-Second, in addition to mutual exclusivity, it also models mutation co-occurence, a property that may also provide useful information in cancer research \citep{yeang08,raphael14}.
+Second, in addition to mutual exclusivity, it also models mutation co-occurrence, a property that may also provide useful information in cancer research \citep{yeang08,raphael14}.
 Finally, in terms of computational complexity, the only potentially super-linear component in our learning procedure is the number of samples required to get an accurate gradient approximation.
 This further justifies the pursuit of efficient sampling methods in the previous chapters.
 In practice, our algorithm only takes a few minutes to run on real cancer data sets containing hundreds of mutations.
@@ -135,31 +135,31 @@ We use the approximate maximum likelihood method described in \sectref{sect:ml}.
 By definition of the \fldc{} model, the elements of matrices $\bw$ and $\bv$ must be non-negative.
 To achieve this during learning, we project the entries of $\bw$ and $\bv$ to the positive orthant after each gradient step.
 Furthermore, we have found it beneficial in practice to induce sparsity on these matrices, in order to reduce the effect of noisy data on the learned models, and obtain more interpretable solutions.
-To this end, we employ an $L_1$ regularization to both $\bw$ and $\bv$ by projecting each row and column of this matrices to the corresponding $L_1$-ball after each gradient step.
+To this end, we employ an $L_1$-regularization to both $\bw$ and $\bv$ by projecting each row and column of these matrices to the corresponding $L_1$-ball after each gradient step.
 
 We initialize the entries of $\bu$ to the maximum likelihood estimates of the respective product distribution, that is,
 \begin{align*}
 u_i = \log\left( \frac{f_i}{1 - f_i} \right),
 \end{align*}
 where $f_i$ is the frequency of element $i \in V$ in the data set $\mathcal{D}$.
-We randomly initialize the entries of $\bw$ and $\bv$ by drawing from a uniform distribution $\mathcal{U}[0, 0.01]$.
-To avoid duplicate latent dimensions in the two matrices, for the first half of the iterations, we check the columns of $\bw$ and $\bv$ after each gradient step, and reinitialize a column when we detect that its $L_1$ distance to another column of the same matrix is smaller than a predefined threshold.
+We randomly initialize the entries of $\bw$ and $\bv$ by drawing each of them from a uniform distribution $\mathcal{U}[0, 0.01]$.
+To avoid duplicate latent dimensions in the two matrices, for the first half of the iterations, we check the columns of $\bw$ and $\bv$ after each gradient step, and reinitialize a column when we detect that its $L_1$-distance to another column of the same matrix is smaller than a predefined threshold.
 
-Unless otherwise stated, we use $n_{\mathrm{iter}} = 2\cdot10^4$ gradient iterations, and $M = 100|V|$ samples per iteration.
-We use the combined sampler detailed in \chapref{ch:m3} with a mix of $100$ random sub- and supergradients, and a combination weight of $\alpha_c = 0.5$.
+Unless otherwise stated, we use $n_{\mathrm{iter}} = 2\cdot10^4$ gradient iterations, and $M = 200|V|$ samples per iteration.
+We use the combined sampler detailed in \chapref{ch:m3} with a mix of $100$ random sub- and supergradients, and a combination weight of $\delta = 0.5$.
 Finally, we use a fixed step size ($\gamma = 5\cdot10^{-4}$) for the first half of the iterations, and a geometrically decreasing step size ($\gamma_i = \gamma r^i$ with $r = 10^{-3/n_{\mathrm{iter}}}$) for the second half.
 
 \paragraph{Step 2: Extracting proposed mutation sets.}
 We start by thresholding each column of the learned $\bw$ matrix at a fixed level $w_{\mathrm{th}} = 1.5$.
 We then proceed to create a graph that contains one clique of nodes for each group extracted in the previous step.
-Our proposed mutation sets consists of all maximal cliques in this constructed graph.
+Our proposed mutation sets consist of all maximal cliques in this constructed graph.
 Creating the graph, rather than directly proposing the groups extracted from the matrix columns, can be useful for merging smaller groups of genes that have been encoded in separate columns of $\bw$ during learning.
 
 \paragraph{Step 3: Testing mutual exclusivity.}
 We make use of two statistical tests for testing the degree of mutual exclusivity of a mutation group.
 
 The first was proposed by \cite{mutex}, and used as part of the Mutex algorithm.
-For each gene in a proposed mutation group, we run Fisher's one-tailed exact test on the contingency table that results from examining the occurences of that gene in the data set versus the union of all other genes in the group.
+For each gene in a proposed mutation group, we run Fisher's one-tailed exact test on the contingency table that results from examining the occurrences of that gene in the data set versus the union of all other genes in the group.
 This results in one $p$-value per gene in the mutation group, and the output of the test is the maximum of these $p$-values.
 We will call this the ``one vs. all'' test, and denote its output $p$-value by $p_{\mathrm{ova}}$.
 
@@ -179,9 +179,9 @@ For the procedure's ``starting alpha-wealth'' parameter we use $W_0 = 0.8\alpha$
 For the real data experiments, in the absence of ground truth, we take a more exploratory approach, and do not employ multiple testing.
 Rather, we illustrate and discuss the most significant discovered groups, as indicated by their $p$-values according to both statistical tests described above.
 
-\paragraph{Co-occurence tests.}
-For assessing co-occurence, we define a version of the ``one vs. all'' test that is completely analogous to the one described above, except that we use the opposite tail of the null distribution in Fisher's test compared to the mutually exclusive case.
-To define a ``generalized Fisher'' test for co-occurence, we use as a test statistic the sum of patients in which all mutations from the corresponding group occur simultaneously.
+\paragraph{Co-occurrence tests.}
+For assessing co-occurrence, we define a version of the ``one vs. all'' test that is completely analogous to the one described above, except that we use the opposite tail of the null distribution in Fisher's test compared to the mutually exclusive case.
+To define a ``generalized Fisher'' test for co-occurrence, we use as a test statistic the sum of patients in which all mutations from the corresponding group occur simultaneously.
 
 
 \section{Synthetic Data}
@@ -190,15 +190,15 @@ We proceed to practically apply our learning algorithm to the problem of modelin
 \subsection{Learning}
 To begin with, we want to illustrate how the gradient approximation via sampling affects the learning algorithm.
 We create a reduced version of one of the real cancer data sets (see \sectref{sect:realcancer}), so that we are able to compute the exact log-likelihood during learning.
-Starting with the AML data set detailed in the next section, we only keep the 17 gene mutations shown in \figref{fig:graph_aml}, thus creating a data set of 17 mutations and 200 patients.
+Starting with the AML data set detailed in the next section, we only keep the $17$ gene mutations shown in \figref{fig:graph_aml}, thus creating a data set of $17$ mutations and $200$ patients.
 We then learn a \fldc{} model with $L = 10$ latent dimensions for $n_{\mathrm{iter}} = 10^4$ gradient iterations.
 
 \figref{fig:syn_nsamples} shows the evolution of the log-likelihood for an increasing number of samples, while keeping the number of semigradients constant.
 As expected, using a larger number of samples leads to a more accurate gradient approximation, which results in faster learning.
-We also see that the benefit of increased samples plateaus after some point, e.g., we see minimal benefit by increasing the samples from 500 to 1000.
+We also see that the benefit of increased samples plateaus after some point; for example, we see minimal benefit when increasing the samples from $500$ to $1000$.
 
 Similar conclusions can be drawn from the results \figref{fig:syn_nsubg} about the effect of the number of semigradients used.
-We can see that for this example we get practically no benefit from adding more than 20 semigradients, but this number will likely need to be adjusted when learning from data with a larger ground set.
+We can see that for this example we get practically no benefit from adding more than $20$ semigradients, but this number will likely need to be adjusted when learning from data with larger ground sets.
 We also see that the benefit obtained from 20 semigradients corresponds to about doubling the number of Gibbs samples from 100 to 200.
 
 \setlength\figureheight{0.65\textwidth}
@@ -227,12 +227,12 @@ We also see that the benefit obtained from 20 semigradients corresponds to about
   \label{fig:syn1}
 \end{figure}
 
-\subsection{Single Mutually Exlusive Group} \label{sect:syn_single}
+\subsection{Single Mutually Exclusive Group} \label{sect:syn_single}
 We focus now on extracting a single group of mutually exclusive mutations.
-We create synthetic data sets of 100 mutations and 500 patients, following the procedure outlined by \cite{comet}.
-First, we choose $k = 3$ mutations, which cover a fraction $\gamma$ of the patients, and have them be completely mutually exclusive, that is, only one of the three occurs in each of the $500\gamma$ patients.
+We create synthetic data sets of $100$ mutations and $500$ patients, following the procedure outlined by \cite{comet}.
+First, we choose $k = 3$ mutations, which cover a fraction $\gamma$ of the patients, and have them be completely mutually exclusive, that is, only one of the three mutations occurs in each of the $500\gamma$ patients.
 Furthermore, each of the three mutations appear in a fraction $0.5$, $0.35$, and $0.15$ of the $500\gamma$ patients, respectively.
-Second, we choose 5 mutations, which occur frequently (with fractions $0.67$, $0.49$, $0.29$, $0.29$, $0.2$ in the 500 patients), and completely independently of each other and of any other mutation, including the mutually exclusive ones.
+Second, we choose $5$ mutations, which occur frequently (with fractions $0.67$, $0.49$, $0.29$, $0.29$, $0.2$ in the $500$ patients), and completely independently of each other and of any other mutation, including the mutually exclusive ones.
 Finally, we add random noise by independently activating each mutation in each patient with probability $0.0028$.
 
 \figref{fig:syn_mat} shows the learned $\bw$ matrix of the \fldc{} model for such a synthetic data set with $\gamma = 0.5$.
@@ -254,10 +254,10 @@ We show the results of our procedure for two different values of the considered 
 For $\alpha = 0.01$, we have practically perfect recovery when $\gamma \geq 0.4$, but are not able to extract statistically significant groups below $\gamma = 0.3$. 
 Using a much higher $\alpha = 0.3$ trades off some false positives to gain statistical power, and exceeds the performance of CoMEt for almost all values of $\gamma$.
 Either way, the results show that, in the majority of the cases, the learned \fldc{} model is able to encode the correct group, and propose it for further testing.
-We would also like to emphasize at this point that CoMEt takes the size $k = 3$ of the group as input, although it can still output groups of different size; our method, on the other hand, does not use any such information.
+It is important to emphasize that CoMEt takes the size $k = 3$ of the group as input, although it can still output groups of different size; our method, on the other hand, does not use any such information.
 
-\setlength\figureheight{0.7\textwidth}
-\setlength\figurewidth{0.95\textwidth}
+\setlength\figureheight{0.73\textwidth}
+\setlength\figurewidth{1\textwidth}
 \begin{figure}[htb]
   \centering
   \input{figures/genes/syn_single.tex}
@@ -267,8 +267,8 @@ We would also like to emphasize at this point that CoMEt takes the size $k = 3$ 
   \label{fig:syn_single}
 \end{figure}
 
-\subsection{Multiple Mutually Exlusive Groups}
-We move now to the problem of extracting multiple groups of mutually exclusive mutations.
+\subsection{Multiple Mutually Exclusive Groups}
+We now move to the problem of extracting multiple groups of mutually exclusive mutations.
 Again, we create synthetic data sets following a procedure outlined by \cite{comet}.
 In this case, we start with $20,000$ mutations and $500$ patients, and select $t$ groups of $k$ mutually exclusive mutations.
 The number of groups $t$ range from $2$ to $4$, and the mutations per group $k$ from $3$ to $5$.
@@ -276,15 +276,15 @@ Each group covers a fraction of patients ranging from $0.4$ to $0.7$, and the mu
 As before, we add $5$ independently mutated genes with high frequencies, as well as random noise.
 Finally, we remove genes that are mutated in fewer than $5$ patients, which results in a final ground set of average size $|V| \approx 275$.
 To assess the quality of the recovered groups against the true ones, we use the adjusted Rand index \citep{ari}, which is a measure that compares the similarity of two clusterings of a set of elements.
-Thus, in our case, an adjusted Rand index of $1$ indicates that the recovered groups are identical to the true ones.
+Thus, an adjusted Rand index of $1$ indicates that the recovered groups are identical to the true ones.
 
-For each combination of $t$ and $k$ we repeated the experiment on $20$ randomly generated data sets.
+For each combination of $t$ and $k$ we repeated the experiment on $50$ randomly generated data sets.
 We ran CoMEt with fixed values of $t = 3$ and $k = 4$, as was done in the original paper \citep{comet}.
 \figref{fig:syn_multi} shows the results, in which we see that our method significantly outperforms CoMEt, especially at the lower values of $t$ and $k$.
-This showcases the problems encountered by CoMEt (and shared with several other previous methods) when the number and size of the groups to be found is misspecified.
+This showcases the problems encountered by CoMEt when the number and size of the groups to be found is misspecified.
+These problems are shared with several other methods proposed in the past.
 In contrast, we see that our method performs consistently well across all different values of $t$ and $k$, without any knowledge of these parameters.
-We also see that, in this case, a higher level $\alpha$ degrades the quality of the final results, because of the frequent occurence of false positives.
-
+We also see that, in this case, a higher level $\alpha$ degrades the quality of the final results, because of the frequent occurrence of false positives.
 
 \setlength\figureheight{0.65\textwidth}
 \setlength\figurewidth{1.12\textwidth}
@@ -368,15 +368,15 @@ The highlighted entries represent co-occurring mutations.}
 \end{figure}
 
 It is notable that CoMEt detects groups $R_1$ (without the last mutation, \textsf{RUNX1-RUNX1T1}) and $R_2$, but fails to detect any of the other six groups, even though almost all of them have particularly low $p_{\mathrm{gf}}$.
-We suspect that this is caused by the combination of CoMEt using as input a fixed number of groups and sizes thereof, as well as the fact that their searching procedure based on sampling works on a particularly slow-mixing landscape.
-As an example, although they are searching for a group of size $6$, they never discover our group $R_3$, because their sampler presumably gets stuck on group $R_1$, which has a few orders of magnitude lower $p_{\mathrm{gf}}$ compared to $R_3$.
-On the other hand, CoMEt detects two other groups (see \figref{fig:comet_aml}), which have $p_{\mathrm{ova}}$ significantly above our cutoff, and furthermore, also have $p_{\mathrm{gf}}$ significantly higher than all our discovered groups, except for $R_8$.
-For a comparison of the discovered mutation interactions, we also refer to \citep[Figure S8]{tcga_aml}, which confirms many of our findings, although it only illustrates pairwise interactions.
+We suspect that this is caused by the combination of CoMEt using as input a fixed number of groups and sizes thereof, as well as the fact that the algorithm's sampling-based searching procedure based works on a particularly slow-mixing landscape.
+As an example, although the authors are searching for a group of size $6$, they never discover the group $R_3$ shown in \figref{fig:rep_aml_1}, because their sampler presumably gets stuck on group $R_1$, which has a few orders of magnitude lower $p_{\mathrm{gf}}$ compared to $R_3$.
+On the other hand, CoMEt detects two other groups (see \figref{fig:comet_aml} in the appendix), which have $p_{\mathrm{ova}}$ significantly above our cutoff, and furthermore, also have $p_{\mathrm{gf}}$ significantly higher than all our discovered groups except for $R_8$.
+For a comparison of the discovered mutation interactions, we also refer to \citep[Figure S8]{tcga_aml}, which confirms many of our findings, although it is limited to pairwise interactions.
 
 \subsection{Breast cancer (BRCA)}
 The data set consists of 375 mutations and 507 patients.
 We show the resulting learned \fldc{} model ($L = 15$) in \figref{fig:mat_brca}, the extracted mutually exclusive groups $R_1$--$R_{11}$ in \figsref{fig:rep_brca_1} and \ref{fig:rep_brca_2}, and a graphical summarization of all these groups in \figref{fig:graph_brca}.
-In \figref{fig:att_brca_1} we show the six extracted co-ocurring groups with the highest coverage; groups $A_7$--$A_{14}$ can be found in \figsref{fig:att_brca_2} and \ref{fig:att_brca_3} in the appendix.
+In \figref{fig:att_brca_1} we show the six extracted co-occurring groups with the highest coverage; groups $A_7$--$A_{14}$ can be found in \figsref{fig:att_brca_2} and \ref{fig:att_brca_3} in the appendix.
 
 The CoMEt results on BRCA take into account additional information about the classification of each patient into four different subtypes of breast cancer.
 While this means that we cannot directly compare our results to theirs, we still recover some of their findings (e.g., the first three mutations in $R_1$), but also extract significant groups that were not found by CoMEt, even when constrained to a specific subtype (e.g., $R_3$ for the ``Luminal-A'' subtype).
@@ -445,5 +445,5 @@ The highlighted entries represent co-occurring mutations.}
 \section{Conclusion}
 In this chapter, we have seen how sampling can be effectively used to obtain estimates of the gradient of a probabilistic submodular model with respect to its parameters.
 It, thus, facilitates applying an approximate maximum likelihood maximization procedure to learn such models from data.
-We have applied this learning procedure to the problem of modeling interactions of genetic mutations in cancer patients, with the particular goal of discovering groups of mutually exlusive and co-occurring mutations.
+We have applied this learning procedure to the problem of modeling interactions of genetic mutations in cancer patients, with the particular goal of discovering groups of mutually exclusive and co-occurring mutations.
 We have shown that our method often outperforms the state of the art for this task by naturally capturing these higher-order interactions without the need to prespecify the number or size of groups to be found.
