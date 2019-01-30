@@ -529,7 +529,7 @@ We start with approximating the normalizers $\log(Z)$ for a family of (log-submo
 These \flid{} models are learned from synthetic data that we describe in \sectref{sect:syn_single}.
 In short, each model represents a single approximately mutually exclusive group of three genes together with five frequently and independently occurring genes, as well as a number of random noise genes.
 
-We obtain estimates for $\log(Z)$ via a Gibbs-sampler based reverse importance sampling procedure \todo{ref background}, using $200$, $1000$, and $5000$ samples.
+We obtain estimates for $\log(Z)$ via a Gibbs-sampler based reverse importance sampling procedure \sectref{sect:sampling}, using $200$, $1000$, and $5000$ samples.
 For each model we repeat the sampling procedure $100$ times to get standard error estimates.
 Since estimating the exact value of $\log(Z)$ is infeasible for $n > 20$, we obtain an accurate estimate by computing the averaged importance sampling and reverse importance sampling estimates when run with $2\cdot 10^6$ samples.
 \figref{fig:gibbs_zest} shows the estimation errors with respect to this approximately true value; errorbars depict two standard errors.

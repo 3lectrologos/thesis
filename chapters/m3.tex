@@ -413,11 +413,27 @@ We have, however, noticed that subgradients give better results when $F$ is subm
 
 
 \section{Experiments}
-We now evaluate the performance of our proposed sampler on the Ising model we analyzed earlier, as well as the following three models learned from real-world data sets.
-\paragraph{\textsc{Water}.} The same (log-submodular) \flid{} model based on a problem of sensor placement in a water distribution network \citep{krause08} that we also used in the experimental section of last chapter (see \figref{fig:gibbs_exp1}).
+We start by repeating the experiment of the previous chapter shown in \figref{fig:gibbs_zest}, which involved estimating the log-partition function using reverse importance sampling on a synthetic data set containing a group of mutually exclusive genes.
+Here we only focus on the ground set of size $|V| = 100$.
+\figref{fig:exp3} shows the resulting (approximate) error in estimating $\log(Z)$ using the Gibbs sampler, compared to our proposed combined sampler using a mixture $q$ constructed by \algoref{alg:mixture} (\textsf{Combo-I}).
+We also compare against a variation where we substitute the greedy procedure in \lineref{lin:perm} of \algoref{alg:mixture} with picking a permutation $\sigma$ of the ground set uniformly at random (\textsf{Combo-R}).
+Both variations use $r = 50$ subgradients, and we repeat the experiment $100$ times.
+We can see that they clearly outperform the Gibbs sampler, while the difference between the two is not as significant.
+
+\setlength\figureheight{0.65\textwidth}
+\setlength\figurewidth{0.9\textwidth}
+\begin{figure}[htb]
+  \centering
+  \input{figures/m3/zest_nsub.tex}
+  \caption{The error in estimating the log-partition function with the two versions of the combined sampler compared to the Gibbs sampler.}
+  \label{fig:exp3}
+\end{figure}
+
+Next we evaluate the marginal inference performance of our proposed sampler on the Ising model we analyzed earlier, as well as the following three models learned from real-world data sets.
+\paragraph{\textsc{Water}.} The same \flid{} model that we used in the experimental section of last chapter (see \figref{fig:gibbs_exp1}), which was based on a problem of sensor placement in a water distribution network \citep{krause08}
 In this case, we randomly subsample the original facility location matrix, so that $n = 50$, and $L = 500$.
 
-\paragraph{\textsc{Sensor}.} A (log-submodular) determinantal point process \citep{kulesza12}, which was used in a problem of sensor placement for indoor temperature monitoring \citep{guestrin05}.
+\paragraph{\textsc{Sensor}.} A determinantal point process (see \exampleref{ex:dpp}), which was used in a problem of sensor placement for indoor temperature monitoring \citep{guestrin05}.
 The function $F$ is of the form
 \begin{align*}
 F(S) = \log |K + \sigma^2 I|,
@@ -425,7 +441,7 @@ F(S) = \log |K + \sigma^2 I|,
 where $K$ is a kernel matrix, and $\sigma$ is a noise parameter.
 The size of the ground set is $n = 46$.
 
-\paragraph{\textsc{Game}.} A (log-submodular) \flid{} model, which represents the characters that are chosen by players in the popular online game ``Heroes of the Storm''.
+\paragraph{\textsc{Game}.} A \flid{} model that represents the characters that are chosen by players in the popular online game ``Heroes of the Storm''.
 We learned the model from an online data set of approximately $8,000$ teams of $5$ characters\footnote{https://www.hotslogs.com} using noise-contrastive estimation, as described by \cite{tschiatschek16}.
 The model has a ground set of size $n = 48$, and $L = 10$ latent dimensions.
 
@@ -435,15 +451,15 @@ Extending the \Ms{} chain to sample from cardinality-constrained models is also 
 In fact, the only additional ingredient required is a procedure to sample a set of size $\ell$ from a log-modular distribution, which can be easily done, as before, in $\bO(n)$ time.
 
 \paragraph{Results.}
-We compare the performance of the Gibbs sampler (\textsc{Gibbs}) against our proposed combined sampler using a proposal mixture $q$ constructed by \algoref{alg:mixture} (\textsc{Combo-I}).
-We also compare against a variation where we substitute the greedy procedure in \lineref{lin:perm} of \algoref{alg:mixture} with picking a permutation $\sigma$ of the ground set uniformly at random (\textsc{Combo-R}).
+To assess convergence, we use the potential scale reduction factor (PSRF) \citep{brooks11} with $20$ parallel chains.
+Intuitively, the PSRF compares the within-chain variance of some probabilistic quantity to the between-chain variance of that same quantity.
+As each of the chains converges to the stationary distribution, the PSRF is expected to converge to $0$.
+In our experiments, we compute the PSRF using single-element marginal probabilities, and show the worst (highest PSRF) marginal averaged over $50$ repetitions of each simulation.
 
-To assess convergence we use the potential scale reduction factor (PSRF) \citep{brooks11} using $20$ parallel chains.
-We compute the PSRF using single-element marginal probabilities averaged over $50$ repetitions of each simulation.
-
-In \figsref{fig:ising6}--\ref{fig:ising8} we show the results for the Ising model ($n = 6, 7, 8$) with the additional \textsc{Combo-f} line denoting the combined sampler with two mixture components described in \sectref{sect:ising}.
+In \figref{fig:expising} we show the results for the Ising model ($n = 6, 7, 8$).
+The additional \textsc{Combo-f} line denotes the combined sampler with two mixture components discussed in \sectref{sect:ising}.
 The other two combined samplers use mixtures of size $r = 20$.
-Note that Gibbs mixes dramatically slower than the combined sampler, even for such small $n$.
+Note that Gibbs mixes dramatically slower than the combined sampler, even for such small $n$, because of the significant bottleneck we described before.
 
 \setlength\figureheight{0.47\textwidth}
 \setlength\figurewidth{0.65\textwidth}
@@ -477,9 +493,9 @@ Note that Gibbs mixes dramatically slower than the combined sampler, even for su
   \label{fig:expising}
 \end{figure}
 
-In \figref{fig:expising} we show the results on the three log-submodular models described before using mixtures of size $r = 200$.
-It is interesting to see that even random permutations are enough to provide a significant improvement over the performance of Gibbs.
-Similar observations can be made with respect to computation time, as shown in \figref{fig:exptime} in the appendix, which measure wall-clock time on the $x$-axis.
+In \figref{fig:expsamples} we show the results on the three log-submodular models above using mixtures of size $r = 200$.
+We see again that even random permutations are enough to provide a significant improvement over the performance of Gibbs.
+Similar observations can be made with respect to computation time (see \figref{fig:exptime} in the appendix).
 
 \setlength\figureheight{0.47\textwidth}
 \setlength\figurewidth{0.65\textwidth}
@@ -514,17 +530,18 @@ Similar observations can be made with respect to computation time, as shown in \
 \end{figure}
 
 In \figref{fig:water2} we show how mixture size affects performance; as expected, adding more components to the mixture results in a proposal that approximates the target distribution better, and, therefore, mixes faster.
-Finally, in \figref{fig:water3} we see that both Gibbs ($\delta = 1$) and \Ms{} ($\delta = 0$, $r = 200$) perform poorly by themselves, but combining them results in much improved performance.
+Finally, in \figref{fig:water3} we illustrate the effect of the combination weight $\delta$, while having the number of subgradients fixed to $r = 200$.
+We see that both Gibbs ($\delta = 1$) and \Ms{} ($\delta = 0$) perform poorly by themselves, but combining them results in much improved performance.
 This highlights again the complementary nature of the two chains (local vs. global moves) we discussed earlier.
 
 \setlength\figureheight{0.63\textwidth}
 \setlength\figurewidth{0.8\textwidth}
 \renewcommand{\subflen}{\textwidth}
-\begin{figure*}[htbp]
+\begin{figure}[htbp]
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/m3/water2.tex}
-    \caption{\textsc{Water} -- subgradients}
+    \caption{\textsc{Water} -- number of subgradients}
     \label{fig:water2}
   \end{subfigure}\\[2em]
   \begin{subfigure}[b]{\subflen}
@@ -538,7 +555,7 @@ This highlights again the complementary nature of the two chains (local vs. glob
     (b) The combination of Gibbs and \Ms{} performs better than either of them does individually.
   }
   \label{fig:exp2}
-\end{figure*}
+\end{figure}
 
 \section{Conclusion}
 In this chapter, we presented the \Ms{} sampler that proposes global moves using a mixture of log-modular distributions.
