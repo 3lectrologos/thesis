@@ -311,9 +311,9 @@ The Gibbs sampler first selects one of the neighbors uniformly at random, and th
     \Input{Ground set $V$, distribution $p(\cdot) \propto \exp(F(\cdot))$}
 	$X_0$ $\gets$ random subset of $V$\\
 	\For{$t = 0$ \KwTo $M$}{
-	  Draw $i \sim \mathrm{Unif}(V)$\;
+	  Draw $i \sim$ \textsc{Unif}$(V)$\;
 	  $p_{\mathrm{add}}$ $\gets$ $\exp(\Delta_F(i \,|\, X_t))/(1 + \exp(\Delta_F(i \,|\, X_t)))$\;
-	  Draw $z \sim \mathrm{Unif}([0,1])$\;
+	  Draw $z \sim$ \textsc{Unif}$([0,1])$\;
 	  \uIf{$z \leq p_{\mathrm{add}}$}{
         $X_{t+1}$ $\gets$ $X_t \cup \{i\}$\;
       } \Else{
@@ -353,7 +353,7 @@ The Metropolis chain first draws a candidate next state according to a proposal 
 	\For{$t = 0$ \KwTo $M$}{
 	  Draw $S \sim q(\cdot \,|\, X_t)$\;
 	  $p_{\textrm{acc}} \gets \min\left\{1, \frac{q(S \,|\, R)\,\exp(F(R))}{q(R \,|\, S)\,\exp(F(S))}\right\}$\;
-	  Draw $z \sim \mathrm{Unif}([0,1])$\;
+	  Draw $z \sim$ \textsc{Unif}$([0,1])$\;
 	  \uIf{$z \leq p_{\textrm{acc}}$}{
         $X_{t+1}$ $\gets$ $S$\;
       } \Else{

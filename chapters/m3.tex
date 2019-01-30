@@ -4,19 +4,19 @@
 
 \section{Introduction}
 The conditions derived in the previous chapter gave us some insight into the factors that determine the mixing rate of the Gibbs sampler in probabilistic submodular models.
-Unfortunately, oftentimes in practice these conditions do not hold and the Gibbs sampler mixes prohibitively slowly.
+Unfortunately, oftentimes in practice these conditions do not hold, and the Gibbs sampler mixes prohibitively slowly.
 A fundamental reason for this slow mixing behavior is the existence of bottlenecks in the state space of the Markov chain.
 Conceptually, one can think about the state-space graph containing several isolated components that are poorly connected to each other, thus making it hard for the Gibbs sampler to move between them.
 
 In this chapter, we propose a novel sampling strategy that allows for global moves in the state space, thereby avoiding bottlenecks, and, thus, accelerating mixing.
 Our sampler is based on using a proposal distribution that approximates the target $p$ by a mixture of product distributions.
 We further propose an algorithm for constructing such a mixture using discrete semigradient information of the associated function $F$.
-This idea makes a step towards bridging optimization and sampling, a theme that has been successful in continuous spaces.
+This idea takes a step towards bridging optimization and sampling, a theme that has been successful in continuous spaces.
 Our sampler is readily combined with other existing samplers, and we show provable theoretical, as well as empirical examples of speedups.
 
 \paragraph{Mixing time and spectral gap.}
 As a reminder, the mixing time of a Markov chain $(X_t)_t$ denotes the minimum number of iterations required to get $\epsilon$-close to stationarity, $\tme \defeq \min \{ t \mid d(t) \leq \epsilon \}$.
-The distance to stationarity, $d(t) \defeq \max_{X_0 \in \Omega} \dtv{P^t(X_0, \cdot)}{p}$, is the maximum total variation distance, over all starting states, between $X_t$ and the target distribution $p$.
+The distance to stationarity, $d(t) \defeq \max_{X_0 \in \Omega} \dtv{P^t(X_0, \cdot)}{p}$, is the maximum total variation distance, over all starting states, between $X_t$ and the target distribution $p$ (see \sectref{sect:sampling}).
 
 A common way to obtain an upper bound on the mixing time of a chain is by lower bounding its spectral gap, defined as $\gamma \defeq 1 - \lambda_2$, where $\lambda_2$ is the second largest eigenvalue of the corresponding transition matrix $P$.
 The following well-known theorem connects the spectral gap to mixing time.
@@ -33,22 +33,23 @@ Intuitively, the state space may contain several high-probability regions arrang
 As a result, the Gibbs sampler may mix extremely slowly on the whole state space, despite the fact that it can move sufficiently fast within each of the high-probability regions.
 
 To alleviate this shortcoming, it is natural to ask whether it is possible to bypass such bottlenecks by using a chain that performs larger moves.
-In this paper, we introduce a novel approach that uses a Metropolis chain based on a specific mixture of log-modular distributions, which we call the \Ms{} chain, to perform global moves in state space.
+In this paper, we introduce a novel approach that uses a Metropolis chain based on a specific mixture of log-modular distributions, which we call the \Ms{} chain, to perform global moves in the state space.
 Concretely, we define a proposal distribution
 \begin{align} \label{eq:qprop}
   q(S, R) = q(R) &= \frac{1}{Z_q} \sum_{i = 1}^{r} \exp\left( \Fi(R) \right) \nonumber\\
                  &= \frac{1}{Z_q} \sum_{i = 1}^{r} \wi \exp\left(\mi(R) \right),
 \end{align}
-where each $\Fi(R) = \ci + \sum_{v \in R}m_{iv}$ is a modular function, while each $\mi(R) = \sum_{v \in R}m_{iv}$ is a normalized modular function ($\mi(\varnothing) = 0$), and $\wi = \exp(\ci) > 0$.
+where each $\Fi(R) = \ci + \sum_{v \in R}m_{iv}$ is a modular function, each $\mi(R) = \sum_{v \in R}m_{iv}$ is a normalized modular function ($\mi(\varnothing) = 0$), and $\wi = \exp(\ci) > 0$.
 If we denote by $\Zi$ the normalizer of $\mi$, then the normalizer of the mixture can be written in closed form as
 \begin{align*}
   Z_q = \sum_{R \in \Omega}q(R) &= \sum_{R \in \Omega}\sum_{i = 1}^{r} \wi \exp\left(\mi(R) \right)\\
                                 &= \sum_{i = 1}^{r} \wi \sum_{R \in \Omega} \exp\left(\mi(R) \right)\\
                                 &= \sum_{i = 1}^r \wi \Zi.
 \end{align*}
-We define the \Ms{} chain as a Metropolis chain using $q$ as a proposal distribution; its transition matrix $\Pm : \Omega \times \Omega \to \mathbb{R}$ is given by
+We define the \Ms{} chain as a Metropolis chain using $q$ as a proposal distribution.
+Its transition matrix $\Pm : \Omega \times \Omega \to \mathbb{R}$ is given by
 \begin{align*}
-  \Pm(S, R) = \twopartdefo{q(R) p_a(S, R)}{R \neq S}{1 - \displaystyle\sum_{T \neq S} q(T) p_a(S, T)},
+  \Pm(S, R) = \twopartdefo{q(R) p_a(S, R)}{R \neq S\vspace{1em}}{1 - \displaystyle\sum_{T \neq S} q(T) p_a(S, T)},
 \end{align*}
 where
 \begin{align*}
@@ -66,7 +67,7 @@ As is always the case with Metropolis chains, the mixing time of the \Ms{} sampl
 The following observation shows that, in theory, we can approximate any distribution of the form $p(S) \propto \exp(F(S))$ by a mixture of the form \eqref{eq:qprop}.
 
 \begin{prop} \label{prop:decomp}
-  For any distribution $p$ on $\Omega$ as in \eqref{eq:pdef}, and any $\epsilon > 0$, there are positive constants $\wi = \wi(\epsilon) > 0$, and normalized modular functions $\mi = \mi(\epsilon)$, such that, if we define $q(S) \defeq \sum_{i = 1}^r \wi \exp(\mi(S))$, then $\dtv{p}{q} \leq \epsilon$.
+  For any distribution $p(S) \propto \exp(F(S))$ on $\Omega$, and any $\epsilon > 0$, there are positive constants $\wi = \wi(\epsilon) > 0$, and normalized modular functions $\mi = \mi(\epsilon)$, such that, if we define $q(S) \defeq \sum_{i = 1}^r \wi \exp(\mi(S))$, then $\dtv{p}{q} \leq \epsilon$.
 \end{prop}
 
 \begin{proof}
@@ -89,7 +90,6 @@ The following observation shows that, in theory, we can approximate any distribu
   \end{align*}
   Note that both terms vanish if we let all $\beta_j \to \infty$.
   Therefore, for any $\delta > 0$, there are $\beta_{ij} = \beta_{ij}(\delta)$, for all $j \in \{1, \ldots, r\}$, such that $d_i(\beta_{i1}, \ldots, \beta_{ir}) \leq \delta$.
-  
   Finally, choosing $\hat{\beta}_j \defeq \max_{i \in \{1, \ldots, r\}} \beta_{ij}$, for all $j \in \{1, \ldots, r\}$, we get
   \begin{align*}
     \dtv{p}{q} = \frac{1}{2}\sum_{i = 0}^r d_i(\hat{\beta}_1, \ldots, \hat{\beta}_r) \leq 2^{n-1} \delta.
@@ -108,8 +108,7 @@ To make this happen, we define the transition matrix $\Pc : \Omega \times \Omega
 where $0 < \delta < 1$.
 It is easy to see that $\Pc$ is reversible, and has stationary distribution $p$.
 
-We next illustrate how combining the two chains works on a simple example, where a mixture of only a few log-modular distributions can dramatically improve mixing compared to running the vanilla Gibbs chain.
-Then, we propose an algorithm for automatically creating such a mixture.
+We next illustrate how combining the two chains works on an example model class, in which a mixture of only a few log-modular distributions can dramatically improve the mixing time compared to running the vanilla Gibbs chain.
 
 \section{Ising Model on the Complete Graph} \label{sect:ising}
 We consider the Ising model on a finite complete graph \citep{levin08}, also known as the Curie-Weiss model in statistical physics, which is family of log-supermodular distributions that can be written as follows,
@@ -159,7 +158,7 @@ and the two restriction chains $P_i : \Omega_i \times \Omega_i \to \mathbb{R}$ o
 \end{align*}
 Again, it is easy to see that each of the $P_i$ is also reversible and has stationary distribution $p_i$.
 
-In \figref{fig:decomp}, we depict the structure of our reasoning for the remainder of this section, including the results that we prove or use to ultimately arrive at \theoremref{thm:combo}.
+In \figref{fig:decomp}, we depict the structure of our reasoning for the rest of this section, including the results that we prove or use to ultimately arrive at the upcoming \theoremref{thm:combo}.
 
 \begin{figure}[tbp]
   \centering
@@ -317,7 +316,7 @@ Ideally, we would like to construct a proposal $q$ that is as close to $p$ as po
          &\,\,= \min_q \left\| \frac{\exp(F(\cdot))}{Z} - \frac{1}{Z_q}\textstyle\sum_{i = 1}^r \wi\exp(\mi(\cdot)) \right\|,
 \end{align*}
 where $\| \cdot \|$ could be, for example, total variation distance or the maximum norm.
-Unfortunately, this problem is hard: both computing the partition function $Z$, and jointly optimizing over all $\wi, \mi$ are infeasible in practice.
+Unfortunately, this problem is hard; both computing the partition function $Z$, and jointly optimizing over all $\wi, \mi$ are infeasible in practice.
 To make the problem easier, we could try to get rid of the normalizers and weights $\wi$, and iteratively minimize over each $\mi$ individually:
 \begin{align*}
   E_2^{(i)}(m_i) \defeq \min_{m_i} \left\| \exp(F(\cdot)) - \textstyle\sum_{j = 1}^{i-1} \exp(\mi(\cdot)) \right\|,
@@ -360,7 +359,7 @@ This problem is still hard, since optimizing $\| \exp(F(\cdot)) \|$ is by itself
 \end{algorithm}
 
 To arrive at a practical algorithm, we approximate the above objective using the two-step procedure described in \algoref{alg:mixture}.
-In the first step, we generate a permutation $\sigma$ of the ground set $V$ by running the greedy algorithm on function $D_i(S) \defeq F(S) - \log \sum_{j=1}^{i-1} \exp(m_j(S))$, as shown in \algoref{alg:greedy_dif}.
+In the first step, we generate a permutation $\sigma$ of the ground set $V$ by running the greedy algorithm on function $D_i(S) \defeq F(S) - \log \sum_{j=1}^{i-1} \exp(m_j(S))$, as shown in \algoref{alg:greedy_dif} (cf. \algoref{alg:greedy}).
 Intuitively, the sets that are formed by elements near the beginning of $\sigma$ are those on which $F$ and the current mixture disagree by the most.
 Therefore, in the second step, we would like to add to the mixture a modular function $\mi$ that is a good approximation for $F$ on $\{\sigma_1, \ldots, \sigma_k\}$, for a choice of $1 \leq k \leq n$.
 To accomplish this, we propose using discrete semigradients.
@@ -400,7 +399,7 @@ In fact, the modular functions $m_1$, $m_2$ that we used in analyzing the Ising 
   \vspace{0.5em}
   \SetKwInOut{Input}{Input}
   \Input{Set function $F$, permutation $\sigma$}
-  Draw $k \sim \mathrm{Unif}(\{1,\ldots,n\})$\;
+  Draw $k \sim $ \textsc{Unif}$(\{1,\ldots,n\})$\;
   \For{$v = 1$ \KwTo $k$}{
     $m_v$ $\gets$ $F(V) - F(V \setminus \{v\})$
   }
@@ -459,7 +458,7 @@ As each of the chains converges to the stationary distribution, the PSRF is expe
 In our experiments, we compute the PSRF using single-element marginal probabilities, and show the worst (highest PSRF) marginal averaged over $50$ repetitions of each simulation.
 
 In \figref{fig:expising} we show the results for the Ising model ($n = 6, 7, 8$).
-The additional \textsc{Combo-f} line denotes the combined sampler with two mixture components discussed in \sectref{sect:ising}.
+The additional \textsf{Combo-F} lines denote the combined sampler with two mixture components discussed in \sectref{sect:ising}.
 The other two combined samplers use mixtures of size $r = 20$.
 Note that Gibbs mixes dramatically slower than the combined sampler, even for such small $n$, because of the significant bottleneck we described before.
 

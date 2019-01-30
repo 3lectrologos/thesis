@@ -62,7 +62,7 @@ for any $S \subseteq V_n$, which results in $F_n(V_n) = 1$.
 \newcommand{\hkn}{\mathcal{K}_n}
 \newcommand{\htn}{\mathcal{T}_n}
 
-Furthermore, if we define $\hrn = \{S \subseteq V \mid R \subseteq S\}$, $\hcn = \{S \mid C \subseteq S \subseteq V\}$, and $\hkn = 2^V \setminus (\hrn \cup \hcn)$, then the following properties hold.
+Furthermore, if we define $\hrn = \{S \subseteq V \,|\, R \subseteq S\}$, $\hcn = \{S \,|\, C \subseteq S \subseteq V\}$, and $\hkn = 2^V \setminus (\hrn \cup \hcn)$, then the following properties hold.
 \begin{align}
   &|\hrn| = |\hcn| = 2^{n/2} \label{eq:prop1} \\
   &\hrn \cap \hcn = \{V\} \label{eq:prop2} \\
@@ -129,7 +129,7 @@ For submodular and supermodular functions, $\zf$ represents the worst-case amoun
 
 It is also important to note that, for submodular and supermodular functions, $\zf$ depends only on the monotone part of $F$; if we decompose $F$ according to \defref{def:decomp}, then it is easy to see that $\zf = \zeta_f$.
 A trivial upper bound on $\zf$, therefore, is $\zf \leq f(V)$.
-Another quantity that has been used in the past to quantify the deviation of a submodular function from modularity is the curvature \citep{conforti84}, defined as $\kappa_F \defeq 1 - \min_{i \in V} \left(F(i\mid V\setminus\{i\}) / F(i)\right)$.
+Another quantity that has been used in the past to quantify the deviation of a submodular function from modularity is the curvature \citep{conforti84}, defined as $\kappa_F \defeq 1 - \min_{i \in V} \left(F(i\,|\, V\setminus\{i\}) / F(i)\right)$.
 Although of similar intuitive meaning, the multiplicative nature of its definition makes it significantly different from $\zf$, which is defined additively.
 
 \subsection{Examples}
@@ -348,11 +348,11 @@ if $F$ is sub- or supermodular.
 We now proceed to show that, under some stronger conditions, we are able to establish even faster---$\mathcal{O}(n \log n)$---mixing.
 For any function $F$, we denote
 \begin{align*}
-\D_F(i\mid S) \defeq F(S \cup \{i\}) - F(S \setminus \{i\}),
+\D_F(i\,|\, S) \defeq F(S \cup \{i\}) - F(S \setminus \{i\}),
 \end{align*}
 and define the following quantity,
 \begin{align*}
-  \gf &\defeq \max_{\substack{S \subseteq V\\r \in V}} \sum_{\substack{i \in V}} \tanh\left(\frac{\beta}{2} \Big|\D_F(i\mid S) - \D_F(i\mid S \cup \{r\})\Big| \right),
+  \gf &\defeq \max_{\substack{S \subseteq V\\r \in V}} \sum_{\substack{i \in V}} \tanh\left(\frac{\beta}{2} \Big|\D_F(i\,|\, S) - \D_F(i\,|\, S \cup \{r\})\Big| \right),
 \end{align*}
 which quantifies the (maximum) total influence of an element $r \in V$ on the values of $F$.
 For example, if the inclusion of $r$ makes no difference with respect to other elements of the ground set, we will have $\gf = 0$.
@@ -384,7 +384,7 @@ The following theorem establishes fast mixing using this metric, as well as the 
 \begin{theorem}[\hspace{1sp}\citealp{bubley97,levin08}] \label{thm:pc}
 For any Markov chain $(Z_t)$, let $(X_t, Y_t)$ be a coupling, such that, for some $a \geq 0$, and any $x, y \in \ss$ with $x \sim y$, it holds that
 \begin{align*}
-  \E[d(X_{t+1}, Y_{t+1}) \mid X_t = x, Y_t = y] \leq e^{-\alpha}d(x, y).
+  \E[d(X_{t+1}, Y_{t+1}) \,|\, X_t = x, Y_t = y] \leq e^{-\alpha}d(x, y).
 \end{align*}
 Then, the mixing time of the original chain $(Z_t)$ is bounded by
 \begin{align*}
@@ -431,11 +431,11 @@ For any $S, R \subseteq V$ with $R = S \cup \{r\}$,
   \begin{align*}
     p_{\mathrm{dif}}(i) &= \Bigg|\frac{\exp(\beta F(S \cup \{i\}))}{\exp(\beta F(S \cup \{i\})) + \exp(\beta F(S \setminus \{i\}))} -\\
     &\ \ \ \ \ \ \ \frac{\exp(\beta F(R \cup \{i\}))}{\exp(\beta F(R \cup \{i\})) + \exp(\beta F(R \setminus \{i\}))}\Bigg|\\[0.8em]
-    &= \left|\frac{\exp(\beta \D_F(i\mid S))}{1 + \exp(\beta \D_F(i\mid S))} - \frac{\exp(\beta \D_F(i\mid R))}{1 + \exp(\beta \D_F(i\mid R))}\right|\\[0.8em]
-    &= \left|\frac{\exp(\beta \D_F(i\mid S)) - \exp(\beta \D_F(i\mid R))}{(1 + \exp(\beta \D_F(i\mid S)))(1 + \exp(\beta \D_F(i\mid R)))}\right|\\[0.8em]
-    &\leq \left|\frac{\exp(\beta \D_F(i\mid S)) - \exp(\beta \D_F(i\mid R))}{\exp(\beta \D_F(i\mid S)) + \exp(\beta \D_F(i\mid R))}\right|\\[0.8em]
-    &= \left|\frac{\exp(\beta (\D_F(i\mid S) - \D_F(i\mid R))) - 1}{\exp(\beta (\D_F(i\mid S) - \D_F(i\mid R))) + 1}\right|\\[0.8em]
-    &= \tanh \left(\frac{\beta}{2}\big|(\D_F(i\mid S) - \D_F(i\mid R)) \big|\right).
+    &= \left|\frac{\exp(\beta \D_F(i\,|\, S))}{1 + \exp(\beta \D_F(i\,|\, S))} - \frac{\exp(\beta \D_F(i\,|\, R))}{1 + \exp(\beta \D_F(i\,|\, R))}\right|\\[0.8em]
+    &= \left|\frac{\exp(\beta \D_F(i\,|\, S)) - \exp(\beta \D_F(i\,|\, R))}{(1 + \exp(\beta \D_F(i\,|\, S)))(1 + \exp(\beta \D_F(i\,|\, R)))}\right|\\[0.8em]
+    &\leq \left|\frac{\exp(\beta \D_F(i\,|\, S)) - \exp(\beta \D_F(i\,|\, R))}{\exp(\beta \D_F(i\,|\, S)) + \exp(\beta \D_F(i\,|\, R))}\right|\\[0.8em]
+    &= \left|\frac{\exp(\beta (\D_F(i\,|\, S) - \D_F(i\,|\, R))) - 1}{\exp(\beta (\D_F(i\,|\, S) - \D_F(i\,|\, R))) + 1}\right|\\[0.8em]
+    &= \tanh \left(\frac{\beta}{2}\big|(\D_F(i\,|\, S) - \D_F(i\,|\, R)) \big|\right).
   \end{align*}
   The lemma follows by definition of $\gf$, and the fact that $R = S \cup \{r\}$.
 \end{proof}
@@ -458,10 +458,10 @@ The specialization of \theoremref{thm:fast} to sub- or supermodular functions is
 \begin{proof}
   For any $S, R \subseteq V$ with $R = S \cup \{r\}$, and any $i \in V$, we have
   \begin{align*}
-    &\D_F(i\mid S) - \D_F(i\mid R)\\
+    &\D_F(i\,|\, S) - \D_F(i\,|\, R)\\
     &\quad\quad= F(S \cup \{i\}) - F(S \setminus \{i\}) - F(R \cup \{i\}) + F(R \setminus \{i\})\\
     &\quad\quad= f(S \cup \{i\}) - f(S \setminus \{i\}) - f(R \cup \{i\}) + f(R \setminus \{i\})\\
-    &\quad\quad= \D_f(i\mid S) - \D_f(i\mid R).
+    &\quad\quad= \D_f(i\,|\, S) - \D_f(i\,|\, R).
   \end{align*}
 \end{proof}
 
@@ -485,9 +485,9 @@ We prove the following corollary that provides an easy to check condition for fa
 \begin{proof}
   For any $S, R \subseteq V$ with $R = S \cup \{r\}$, we have
   \begin{align*}
-  	&\sum_{i \neq r} \tanh \left(\frac{\beta}{2}\big|(\D_f(i\mid S) - \D_f(i\mid R)) \big|\right)\\
-    &\leq \sum_{i \neq r} \frac{\beta}{2}\big|(\D_f(i\mid S) - \D_f(i\mid R)) \big| \tag*{by $\tanh(x) \leq x$, for all $x \geq 0$}\\
-    &\leq \sum_{i \neq r} \frac{\beta}{2}(\D_f(i\mid S) - \D_f(i\mid R)) \tag*{by submodularity of $f$}\\
+  	&\sum_{i \neq r} \tanh \left(\frac{\beta}{2}\big|(\D_f(i\,|\, S) - \D_f(i\,|\, R)) \big|\right)\\
+    &\leq \sum_{i \neq r} \frac{\beta}{2}\big|(\D_f(i\,|\, S) - \D_f(i\,|\, R)) \big| \tag*{by $\tanh(x) \leq x$, for all $x \geq 0$}\\
+    &\leq \sum_{i \neq r} \frac{\beta}{2}(\D_f(i\,|\, S) - \D_f(i\,|\, R)) \tag*{by submodularity of $f$}\\
     &= \medmath{\frac{\beta}{2}\sum_{i \neq r}(f(S \cup \{i\}) - f(S \setminus \{i\}) - f(S \cup \{r\} \cup \{i\}) + f(S \cup \{r\} \setminus \{i\}))}\\
     &= \medmath{\frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}(f_{j}(S \cup \{i\}) - f_{j}(S \setminus \{i\}) - f_{j}(S \cup \{r\} \cup \{i\}) + f_{j}(S \cup \{r\} \setminus \{i\}))}\\
     &\leq \medmath{\frac{\beta}{2}\sum_{i \neq r}\sum_{j \in [L]}\min\big\{f_{j}(S \cup \{i\}) - f_{j}(S \setminus \{i\}),f_{j}(S \cup \{r\} \setminus \{i\}) - f_{j}(S \setminus \{i\})\big\}} \tag*{by monotonicity of $f_{j}$}\\
@@ -552,7 +552,7 @@ In the experiments, we vary this parameter from $0$ (modular model) to $1$ (``st
 
 For all three models, we constrain the size of the ground set to $n = 20$, so that we are able to compute, and compare against, the exact marginals.
 Furthermore, we run multiple repetitions for each model to account for the randomness of the model instance, and the random initialization of the Gibbs sampler.
-The marginals we compute are of the form $p(i \in S \mid C \subseteq S \subseteq D)$, for all $i \in V$.
+The marginals we compute are of the form $p(i \in S \,|\, C \subseteq S \subseteq D)$, for all $i \in V$.
 As before, we run the Gibbs sampler for $200$, $1000$, and $5000$ iterations on each problem instance.
 
 \figref{fig:gibbs_exp} compares the average absolute error of the approximate marginals with respect to the exact ones.
