@@ -5,7 +5,7 @@
 Modeling notions such as coverage, representativeness, or diversity is an important challenge in many machine learning problems.
 These notions are well captured by submodular set functions.
 Analogously, supermodular functions capture notions of smoothness, regularity, or cooperation. 
-As a result, submodularity and supermodularity have found numerous applications in machine learning problems of discrete nature, akin to concavity and convexity for continuous optimization.
+As a result, submodularity and supermodularity have found numerous applications in machine learning problems of discrete nature, akin to concavity and convexity in continuous optimization.
 
 \subsection{Basics}
 We consider set functions $F : 2^V \to \mathbb{R}$, where $V$ is a finite ground set of size $|V| = n$.
@@ -39,7 +39,7 @@ A function $F$ is supermodular if and only if $-F$ is submodular.
 \end{definition}
 
 If a function $m$ is both submodular and supermodular, then it is called modular.
-Modular functions can be seen as the discrete analogue of linear continuous functions, and can be defined using a sum over real-numbered ``utilities''.
+Modular functions can be seen as the discrete analogue of linear continuous functions, and can be defined using a sum over real-numbered weights.
 \begin{definition}[Modularity]
 A function $m$ is called modular if it is both submodular and supermodular; it can be written as
 \begin{align*}
@@ -48,7 +48,7 @@ F(S) = c + \sum_{i \in S} m_i,
 where $c \in \mathbb{R}$, and $m_i \in \mathbb{R}$, for all $i \in V$.
 \end{definition}
 
-A function is called monotone when adding an element can never decrease its value.
+A function is called monotone when adding an element never decreases its value.
 \begin{definition}[Monotonicity]
 A function $F$ is monotone if, for any $i \in V$, and $S \subseteq V$, it holds that
 \begin{align*}
@@ -101,12 +101,12 @@ As stated in the introduction, in the interest of venturing beyond discrete opti
 p(S; \btheta) = \frac{1}{Z(\btheta)} \exp\left( F(S; \btheta) \right),
 \end{align*}
 for all $S \subseteq V$.
-The function $F$ is parameterized by a (possibly to be learned) vector $\btheta$, and $Z(\btheta)$ denotes the normalizing constant of the distribution, which is also often referred to as the partition function, and defined as
+The function $F$ is parameterized by a vector $\btheta$, and $Z(\btheta)$ denotes the normalizing constant of the distribution, which is also often referred to as the partition function, and defined as
 \begin{align*}
 Z(\btheta) \defeq \sum_{S \subseteq V} \exp\left( F(S; \btheta) \right).
 \end{align*}
 An alternative and equivalent way of defining distributions of the above form is via binary random vectors $X \in \{0, 1\}^n$.
-If we define $V(X) \defeq \sdef{v \in V}{X_v = 1}$, it is easy to see that the distribution $p_X(X) \propto \exp(F(V(X)))$ over binary vectors is isomorphic to the above distribution over sets.
+If we define the transformation from vectors to sets, $V(X) \defeq \sdef{v \in V}{X_v = 1}$, it is easy to see that the distribution $p_X(X) \propto \exp(F(V(X)))$ over binary vectors is isomorphic to the above distribution over sets.
 With a slight abuse of notation, we will use $F(X)$ to denote $F(V(X))$, and use $p$ to refer to both distributions.
 
 For large parts of this thesis, we will focus on such distributions with $F$ being submodular or supermodular.
@@ -117,8 +117,8 @@ p(S; \btheta) \propto \exp\left( F(S; \btheta) \right),
 \end{align*}
 for all $S \subseteq V$, where $F$ is a submodular or supermodular function.
 \end{definition}
-The resulting models of this form are also referred to as log-submodular and log-supermodular distributions respectively.
-Note that the most likely configurations in these distributions directly correspond to the maximizers of the sub- or supermodular function $F$.
+The resulting distributions of this form are also referred to as log-sub\-mo\-du\-lar and log-supermodular respectively.
+Note that the most likely configurations of these distributions directly correspond to the maximizers of the sub- or supermodular function $F$.
 Some commonly used discrete models fall under these categories; for example, the standard Ising and Potts models are log-supermodular, while determinantal point processes are log-submodular.
 We now present some examples models in more detail.
 
@@ -130,10 +130,10 @@ Z = \exp(c) \prod_{i \in V} \left( 1 + \exp(m_i) \right).
 \end{align*}
 Consequently, a log-modular distribution can be written as
 \begin{align*}
-  p(S) = \frac{\exp\big( \sum_{i \in S} m_i \big)}{\prod_{i \in V} \left( 1 + \exp(m_i) \right)}.
+  p(S) = \frac{\exp\left( \displaystyle\sum_{i \in S} m_i \right)}{\displaystyle\prod_{i \in V} \left( 1 + \exp(m_i) \right)}.
 \end{align*}
 Note that the constant $c$ does not appear in the distribution.
-More generally, the discrete models we consider are invariant to adding a constant to $F$, since that constant gets cancelled by the partition function $Z$.
+More generally, the discrete models we consider are invariant to adding a constant to $F$, since that constant gets canceled by the partition function $Z$.
 \end{example}
 
 \begin{example}[Ising model]
@@ -141,16 +141,17 @@ In its simplest form, the (ferromagnetic) Ising model \citep{ising} is defined v
 \begin{align*}
 \sigma_{i,j}(S) \defeq 4\left(\llbracket\{i \in S\}\rrbracket - 0.5\right)(\llbracket\{j \in S\}\rrbracket - 0.5),
 \end{align*}
-for all $\{i, j\} \in E$, where we use $\llbracket \cdot \rrbracket$ to denote the Iverson bracket, which has value $1$ when the enclosed condition is true, and $0$ otherwise.
+for all $\{i, j\} \in E$.
+We use $\llbracket \cdot \rrbracket$ to denote the Iverson bracket, which has value $1$ when the enclosed condition is true, and $0$ otherwise.
 We can see that $\sigma_{i,j}$ takes value $1$ if $S$ contains both or neither of $i, j$, and value $-1$ if it contains only one of $i$ or $j$.
-It follows that $\sigma_{i, j}$ is a supermodular set function.
+It follows that each $\sigma_{i, j}$ is a supermodular set function.
 The Ising distribution is defined as
 \begin{align*}
 p(S) \propto \exp\left(\sum_{\{i,j\} \in E} \sigma_{i,j}(S)\right).
 \end{align*}
 It is log-supermodular, since each $\sigma_{i,j}$ is supermodular, and supermodular functions are closed under addition.
 
-We can also define the anti-ferromagnetic Ising model by a different set of ``repulsive'' pairwise potentials $\hat{\sigma}_{i,j}(S) \defeq \sigma_{i,j}(S)$.
+We can also define the anti-ferromagnetic Ising model by a different set of ``repulsive'' pairwise potentials $\hat{\sigma}_{i,j}(S) \defeq -\sigma_{i,j}(S)$.
 In this case, each $\hat{\sigma}_{i,j}$ is a submodular set function, and the resulting distribution is log-submodular.
 
 Ising models, and Potts models \citep{potts}, which generalize Ising models from binary to $k$-state variables, originate in statistical physics, but have also found numerous applications in computer vision \citep{wang13}.
@@ -166,7 +167,7 @@ where $\*L_S$ denotes the square submatrix indexed by set $S$, and $I$ is the $n
 Since $F(S) = \log \det(\*L_S)$ is a submodular function, determinantal point processes (DPPs) are log-submodular distributions.
 Interestingly, as we can see from the above equation, the partition function $Z = \det(\*L + \*I)$ can be easily computed, which makes DPPs one of very few known tractable higher-order models.
 
-DPPs also originate in statistical physics, but have been used to encourage diversity in various machine learning applications, such as image and video summarization \citep{kulesza12,gong14}.
+DPPs originate in statistical physics, but have been used to encourage diversity in various machine learning applications, such as image and video summarization \citep{kulesza12,gong14}.
 \end{example}
 
 \begin{example}[\flid{}] \label{ex:flid}
@@ -186,7 +187,7 @@ The structure of these models make them ideal for capturing mutual exclusivity, 
 In \figref{fig:flid}, we show an example \flid{} model on ground set $V = \{1, 2, 3\}$.
 Note how the high value of $u_3 = 1$ increases the probability of sets containing element $3$, but the high values of $w_{22} = w_{32} = 2$ significantly decrease the probability of sets $\{2, 3\}$ and $V$.
 Similar observations can be made about the lower probability of set $\{1, 2\}$ due to $w_{11} = w_{21} = 1$.
-In this sense, the model encodes two approximately mutually exlusive groups, namely $\{1, 2\}$, and $\{2, 3\}$.
+In this sense, the model encodes two approximately mutually exclusive groups, namely $\{1, 2\}$, and $\{2, 3\}$.
 
 \renewcommand{\subflen}{\textwidth}
 \begin{figure}[htbp]
@@ -242,32 +243,36 @@ While the only function values that change from before are $F(\{1, 3\})$ and $F(
 The basic tasks we would like to perform in a given discrete probabilistic model are computing various marginal probabilities of interest, and computing the partition function $Z$.
 These two tasks are more often that not tightly related to each other, and many algorithms that accomplish one of them can also accomplish the other with minor modifications.
 We therefore refer to them jointly as \emph{probabilistic inference}.
-There are very few classes of discrete probabilistic models that are known to be amenable to tractable exact inference.
-The most prominent such class are determinantal point processes that we described above.
 
-On the other hand, is well known that performing exact inference in general probabilistic submodular models is a computationally intractable problem.
-In fact, even for Ising models, \cite{jerrum93} showed that exactly computing the partition function is a \#P-hard problem.
+There are very few classes of discrete probabilistic models that are known to be amenable to tractable exact inference.
+The most prominent such class is that of determinantal point processes that we described above.
+In fact, it is well known that performing exact inference in general probabilistic submodular models is a computationally intractable problem.
+Even for Ising models, \cite{jerrum93} showed that exactly computing the partition function is a \#P-hard problem.
 Worse than that, they showed that there can be no FPRAS for these models unless RP = NP.
 However, they also proposed a sampling-based procedure for performing approximate inference in ferromagnetic Ising models under some conditions.
 Several other conditional results for approximate sampling-based inference are known for Ising models (Ch. 15, \citealp{levin08book}).
 A generalization of determinantal point processes, called strongly Rayleigh distributions \citep{borcea08}, are the result of a long line of research into the notion of negative dependence between random variables \citep{pemantle00,liggett02,wagner08}.
 It has been shown that one can efficiently sample from strongly Rayleigh distributions using a simple Metropolis sampler \citep{anari16,li16}.
 
-\cite{iyer15} have considered a different class of probabilistic models, called submodular point processes, which are also defined via submodular functions, and are of the form $p(S) \propto F(S)$.
-They showed that inference in SPPs is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
+\cite{iyer15} considered a different class of probabilistic models, called submodular point processes, which are also defined via submodular functions, and are of the form $p(S) \propto F(S)$.
+They showed that inference in these models is, in general, also a hard problem, and provided approximations and closed-form solutions for some subclasses.
 
 Besides sampling, the primary alternative for performing approximate inference in discrete models have been variational methods.
 The fundamental idea of these methods is to choose a distribution among a tractable class to approximate the true distribution at hand.
-There has been extensive research on variational methods for low-order models, particularly for exponential families, and many well-known algorithms, such as belief propagation, or mean-field methods, fall under this category. (For an introductory treatment we refer to the monograph by \cite{wainwright08}.)
-More recently, \citet{djolonga14} have proposed a variational approach for performing approximate probabilistic inference in probabilistic submodular models, based on log-modular approximations of the distribution.
+There has been extensive research on variational methods for low-order models, particularly for exponential families; many well-known algorithms, such as belief propagation and mean-field methods, fall under this category. (For an introductory treatment we refer to the monograph by \cite{wainwright08}.)
+More recently, \citet{djolonga14} proposed a variational approach for performing approximate probabilistic inference in probabilistic submodular models based on log-modular approximations of the distribution.
 
 
 \section{Sampling} \label{sect:sampling}
 In this thesis, we focus on Markov chain Monte Carlo sampling algorithms, which are based on performing randomly selected moves in a state space $\ss$ to approximate probabilistic quantities of interest.
-The visited states $(X_0, X_1,\ldots)$ form a Markov chain, which under mild conditions converges to a stationary distribution $p$ (see Theorem 4.9, \citealp{levin08book}).
+The visited states $(X_0, X_1,$ $\ldots)$ form a Markov chain, which under mild conditions converges to a stationary distribution $p$ (see Theorem 4.9, \citealp{levin08book}).
 Crucially, the probabilities of transitioning from one state to another are carefully chosen to ensure that the stationary distribution is identical to the distribution of interest.
 In our case, the state space is the powerset of our ground set, that is, $\ss \defeq 2^V$, and we want to construct a chain over subsets of $V$ that has stationary distribution $p$.
-We denote by $P : \Omega \times \Omega \to \mathbb{R}$ the transition matrix of a Markov chain, i.e., for all $S, R \in \Omega$, $P(S, R) \defeq \P\left[ X_{t+1} = R \,|\, X_t = S \right]$.
+We denote by $P : \Omega \times \Omega \to \mathbb{R}$ the transition matrix of a Markov chain, that is,
+\begin{align*}
+P(S, R) \defeq \P\left[ X_{t+1} = R \,|\, X_t = S \right],
+\end{align*}
+for all $S, R \in \Omega$.
 
 We next present two well-known chains that we will use throughout this thesis.
 Both of them are by construction reversible with respect to $p(\cdot) \propto \exp(F(\cdot))$, that is, they satisfy the detailed balance conditions
@@ -299,7 +304,7 @@ The Gibbs sampler first selects one of the neighbors uniformly at random, and th
 \begin{algorithm}[p]
     \setstretch{1.3}
     \DontPrintSemicolon
-	\caption{\strut The Gibbs sampler for probabilistic submodular models.}
+	\caption{\strut The Gibbs sampler for prob. submodular models.}
 	\label{alg:gibbs}
     \vspace{0.5em}
     \SetKwInOut{Input}{Input}
@@ -330,8 +335,7 @@ Moreover, it is easy to see that
 \begin{align*}
 \Delta_F(i \,|\, X_t) = \llbracket i\not\in X_t\rrbracket F(i \,|\, X_t) + \llbracket i\in X_t\rrbracket F(i \,|\, X_t\setminus\{i\}).
 \end{align*}
-Therefore, the Gibbs sampler only requires a black box for the marginal gains of $F$, which are often faster to compute in practice than the values of $F$ itself.
-Finally, it is easy to show that the stationary distribution of the chain constructed this way is $p$.
+Therefore, the Gibbs sampler only requires a black box for the marginal gains of $F$, which are often faster to compute in practice than the values of $F$.
 
 \paragraph{Metropolis sampler.}
 Another well-studied chain is the Metropolis chain \citep{metropolis,hastings}, which, like the Gibbs sampler, also performs local moves between neighboring states, but does so following a somewhat different procedure.
@@ -373,8 +377,8 @@ In particular, we estimate the expected value of function $g : \ss \to \mathbb{R
 \begin{align} \label{eq:exp_approx}
 \E_p[g(X)] \approx \frac{1}{M}\sum_{r=1}^{M} g(X_{s + r}).
 \end{align}
+For example, to estimate the marginal probability $\P(i \in S)$, for some $i \in V$, we can define $g(S) = \llbracket i \in S \rrbracket$, for all $S \in \ss$.
 The point in time $s \in \mathbb{N}$, after which we start taking samples into account, is often referred to as the burn-in time of the chain.
-For example, to estimate the marginal probability $\P(i \in S)$, for some $i \in V$, we would define $g(S) = \llbracket i \in S \rrbracket$, for all $S \in \ss$.
 
 \paragraph{Approximating the partition function.}
 There are two straightforward methods for estimating the partition function $Z$ using sampling.
@@ -385,12 +389,12 @@ Z_{\textrm{IS}} \defeq \frac{1}{M} \sum_{r = 1}^{M} \frac{\exp(F(x_{s+r}))}{\pi(
 \end{align}
 Although this is known to be an unbiased estimator of $Z$, it often has high variance, and tends to underestimate the true value of the partition function.
 
-The second method, reverse important sampling (RIS) \citep{ris}, works in the opposite direction, by first sampling $M$ samples $\{x_{s+1}, \ldots, x_{s+M}\}$ from the target distribution $p$, and then estimating the partition function by
+The second method, reverse important sampling (RIS) \citep{ris}, works in the opposite direction, by first sampling $M$ samples $\{x_{s+1},$ $\ldots, x_{s+M}\}$ from the target distribution $p$, and then estimating the partition function by
 \begin{align} \label{eq:ris}
 Z_{\textrm{RIS}} \defeq \left(\frac{1}{M} \sum_{r = 1}^{M} \frac{\pi(x_{s+r})}{\exp(F(x_{s+r}))}\right)^{-1}.
 \end{align}
-Similarly to the IS estimator, the RIS estimator also often has high variance, but it tends to overestimate the true value of the partition function.
-Taking the average $0.5 Z_{\textrm{IS}} + 0.5 Z_{\textrm{RIS}}$ is then a natural way to obtain an estimate, while other more involved related methods have also been proposed \citep{burda15,liu15}.
+Similarly to the IS estimator, the RIS estimator also often has high variance, but, in contrast to IS, it tends to overestimate the true value of the partition function.
+Taking the average $0.5 Z_{\textrm{IS}} + 0.5 Z_{\textrm{RIS}}$ is a natural way to obtain an improved estimate, while other more involved related methods have also been proposed \citep{burda15,liu15}.
 
 \paragraph{Mixing time.}
 The choice of burn-in time $s$ and number of samples $M$ in \eqref{eq:exp_approx}--\eqref{eq:ris} presents a tradeoff between computational efficiency and approximation accuracy.
