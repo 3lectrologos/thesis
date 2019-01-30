@@ -8,24 +8,20 @@ Biologically this is explained by the fact that so-called driver mutations, i.e.
 Taking this in the opposite direction, discovering groups of mutually exclusive mutations may be helpful in uncovering the structure of cancer-related pathways, and identifying important groups of driver mutations.
 
 More concretely, assume that we are given a data set of $n$ mutations and $m$ patients.
-In the simplest case, the data set contains only binary information about whether or not each mutation $i \in [n]$ occurs in each patient $j \in [m]$, which can be encoded using a binary matrix, as shown in \figref{fig:bamat_1}.
-
-\begin{figure}[htb]
-\centering
-\includegraphics[width=0.9\textwidth]{figures/intro/example1.pdf}\\[1em]
-\caption{An example binary mutation matrix, in which each shaded entry $(i, j)$ indicates that mutation $i$ occured in patient $j$.}
-\label{fig:bamat_1}
-\end{figure}
-
-In \figref{fig:bamat_2} we show a permuted version of the previous matrix, which illustrates that the first four mutations are approximately mutually exclusive.
+In the simplest case, the data set contains only binary information about whether or not each mutation $i \in [n]$ occurs in each patient $j \in [m]$, which can be encoded using a binary matrix, as shown at the top of \figref{fig:bamat}.
+At the bottom of the same figure we show a permuted version of the previous matrix, which illustrates that the first four mutations are approximately mutually exclusive.
 Searching for such groups in data sets containing hundreds or thousands of mutations is a combinatorially daunting task.
 Crucially, the available data is quite limited---TCGA data sets range from a few hundred to a couple of thousand patients---, and contains significant noise introduced by the employed measurement and preprocessing procedures.
 
 \begin{figure}[tb]
 \centering
-\includegraphics[width=0.9\textwidth]{figures/intro/example1_rep.pdf}\\[1em]
-\caption{The binary mutation matrix of the previous figure with permuted rows and columns to illustrate the mutual exclusivity between the first four mutations.}
-\label{fig:bamat_2}
+\includegraphics[width=0.95\textwidth]{figures/intro/example1.pdf}\\[1em]
+\includegraphics[width=0.95\textwidth]{figures/intro/example1_rep.pdf}\\[1em]
+\caption{
+(\textsf{\textbf{top}}) An example binary mutation matrix, in which each shaded entry $(i, j)$ indicates that mutation $i$ occured in patient $j$.
+(\textsf{\textbf{bottom}}) The same matrix with permuted rows and columns to illustrate the mutual exclusivity between the first four mutations.
+}
+\label{fig:bamat}
 \end{figure}
 
 Many other practical machine learning problems are of similar nature, that is, like the problem described above, they consist in choosing one or more subsets out of a set of finite elements.
@@ -59,8 +55,7 @@ Distributions of this form generalize some well-studied model classes, such as I
 Both learning the model parameters $\btheta$ from data, as well as quantifying uncertainty and making decisions with the learned distribution, boil down to the fundamental task of probabilistic inference, that is, computing the normalizer $Z$ or various marginal probabilities of such distributions, a problem that is known to be computationally intractable in general.
 The main topic of this thesis is to investigate the use of Markov chain Monte Carlo sampling as a means of performing approximate inference in probabilistic submodular models.
 
-\newpage
-\noindent The primary contributions of this thesis can be summarized as follows.
+The primary contributions of this thesis can be summarized as follows.
 \begin{itemize}[leftmargin=3.5em]
 \item[\textsf{Chapter 3}] We analyze the Gibbs sampler in probabilistic submodular models, and prove sufficient theoretical conditions for polynomial-time, and fast---$\mathcal{O}(n\log n)$---mixing.
 \item[\textsf{Chapter 4}] We propose a novel sampler that makes use of discrete semigradients to perform efficient global moves in the state space to avoid bottlenecks, thus leading to improved mixing compared to the Gibbs sampler.
@@ -69,7 +64,7 @@ Many of our results demonstrate considerable improvement over the state of the a
 \end{itemize}
 
 \section{Collaborators}
-The topic of sampling from probabilistic submodular models was conceived by my advisor, Prof. Andreas Krause, who has also contributed to most parts of this thesis by providing invaluable input and feedback over the years.
+The topic of sampling from probabilistic submodular models was conceived by my advisor, Prof. Andreas Krause, who has also contributed to most parts of this thesis by providing large amounts of input and feedback over the years.
 Parts of the theoretical analysis in \chapref{ch:gibbs} and \chapref{ch:m3} were done in collaboration with Prof. Hamed Hassani.
 The work of \chapref{ch:m3} was done under the guidance of Prof. Stefanie Jegelka, who also contributed to the theoretical analysis of this chapter.
 Finally, regarding the application presented in \chapref{ch:genes}, I have had several fruitful discussions with Gideon Dresdner, Dr. Kjong Lehmann, and Prof. Gunnar Rätsch.

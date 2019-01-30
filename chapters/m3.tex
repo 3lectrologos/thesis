@@ -285,7 +285,10 @@ The following two lemmas make this more concrete.
 \end{lemma}
 
 \begin{proof}
-  By definition, $\Pc_i(S, R) \geq \delta \Pg_i(S, R)$, therefore, using a comparison argument like above together with \corref{cor:grest} gives us $\gc_i \geq \delta \gg_i = \Theta\left(\displaystyle\frac{2\ln(n) - 1}{2n}\right)$.
+  By definition, $\Pc_i(S, R) \geq \delta \Pg_i(S, R)$, therefore, using a comparison argument like above together with \corref{cor:grest} gives us
+  \begin{align*}
+  \gc_i \geq \delta \gg_i = \Theta\left(\displaystyle\frac{2\ln(n) - 1}{2n}\right).
+  \end{align*}
 \end{proof}
 
 The second step combines the projection and restriction bounds to establish a bound on the spectral gap of the combined chain.
@@ -303,7 +306,6 @@ The result of \theoremref{thm:combo} follows directly by combining the spectral 
 Finally, using \theoremref{thm:spectral}, and noting that, in this case, $\pmin = \bO(e^{-n})$ (cf. proof of \lemmaref{lem:mproj}), we get a mixing time of $\tme = \bO(n^2 \log(1 / \epsilon))$ for the combined chain.
 This shows that the addition of the \Ms{} sampler results in an exponential improvement in mixing time over the Gibbs sampler by itself.
 
-\clearpage
 \section{Constructing the Mixture}
 Having seen the positive effect of the \Ms{} sampler, we now turn to the issue of how to choose the proposal $q$.
 While a manual construction like the one we just presented for the Ising model may be feasible in some cases, it is often more practical to have an automated way of obtaining the mixture.
@@ -409,20 +411,20 @@ In fact, the modular functions $m_1$, $m_2$ that we used in analyzing the Ising 
 \end{algorithm}
 
 In practice, we can use \algoref{alg:mixture} regardless of whether $F$ is sub- or supermodular.
-We have, however, noticed that subgradients give better results when $F$ is submodular, and the same goes for supergradients and supermodular functions.
+We have noticed that subgradients give better results when $F$ is submodular, and vice versa for supergradients and supermodular $F$.
 
 
 \section{Experiments}
-We start by repeating the experiment of the previous chapter shown in \figref{fig:gibbs_zest}, which involved estimating the log-partition function using reverse importance sampling on a synthetic data set containing a group of mutually exclusive genes.
+We start by repeating the experiment of the previous chapter shown in \figref{fig:gibbs_zest}, which involved estimating the log-partition function using reverse importance sampling on a synthetic data set that contains a group of three mutually exclusive genes.
 Here we only focus on the ground set of size $|V| = 100$.
 \figref{fig:exp3} shows the resulting (approximate) error in estimating $\log(Z)$ using the Gibbs sampler, compared to our proposed combined sampler using a mixture $q$ constructed by \algoref{alg:mixture} (\textsf{Combo-I}).
 We also compare against a variation where we substitute the greedy procedure in \lineref{lin:perm} of \algoref{alg:mixture} with picking a permutation $\sigma$ of the ground set uniformly at random (\textsf{Combo-R}).
-Both variations use $r = 50$ subgradients, and we repeat the experiment $100$ times.
-We can see that they clearly outperform the Gibbs sampler, while the difference between the two is not as significant.
+Both variations use $r = 20$ subgradients, and we repeat the experiment $100$ times.
+We can see that they clearly outperform the Gibbs sampler, while the difference between the two variations is not as significant.
 
 \setlength\figureheight{0.65\textwidth}
 \setlength\figurewidth{0.9\textwidth}
-\begin{figure}[htb]
+\begin{figure}[tb]
   \centering
   \input{figures/m3/zest_nsub.tex}
   \caption{The error in estimating the log-partition function with the two versions of the combined sampler compared to the Gibbs sampler.}
@@ -430,10 +432,10 @@ We can see that they clearly outperform the Gibbs sampler, while the difference 
 \end{figure}
 
 Next we evaluate the marginal inference performance of our proposed sampler on the Ising model we analyzed earlier, as well as the following three models learned from real-world data sets.
-\paragraph{\textsc{Water}.} The same \flid{} model that we used in the experimental section of last chapter (see \figref{fig:gibbs_exp1}), which was based on a problem of sensor placement in a water distribution network \citep{krause08}
+\paragraph{\textsf{Water}.} The same \flid{} model that we used in the experimental section of last chapter (see \figref{fig:gibbs_exp1}), which was based on a problem of sensor placement in a water distribution network \citep{krause08}
 In this case, we randomly subsample the original facility location matrix, so that $n = 50$, and $L = 500$.
 
-\paragraph{\textsc{Sensor}.} A determinantal point process (see \exampleref{ex:dpp}), which was used in a problem of sensor placement for indoor temperature monitoring \citep{guestrin05}.
+\paragraph{\textsf{Sensor}.} A determinantal point process (see \exampleref{ex:dpp}), which was used in a problem of sensor placement for indoor temperature monitoring \citep{guestrin05}.
 The function $F$ is of the form
 \begin{align*}
 F(S) = \log |K + \sigma^2 I|,
@@ -441,7 +443,7 @@ F(S) = \log |K + \sigma^2 I|,
 where $K$ is a kernel matrix, and $\sigma$ is a noise parameter.
 The size of the ground set is $n = 46$.
 
-\paragraph{\textsc{Game}.} A \flid{} model that represents the characters that are chosen by players in the popular online game ``Heroes of the Storm''.
+\paragraph{\textsf{Game}.} A \flid{} model that represents the characters that are chosen by players in the popular online game ``Heroes of the Storm''.
 We learned the model from an online data set of approximately $8,000$ teams of $5$ characters\footnote{https://www.hotslogs.com} using noise-contrastive estimation, as described by \cite{tschiatschek16}.
 The model has a ground set of size $n = 48$, and $L = 10$ latent dimensions.
 
@@ -469,21 +471,21 @@ Note that Gibbs mixes dramatically slower than the combined sampler, even for su
     \centering
     \input{figures/m3/ising6.tex}
     \vspace{-0.5em}
-    \caption{\textsc{Ising} ($n = 6$)}
+    \caption{\textsf{Ising} ($n = 6$)}
     \label{fig:ising6}
   \end{subfigure}\\[1em]
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/m3/ising7.tex}
     \vspace{-0.5em}
-    \caption{\textsc{Ising} ($n = 7$)}
+    \caption{\textsf{Ising} ($n = 7$)}
     \label{fig:ising7}
   \end{subfigure}\\[1em]
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/m3/ising8.tex}
     \vspace{-0.5em}
-    \caption{\textsc{Ising} ($n = 8$)}
+    \caption{\textsf{Ising} ($n = 8$)}
     \label{fig:ising8}
   \end{subfigure}\\[-0.5em]
   \caption{
@@ -505,21 +507,21 @@ Similar observations can be made with respect to computation time (see \figref{f
     \centering
     \input{figures/m3/water1.tex}
     \vspace{-0.5em}
-    \caption{\textsc{Water}}
+    \caption{\textsf{Water}}
     \label{fig:water1}
   \end{subfigure}\\[1em]
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/m3/berkeley1.tex}
     \vspace{-0.5em}
-    \caption{\textsc{Sensor}}
+    \caption{\textsf{Sensor}}
     \label{fig:berkeley1}
   \end{subfigure}\\[1em]
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/m3/hots1.tex}
     \vspace{-0.5em}
-    \caption{\textsc{Game}}
+    \caption{\textsf{Game}}
     \label{fig:hots1}
   \end{subfigure}\\[-0.5em]
   \caption{
@@ -541,13 +543,13 @@ This highlights again the complementary nature of the two chains (local vs. glob
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/m3/water2.tex}
-    \caption{\textsc{Water} -- number of subgradients}
+    \caption{\textsf{Water} -- number of subgradients}
     \label{fig:water2}
   \end{subfigure}\\[2em]
   \begin{subfigure}[b]{\subflen}
     \centering
     \input{figures/m3/water3.tex}
-    \caption{\textsc{Water} -- mixture weight}
+    \caption{\textsf{Water} -- combination weight}
     \label{fig:water3}
   \end{subfigure}\\
   \caption{

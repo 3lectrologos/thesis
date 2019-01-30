@@ -9,7 +9,7 @@ This brings us back to the familiar setting of the previous chapters.
 We show how we can use the sampling procedures discussed before to approximate the likelihood gradients, and, thus, perform an approximate gradient ascent procedure.
 Unfortunately, the likelihood functions of probabilistic submodular models are generally non-convex, therefore the optimization is only guaranteed to find a local optimum of the likelihood.
 
-The bulk of this chapter is then focused on applying this learning procedure to the application of modeling the interactions between gene mutations in cancer patients that we discussed in the introduction of the thesis.
+The rest of this chapter is then focused on applying this learning procedure to the application of modeling the interactions between gene mutations in cancer patients that we discussed in the introduction of the thesis.
 We evaluate our proposed method on synthetic and real cancer data, visualize the results in several ways, and compare them to the state of the art.
 
 \section{Approximate Maximum Likelihood Learning} \label{sect:ml}
@@ -67,7 +67,7 @@ Since we will be focusing on the \fldc{} model for the remainder of this chapter
 For simplicity, we assume that we use an equal number of $L$ dimensions for both the repulsive and the attractive matrices.
 As a reminder, the \fldc{} model is in that case defined via the following function (cf. \exampleref{ex:fldc}),
 \begin{align*}
-F(S; \bu, \bw, \bv) = \sum_{i \in S} u_i + \sum_{j=1}^{L} \left(\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij}\right) - \sum_{j=1}^{L} \left(\max_{i \in S} v_{ij} - \sum_{i \in S} v_{ij}\right).
+F(S; \bu, \bw, \bv) = \sum_{i \in S} u_i + \sum_{j=1}^{L} \left(\max_{i \in S} w_{ij} - \sum_{i \in S} w_{ij} - \max_{i \in S} v_{ij} + \sum_{i \in S} v_{ij}\right).
 \end{align*}
 Due to the presence of the two ``$\max$'' functions, $F$ is differentiable only almost everywhere.
 For the points where it is not differentiable, we define subgradients that give equal contribution to all elements that belong to the corresponding set of maximizers.
@@ -126,9 +126,8 @@ This further justifies the pursuit of efficient sampling methods in the previous
 In practice, our algorithm only takes a few minutes to run on real cancer data sets containing hundreds of mutations.
 
 
-\section{Experiments}
-In this section, we practically apply our learning algorithm to the problem of modeling gene interactions outlined above.
-We begin with providing some more details about each step of the procedure we use to discover mutually exclusive groups of mutations.
+\subsection{Experimental setup}
+We provide here some more details about each step of the procedure we use to discover mutually exclusive groups of mutations.
 The steps for discovering co-occurring groups are analogous.
 
 \paragraph{Step 1: Learning the \fldc{} model.}
@@ -185,11 +184,14 @@ For assessing co-occurence, we define a version of the ``one vs. all'' test that
 To define a ``generalized Fisher'' test for co-occurence, we use as a test statistic the sum of patients in which all mutations from the corresponding group occur simultaneously.
 
 
-\subsection{Synthetic Data: Learning}
+\section{Synthetic Data}
+We proceed to practically apply our learning algorithm to the problem of modeling gene interactions, starting with three synthetic data sets.
+
+\subsection{Learning}
 To begin with, we want to illustrate how the gradient approximation via sampling affects the learning algorithm.
-We create a reduced version of one of the real cancer data sets (see next section), so that we are able to compute the exact log-likelihood during learning.
+We create a reduced version of one of the real cancer data sets (see \sectref{sect:realcancer}), so that we are able to compute the exact log-likelihood during learning.
 Starting with the AML data set detailed in the next section, we only keep the 17 gene mutations shown in \figref{fig:graph_aml}, thus creating a data set of 17 mutations and 200 patients.
-We then learn a \fldc{} model with $L = 5$ latent dimensions for $n_{\mathrm{iter}} = 10^4$ gradient iterations.
+We then learn a \fldc{} model with $L = 10$ latent dimensions for $n_{\mathrm{iter}} = 10^4$ gradient iterations.
 
 \figref{fig:syn_nsamples} shows the evolution of the log-likelihood for an increasing number of samples, while keeping the number of semigradients constant.
 As expected, using a larger number of samples leads to a more accurate gradient approximation, which results in faster learning.
@@ -225,7 +227,7 @@ We also see that the benefit obtained from 20 semigradients corresponds to about
   \label{fig:syn1}
 \end{figure}
 
-\subsection{Synthetic Data: Single Mutually Exlusive Group} \label{sect:syn_single}
+\subsection{Single Mutually Exlusive Group} \label{sect:syn_single}
 We focus now on extracting a single group of mutually exclusive mutations.
 We create synthetic data sets of 100 mutations and 500 patients, following the procedure outlined by \cite{comet}.
 First, we choose $k = 3$ mutations, which cover a fraction $\gamma$ of the patients, and have them be completely mutually exclusive, that is, only one of the three occurs in each of the $500\gamma$ patients.
@@ -234,7 +236,7 @@ Second, we choose 5 mutations, which occur frequently (with fractions $0.67$, $0
 Finally, we add random noise by independently activating each mutation in each patient with probability $0.0028$.
 
 \figref{fig:syn_mat} shows the learned $\bw$ matrix of the \fldc{} model for such a synthetic data set with $\gamma = 0.5$.
-Note how the mutually exclusive group $\{16, 23, 68\}$ is distinctly encoded in the last column of the matrix.
+Note how the mutually exclusive group $S = \{16, 23, 68\}$ is distinctly encoded in the last column of the matrix.
 
 \begin{figure}[p]
 \centering
@@ -265,7 +267,7 @@ We would also like to emphasize at this point that CoMEt takes the size $k = 3$ 
   \label{fig:syn_single}
 \end{figure}
 
-\subsection{Synthetic Data: Multiple Mutually Exlusive Groups}
+\subsection{Multiple Mutually Exlusive Groups}
 We move now to the problem of extracting multiple groups of mutually exclusive mutations.
 Again, we create synthetic data sets following a procedure outlined by \cite{comet}.
 In this case, we start with $20,000$ mutations and $500$ patients, and select $t$ groups of $k$ mutually exclusive mutations.
@@ -285,21 +287,20 @@ We also see that, in this case, a higher level $\alpha$ degrades the quality of 
 
 
 \setlength\figureheight{0.65\textwidth}
-\setlength\figurewidth{0.95\textwidth}
+\setlength\figurewidth{1.12\textwidth}
 \begin{figure}[htb]
-  \centering
-  \input{figures/genes/syn_multi.tex}
+  \hspace{-0.9cm}\input{figures/genes/syn_multi.tex}
   \caption{Results on recovering $t$ groups of $k$ mutually exclusive mutations.
 Our method performs consistently well across all different $t$ and $k$, while CoMEt performs poorly when $t$ and $k$ are misspecified.
   }
   \label{fig:syn_multi}
 \end{figure}
 
-\subsection{Real Cancer Data}
+\section{Real Cancer Data} \label{sect:realcancer}
 We analyzed two real cancer data sets from TCGA, the first pertaining to acute myeloid leukemia \citep{tcga_aml}, and the second to breast cancer \citep{tcga_brca}.
 For both data sets, we used the preprocessed versions by \cite{comet} available on GitHub\footnote{\url{https://github.com/raphael-group/comet}}.
 
-\paragraph{Acute myeloid leukemia (AML).}
+\subsection{Acute myeloid leukemia (AML)}
 The data set consists of 51 mutations and 200 patients.
 The learned \fldc{} model ($L = 10$) is shown in \figref{fig:mat_aml}.
 We have annotated on the two matrices the discovered mutually exclusive and co-occurring groups that have (uncorrected) $p$-values $\leq 0.01$ for both $p_{\mathrm{gf}}$ and $p_{\mathrm{ova}}$.
@@ -313,7 +314,7 @@ The mutually exclusive groups are shown shaded, with darker groups corresponding
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/genes/mat_aml.pdf}\\[1em]
+\includegraphics[width=\textwidth]{figures/genes/mat_aml.pdf}
 \caption{The learned utility ($\bu$), repulsive ($\bw$), and attractive ($\bv$) matrices of the \fldc{} model ($L = 10$) on the TCGA AML data set.
 We have permuted the rows and columns to bring the discovered groups towards the upper left of the matrices.
 Groups $R_1$--$R_8$ are mutually exclusive, while groups $A_1$--$A_5$ are co-occurring.
@@ -372,7 +373,7 @@ As an example, although they are searching for a group of size $6$, they never d
 On the other hand, CoMEt detects two other groups (see \figref{fig:comet_aml}), which have $p_{\mathrm{ova}}$ significantly above our cutoff, and furthermore, also have $p_{\mathrm{gf}}$ significantly higher than all our discovered groups, except for $R_8$.
 For a comparison of the discovered mutation interactions, we also refer to \citep[Figure S8]{tcga_aml}, which confirms many of our findings, although it only illustrates pairwise interactions.
 
-\paragraph{Breast cancer (BRCA).}
+\subsection{Breast cancer (BRCA)}
 The data set consists of 375 mutations and 507 patients.
 We show the resulting learned \fldc{} model ($L = 15$) in \figref{fig:mat_brca}, the extracted mutually exclusive groups $R_1$--$R_{11}$ in \figsref{fig:rep_brca_1} and \ref{fig:rep_brca_2}, and a graphical summarization of all these groups in \figref{fig:graph_brca}.
 In \figref{fig:att_brca_1} we show the six extracted co-ocurring groups with the highest coverage; groups $A_7$--$A_{14}$ can be found in \figsref{fig:att_brca_2} and \ref{fig:att_brca_3} in the appendix.
@@ -383,7 +384,7 @@ Furthermore, we observe that the co-occurring groups $A_1$--$A_6$ are particular
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/genes/mat_brca.pdf}\\[2em]
+\includegraphics[width=\textwidth]{figures/genes/mat_brca.pdf}
 \caption{The learned utility ($\bu$), repulsive ($\bw$), and attractive ($\bv$) matrices of the \fldc{} model ($L = 15$) on the TCGA BRCA data set.
 For illustration purposes, we only show the submatrices corresponding to the $39$ mutations that participate in the extracted groups.
 We have also permuted the rows and columns to bring these groups towards the upper left of the matrices.
@@ -421,7 +422,7 @@ The highlighted entries represent co-occurring mutations.}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/genes/graph_brca.pdf}\\[2em]
+\includegraphics[width=\textwidth]{figures/genes/graph_brca.pdf}\\[1em]
 \caption{A graphical representation of the $11$ discovered mutually exclusive groups in the TCGA BRCA data set.
 Darker nodes correspond to more frequent mutations, and darker shaded polygons correspond to more significant (that is, lower $p_{\mathrm{ova}}$) groups.}
 \label{fig:graph_brca}

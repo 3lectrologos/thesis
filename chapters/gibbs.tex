@@ -421,7 +421,7 @@ which will result in new sets $S' = R' = S \cup \{r\}$, or remove $r$ with proba
 Either way, we will have $d(S', R') = 0$.
   
 If $i \neq r$, we cannot always couple the updates of the chains, because the conditional probabilities of the updates are different.
-In fact, we are forced to have different updates---one chain adding $i$, the other chain removing $i$---with probability equal to the difference of the corresponding conditionals, which we denote here by $p_{\mathrm{dif}}(v)$, defined as follows,
+In fact, we are forced to have different updates (one chain adding $i$, the other chain removing $i$) with probability equal to the difference of the corresponding conditionals, which we denote here by $p_{\mathrm{dif}}(v)$, defined as follows,
 \begin{align*}
   p_{\mathrm{dif}}(i) \defeq \left|\frac{p(S \cup \{i\})}{p(S \cup \{i\}) + p(S \setminus \{i\})} - \frac{p(R \cup \{i\})}{p(R \cup \{i\}) + p(R \setminus \{i\})}\right|.
 \end{align*}
@@ -460,7 +460,7 @@ and the result of \theoremref{thm:fast} follows from applying \theoremref{thm:pc
 
 The specialization of \theoremref{thm:fast} to sub- or supermodular functions is based on the following lemma.
 \begin{lemma}
-  If $F$ is submodular or supermodular, and decomposed according to \eqref{eq:decomp}, then
+  If $F$ is submodular or supermodular, and decomposed according to \defref{def:decomp}, then
   \begin{align*}
     \gf = \gsf.
   \end{align*}
@@ -469,9 +469,10 @@ The specialization of \theoremref{thm:fast} to sub- or supermodular functions is
 \begin{proof}
   For any $S, R \subseteq V$ with $R = S \cup \{r\}$, and any $i \in V$, we have
   \begin{align*}
-    \D_F(i\mid S) - \D_F(i\mid R) &= F(S \cup \{i\}) - F(S \setminus \{i\}) - F(R \cup \{i\}) + F(R \setminus \{i\})\\
-    &= f(S \cup \{i\}) - f(S \setminus \{i\}) - f(R \cup \{i\}) + f(R \setminus \{i\})\\
-    &= \D_f(i\mid S) - \D_f(i\mid R).
+    &\D_F(i\mid S) - \D_F(i\mid R)\\
+    &\quad\quad= F(S \cup \{i\}) - F(S \setminus \{i\}) - F(R \cup \{i\}) + F(R \setminus \{i\})\\
+    &\quad\quad= f(S \cup \{i\}) - f(S \setminus \{i\}) - f(R \cup \{i\}) + f(R \setminus \{i\})\\
+    &\quad\quad= \D_f(i\mid S) - \D_f(i\mid R).
   \end{align*}
 \end{proof}
 
@@ -536,8 +537,8 @@ Since estimating the exact value of $\log(Z)$ is infeasible for $n > 20$, we obt
 As is natural, more Gibbs samples result in more accurate estimates, and we can also observe that reverse importance sampling tends to produce overestimates of the log-partition function.
 We also see that the two variational approaches, which guarantee upper and lower bounds respectively, are considerably less accurate.
 
-\setlength\figureheight{0.6\textwidth}
-\setlength\figurewidth{0.8\textwidth}
+\setlength\figureheight{0.62\textwidth}
+\setlength\figurewidth{0.85\textwidth}
 \renewcommand{\subflen}{\textwidth}
 \begin{figure}[tb]
   \centering
