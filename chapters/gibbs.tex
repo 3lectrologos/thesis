@@ -361,11 +361,11 @@ The following theorem establishes conditions for fast mixing of the Gibbs sample
 \begin{theorem} \label{thm:fast}
   For any set function $F : 2^V \to \mathbb{R}$, if $\gf < 1$, then the mixing time of the Gibbs sampler is bounded by
   \begin{align*}
-  	\tme \leq \frac{1}{1 - \gf}n(\log n + \log \frac{1}{\epsilon}).
+  	\tme \leq \frac{1}{1 - \gf}n\left(\log n + \log \frac{1}{\epsilon}\right).
   \end{align*}
   If $F$ is additionally submodular or supermodular, and is decomposed according to \defref{def:decomp}, then
   \begin{align*}
-  	\tme \leq \frac{1}{1 - \gsf}n(\log n + \log \frac{1}{\epsilon}).
+  	\tme \leq \frac{1}{1 - \gsf}n\left(\log n + \log \frac{1}{\epsilon}\right).
   \end{align*}
 \end{theorem}
 Note that, in the second part of the theorem, $\gsf$ depends only on the monotone part of $F$. 

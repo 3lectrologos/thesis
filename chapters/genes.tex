@@ -105,8 +105,8 @@ For a general review of the topic, we refer to \cite{raphael14}.
 Previous \emph{de novo} methods have used different combinatorial or statistical scores to assess the degree of mutual exclusivity of a group of mutations.
 These are then paired with some discovery algorithm that exhaustively enumerates groups \citep{muex,yeang08}, progressively builds up larger groups from smaller ones \citep{mutex,rme,memo,timex}, or performs a randomized search in the group space \citep{dendrix,multidendrix,comet}.
 As a result, these methods either scale poorly in the number of mutations at hand, or require prior assumptions on the exact or maximum size of the groups to be discovered.
-In the following sections, we compare our results against the CoMEt algorithm \citep{comet}, which is a state-of-the-art method for discovering multiple groups of mutually exclusive mutations.
-While CoMEt requires prespecifying the number and size of groups to be searched for, it is able to ultimately put together a consensus of arbitrarily sized groups.
+In the following sections, we compare our results against the \comet{} algorithm \citep{comet}, which is a state-of-the-art method for discovering multiple groups of mutually exclusive mutations.
+While \comet{} requires prespecifying the number and size of groups to be searched for, it is able to ultimately put together a consensus of arbitrarily sized groups.
 
 \subsection{Our Approach}
 Assume that we are given a ground set $V = \{1,\ldots,n\}$ of possible gene mutations, and a data set of $N$ patients, $\mathcal{D} \defeq (D_1,\ldots,D_N)$, where $D_i \subseteq V$ is the combination of mutations that were present in patient $i$.
@@ -163,7 +163,7 @@ For each gene in a proposed mutation group, we run Fisher's one-tailed exact tes
 This results in one $p$-value per gene in the mutation group, and the output of the test is the maximum of these $p$-values.
 We will call this the ``one vs. all'' test, and denote its output $p$-value by $p_{\mathrm{ova}}$.
 
-The second was proposed by \cite{comet}, and used as part of the CoMEt algorithm.
+The second was proposed by \cite{comet}, and used as part of the \comet{} algorithm.
 It generalizes Fisher's exact test to higher-dimensional contingency tables.
 In particular, it consists of a null hypothesis of independent hypergeometric distributions, one for each mutation in the group, and uses as a test statistic the sum of patients in which exactly one mutation from the group occurs.
 We will call this the ``generalized Fisher'' test, and denote its output $p$-value by $p_{\mathrm{gf}}$.
@@ -252,9 +252,9 @@ For each value of $\gamma$, we repeat the experiment on $50$ randomly generated 
 
 We show the results of our procedure for two different values of the considered hypothesis testing level $\alpha$, which trades off between false negatives and false positives.
 For $\alpha = 0.01$, we have practically perfect recovery when $\gamma \geq 0.4$, but are not able to extract statistically significant groups below $\gamma = 0.3$. 
-Using a much higher $\alpha = 0.3$ trades off some false positives to gain statistical power, and exceeds the performance of CoMEt for almost all values of $\gamma$.
+Using a much higher $\alpha = 0.3$ trades off some false positives to gain statistical power, and exceeds the performance of \comet{} for almost all values of $\gamma$.
 Either way, the results show that, in the majority of the cases, the learned \fldc{} model is able to encode the correct group, and propose it for further testing.
-It is important to emphasize that CoMEt takes the size $k = 3$ of the group as input, although it can still output groups of different size; our method, on the other hand, does not use any such information.
+It is important to emphasize that \comet{} takes the size $k = 3$ of the group as input, although it can still output groups of different size; our method, on the other hand, does not use any such information.
 
 \setlength\figureheight{0.73\textwidth}
 \setlength\figurewidth{1\textwidth}
@@ -279,9 +279,9 @@ To assess the quality of the recovered groups against the true ones, we use the 
 Thus, an adjusted Rand index of $1$ indicates that the recovered groups are identical to the true ones.
 
 For each combination of $t$ and $k$ we repeated the experiment on $50$ randomly generated data sets.
-We ran CoMEt with fixed values of $t = 3$ and $k = 4$, as was done in the original paper \citep{comet}.
-\figref{fig:syn_multi} shows the results, in which we see that our method significantly outperforms CoMEt, especially at the lower values of $t$ and $k$.
-This showcases the problems encountered by CoMEt when the number and size of the groups to be found is misspecified.
+We ran \comet{} with fixed values of $t = 3$ and $k = 4$, as was done in the original paper \citep{comet}.
+\figref{fig:syn_multi} shows the results, in which we see that our method significantly outperforms \comet{}, especially at the lower values of $t$ and $k$.
+This showcases the problems encountered by \comet{} when the number and size of the groups to be found is misspecified.
 These problems are shared with several other methods proposed in the past.
 In contrast, we see that our method performs consistently well across all different values of $t$ and $k$, without any knowledge of these parameters.
 We also see that, in this case, a higher level $\alpha$ degrades the quality of the final results, because of the frequent occurrence of false positives.
@@ -291,7 +291,7 @@ We also see that, in this case, a higher level $\alpha$ degrades the quality of 
 \begin{figure}[htb]
   \hspace{-0.9cm}\input{figures/genes/syn_multi.tex}
   \caption{Results on recovering $t$ groups of $k$ mutually exclusive mutations.
-Our method performs consistently well across all different $t$ and $k$, while CoMEt performs poorly when $t$ and $k$ are misspecified.
+Our method performs consistently well across all different $t$ and $k$, while \comet{} performs poorly when $t$ and $k$ are misspecified.
   }
   \label{fig:syn_multi}
 \end{figure}
@@ -367,10 +367,10 @@ The highlighted entries represent co-occurring mutations.}
 \label{fig:att_aml}
 \end{figure}
 
-It is notable that CoMEt detects groups $R_1$ (without the last mutation, \textsf{RUNX1-RUNX1T1}) and $R_2$, but fails to detect any of the other six groups, even though almost all of them have particularly low $p_{\mathrm{gf}}$.
-We suspect that this is caused by the combination of CoMEt using as input a fixed number of groups and sizes thereof, as well as the fact that the algorithm's sampling-based searching procedure based works on a particularly slow-mixing landscape.
+It is notable that \comet{} detects groups $R_1$ (without the last mutation, \textsf{RUNX1-RUNX1T1}) and $R_2$, but fails to detect any of the other six groups, even though almost all of them have particularly low $p_{\mathrm{gf}}$.
+We suspect that this is caused by the combination of \comet{} using as input a fixed number of groups and sizes thereof, as well as the fact that the algorithm's sampling-based searching procedure based works on a particularly slow-mixing landscape.
 As an example, although the authors are searching for a group of size $6$, they never discover the group $R_3$ shown in \figref{fig:rep_aml_1}, because their sampler presumably gets stuck on group $R_1$, which has a few orders of magnitude lower $p_{\mathrm{gf}}$ compared to $R_3$.
-On the other hand, CoMEt detects two other groups (see \figref{fig:comet_aml} in the appendix), which have $p_{\mathrm{ova}}$ significantly above our cutoff, and furthermore, also have $p_{\mathrm{gf}}$ significantly higher than all our discovered groups except for $R_8$.
+On the other hand, \comet{} detects two other groups (see \figref{fig:comet_aml} in the appendix), which have $p_{\mathrm{ova}}$ significantly above our cutoff, and furthermore, also have $p_{\mathrm{gf}}$ significantly higher than all our discovered groups except for $R_8$.
 For a comparison of the discovered mutation interactions, we also refer to \citep[Figure S8]{tcga_aml}, which confirms many of our findings, although it is limited to pairwise interactions.
 
 \subsection{Breast cancer (BRCA)}
@@ -378,8 +378,8 @@ The data set consists of 375 mutations and 507 patients.
 We show the resulting learned \fldc{} model ($L = 15$) in \figref{fig:mat_brca}, the extracted mutually exclusive groups $R_1$--$R_{11}$ in \figsref{fig:rep_brca_1} and \ref{fig:rep_brca_2}, and a graphical summarization of all these groups in \figref{fig:graph_brca}.
 In \figref{fig:att_brca_1} we show the six extracted co-occurring groups with the highest coverage; groups $A_7$--$A_{14}$ can be found in \figsref{fig:att_brca_2} and \ref{fig:att_brca_3} in the appendix.
 
-The CoMEt results on BRCA take into account additional information about the classification of each patient into four different subtypes of breast cancer.
-While this means that we cannot directly compare our results to theirs, we still recover some of their findings (e.g., the first three mutations in $R_1$), but also extract significant groups that were not found by CoMEt, even when constrained to a specific subtype (e.g., $R_3$ for the ``Luminal-A'' subtype).
+The \comet{} results on BRCA take into account additional information about the classification of each patient into four different subtypes of breast cancer.
+While this means that we cannot directly compare our results to theirs, we still recover some of their findings (e.g., the first three mutations in $R_1$), but also extract significant groups that were not found by \comet{}, even when constrained to a specific subtype (e.g., $R_3$ for the ``Luminal-A'' subtype).
 Furthermore, we observe that the co-occurring groups $A_1$--$A_6$ are particularly significant, with $p$-values of order $10^{-5}$ or less.
 
 \begin{figure}[htbp]
