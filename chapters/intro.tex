@@ -5,10 +5,10 @@ Beyond investigating the occurrence of genetic mutations one by one, it is of pa
 
 For example, it has been observed that, depending on the type of cancer, there are groups of specific mutations that are approximately mutually exclusive, that is, most of the time no more than one mutation from a particular group occurs in the same patient \citep{yeang08}.
 Biologically this is explained by the fact that so-called driver mutations, i.e., mutations that are crucial in cancer development, often occur in a limited number of biological pathways, and mutations that affect a specific pathway tend to not occur in the same patient.
-Taking this in the opposite direction, discovering groups of mutually exclusive mutations may be helpful in uncovering the structure of cancer-related pathways, and identifying important groups of driver mutations.
+Conversely, discovering groups of mutually exclusive mutations may be helpful in uncovering the structure of cancer-related pathways, and identifying important groups of driver mutations.
 
 More concretely, assume that we are given a data set of $n$ mutations and $m$ patients.
-In the simplest case, the data set contains only binary information about whether or not each mutation $i \in [n]$ occurs in each patient $j \in [m]$, which can be encoded using a binary matrix, as shown at the top of \figref{fig:bamat}.
+In the simplest case, the data set contains only binary information about whether or not each mutation $i \in \{1,\ldots,n\}$ occurs in each patient $j \in \{1,\ldots,m\}$, which can be encoded using a binary matrix, as shown at the top of \figref{fig:bamat}.
 At the bottom of the same figure we show a permuted version of the previous matrix, which illustrates that the first four mutations are approximately mutually exclusive.
 Searching for such groups in data sets containing hundreds or thousands of mutations is a combinatorially daunting task.
 Crucially, the available data is quite limited---TCGA data sets range from a few hundred to a couple of thousand patients---and contains significant noise introduced by the employed measurement and preprocessing procedures.
@@ -36,12 +36,12 @@ Finally, constraining ourselves to specific model classes allows us to incorpora
 \section{Probabilistic Submodular Models}
 Past research on discrete probabilistic models has primarily focused on models defined by pairwise interactions, such as Markov random fields \citep{koller09}.
 In many applications, however, it is of importance to directly capture higher-order dependencies between larger groups of variables.
-For example, in our aforementioned application, being able to directly encode larger groups of mutually exclusive mutations provides a potentially sparser and easier to interpret representation, while at the same time allowing for a richer structure of interactions.
+For example, in our aforementioned application, being able to directly encode larger groups of mutually exclusive mutations provides a potentially sparser and easier to interpret representation, while at the same time it allows for a richer structure of interactions.
 
 On the other hand, in the context of discrete optimization, there has been extensive research on submodular set functions.
 Submodularity is a diminishing returns property that has been used to encode repulsiveness, diversity, or exclusivity.
 Analogously, its counterpart, supermodularity, has been used to encode attractiveness, cooperation, or co-occurence.
-Notably, there exist well-known efficient algorithms for both approximate submodular maximization, as well as submodular minimization.
+Notably, there exist well-known efficient algorithms for both approximate submodular maximization as well as submodular minimization.
 
 Merging these two directions naturally leads us to consider \emph{probabilistic submodular models} \citep{djolonga14,gotovos15}, a class of discrete probabilistic models defined by submodular (or supermodular) functions.
 More concretely, given a ground set $V = \{1,\ldots n\}$, a probabilistic submodular model is a distribution over subsets of $V$ of the form
@@ -57,7 +57,7 @@ The main topic of this thesis is to investigate the use of Markov chain Monte Ca
 
 The primary contributions of this thesis can be summarized as follows.
 \begin{itemize}[leftmargin=3.5em]
-\item[\textsf{Chapter 3}] We analyze the Gibbs sampler in probabilistic submodular models, and prove sufficient theoretical conditions for polynomial-time, and fast$\mathcal{O}(n\log n)$---mixing.
+\item[\textsf{Chapter 3}] We analyze the Gibbs sampler in probabilistic submodular models, and prove sufficient theoretical conditions for polynomial-time, and fast---$\mathcal{O}(n\log n)$---mixing.
 \item[\textsf{Chapter 4}] We propose a novel sampler that makes use of discrete semigradients to perform efficient global moves in the state space to avoid bottlenecks, thus leading to improved mixing compared to the Gibbs sampler.
 \item[\textsf{Chapter 5}] We use sampling to learn probabilistic submodular models via approximate likelihood maximization, and apply this procedure to the problem of modeling interactions between genetic mutations in cancer patients.
 Many of our results demonstrate considerable improvement over the state of the art.
