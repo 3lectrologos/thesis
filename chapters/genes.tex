@@ -126,7 +126,7 @@ This further justifies the pursuit of efficient sampling methods in the previous
 In practice, our algorithm only takes a few minutes to run on real cancer data sets containing hundreds of mutations.
 
 
-\subsection{Experimental setup}
+\subsection{Experimental Setup}
 We provide here some more details about each step of the procedure we use to discover mutually exclusive groups of mutations.
 The steps for discovering co-occurring groups are analogous.
 
@@ -300,7 +300,7 @@ Our method performs consistently well across all different $t$ and $k$, while \c
 We analyzed two real cancer data sets from TCGA, the first pertaining to acute myeloid leukemia \citep{tcga_aml}, and the second to breast cancer \citep{tcga_brca}.
 For both data sets, we used the preprocessed versions by \cite{comet} available on GitHub\footnote{\url{https://github.com/raphael-group/comet}}.
 
-\subsection{Acute myeloid leukemia (AML)}
+\subsection{Acute Myeloid Leukemia (AML)}
 The data set consists of 51 mutations and 200 patients.
 The learned \fldc{} model ($L = 10$) is shown in \figref{fig:mat_aml}.
 We have annotated on the two matrices the discovered mutually exclusive and co-occurring groups that have (uncorrected) $p$-values $\leq 0.01$ for both $p_{\mathrm{gf}}$ and $p_{\mathrm{ova}}$.
@@ -373,7 +373,7 @@ As an example, although the authors are searching for a group of size $6$, they 
 On the other hand, \comet{} detects two other groups (see \figref{fig:comet_aml} in the appendix), which have $p_{\mathrm{ova}}$ significantly above our cutoff, and furthermore, also have $p_{\mathrm{gf}}$ significantly higher than all our discovered groups except for $R_8$.
 For a comparison of the discovered mutation interactions, we also refer to \citep[Figure S8]{tcga_aml}, which confirms many of our findings, although it is limited to pairwise interactions.
 
-\subsection{Breast cancer (BRCA)}
+\subsection{Breast Cancer (BRCA)}
 The data set consists of 375 mutations and 507 patients.
 We show the resulting learned \fldc{} model ($L = 15$) in \figref{fig:mat_brca}, the extracted mutually exclusive groups $R_1$--$R_{11}$ in \figsref{fig:rep_brca_1} and \ref{fig:rep_brca_2}, and a graphical summarization of all these groups in \figref{fig:graph_brca}.
 In \figref{fig:att_brca_1} we show the six extracted co-occurring groups with the highest coverage; groups $A_7$--$A_{14}$ can be found in \figsref{fig:att_brca_2} and \ref{fig:att_brca_3} in the appendix.
