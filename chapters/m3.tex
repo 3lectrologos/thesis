@@ -362,7 +362,7 @@ To arrive at a practical algorithm, we approximate the above objective using the
 In the first step, we generate a permutation $\sigma$ of the ground set $V$ by running the greedy algorithm on function $D_i(S) \defeq F(S) - \log \sum_{j=1}^{i-1} \exp(m_j(S))$, as shown in \algoref{alg:greedy_dif} (cf. \algoref{alg:greedy}).
 Intuitively, the sets that are formed by elements near the beginning of $\sigma$ are those on which $F$ and the current mixture disagree by the most.
 Therefore, in the second step, we would like to add to the mixture a modular function $\mi$ that is a good approximation for $F$ on $\{\sigma_1, \ldots, \sigma_k\}$, for a choice of $1 \leq k \leq n$.
-To accomplish this, we propose using discrete semigradients.
+To accomplish this, we propose using discrete \emph{semigradients}.
 
 Semigradients are modular functions that provide lower (subgradient) or upper (supergradient) approximations of a set function $F$ \citep{fujishige05,iyer13}.
 More concretely, given a set $S \in \Omega$, a modular function $m$ is a subgradient of $F$ at $S$, if, for all $R \in \Omega$, $F(R) \geq F(S) + m(R) - m(S)$.

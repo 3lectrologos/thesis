@@ -180,7 +180,7 @@ Depending on the choice of these paths and the resulting load on the edges of th
 
 More concretely, let us assume that for some set function $F$ and corresponding distribution $p$ as in \eqref{eq:gibbs_pdef}, we construct the Gibbs chain on state space $\ss = 2^V$ with transition matrix $P$.
 We can view the state space as a directed graph that has vertex set $\ss$, and for any $A, B \in \ss$, contains edge $(S, S')$ if and only if $S \sim S'$, that is, if and only if $S$ and $S'$ differ by exactly one element.
-Now, for any pair of states $A, B \in \ss$, we define a \emph{canonical path}
+Now, for any pair of states $A, B \in \ss$, we define a canonical path
 \begin{align*}
 \gamma_{AB} \defeq (A = S_0, S_1, \ldots, S_{\ell} = B),
 \end{align*}
@@ -190,7 +190,7 @@ We also denote the set of all pairs of states whose canonical path goes through 
 \begin{align*}
 \mathcal{C}_{SS'} \defeq \sdef{(A, B) \in \ss \times \ss}{(S, S') \in \gamma_{AB}}.
 \end{align*}
-The following quantity, referred to as the \emph{congestion} of an edge, uses a collection of canonical paths to quantify to what amount that edge is overloaded:
+The following quantity, referred to as the congestion of an edge, uses a collection of canonical paths to quantify to what amount that edge is overloaded:
 \begin{align} \label{eq:cong}
   \rho(S, S') \defeq \frac{1}{Q(S, S')} \sum_{(A, B) \in \mathcal{C}_{SS'}} p(A) p(B) |\gamma_{AB}|.
 \end{align}
@@ -371,7 +371,7 @@ The following theorem establishes conditions for fast mixing of the Gibbs sample
 Note that, in the second part of the theorem, $\gsf$ depends only on the monotone part of $F$. 
 
 \subsection{Proof of \theoremref{thm:fast}}
-Our proof of \theoremref{thm:fast} is based on the \emph{coupling} technique \citep{aldous83}; more specifically, we use the \emph{path coupling} method \citep{bubley97,levin08,jerrum03}.
+Our proof of \theoremref{thm:fast} is based on the coupling technique \citep{aldous83}; more specifically, we use the \emph{path coupling} method \citep{bubley97,levin08,jerrum03}.
 Given a Markov chain $(Z_t)$ on state space $\ss$ with transition matrix $P$, a coupling for $(Z_t)$ is a new Markov chain $(X_t, Y_t)$ on state space $\ss \times \ss$, such that both $(X_t)$ and $(Y_t)$ are by themselves Markov chains with transition matrix $P$.
 The idea is to construct the coupling in such a way that, even when the starting points $X_0$ and $Y_0$ are different, the chains $(X_t)$ and $(Y_t)$ tend to coalesce.
 Then, it can be shown that the coupling time $t_{\mathrm{couple}} \defeq \min\sdef{t \geq 0}{X_t = Y_t}$ is closely related to the mixing time of the original chain $(Z_t)$ \citep{levin08}.
@@ -379,7 +379,7 @@ Then, it can be shown that the coupling time $t_{\mathrm{couple}} \defeq \min\sd
 The main difficulty in applying the coupling approach lies in the construction of the coupling itself, for which one needs to consider any possible pair of states $(X_t, Y_t)$.
 The path coupling technique makes this construction easier by utilizing the same state-space graph that we used to define canonical paths in \sectref{sect:poly}.
 The core idea is to first define a coupling only over adjacent states, and then extend it for any pair of states by using a metric on the graph.
-More concretely, let us denote by $d : \ss \times \ss \to \mathbb{R}$ the \emph{path metric} on state space $\ss$; that is, for any $x, y \in \ss$, $d(x, y)$ is the minimum length of any path from $x$ to $y$ in the state space graph.
+More concretely, let us denote by $d : \ss \times \ss \to \mathbb{R}$ the path metric on state space $\ss$; that is, for any $x, y \in \ss$, $d(x, y)$ is the minimum length of any path from $x$ to $y$ in the state space graph.
 The following theorem establishes fast mixing using this metric, as well as the diameter of the state space, $\mathrm{diam}(\ss) \defeq \max_{x,y \in \ss}d(x, y)$.
 \begin{theorem}[\hspace{1sp}\citealp{bubley97,levin08}] \label{thm:pc}
 For any Markov chain $(Z_t)$, let $(X_t, Y_t)$ be a coupling, such that, for some $a \geq 0$, and any $x, y \in \ss$ with $x \sim y$, it holds that

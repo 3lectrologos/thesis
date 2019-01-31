@@ -11,7 +11,7 @@ More concretely, assume that we are given a data set of $n$ mutations and $m$ pa
 In the simplest case, the data set contains only binary information about whether or not each mutation $i \in [n]$ occurs in each patient $j \in [m]$, which can be encoded using a binary matrix, as shown at the top of \figref{fig:bamat}.
 At the bottom of the same figure we show a permuted version of the previous matrix, which illustrates that the first four mutations are approximately mutually exclusive.
 Searching for such groups in data sets containing hundreds or thousands of mutations is a combinatorially daunting task.
-Crucially, the available data is quite limited---TCGA data sets range from a few hundred to a couple of thousand patients---, and contains significant noise introduced by the employed measurement and preprocessing procedures.
+Crucially, the available data is quite limited---TCGA data sets range from a few hundred to a couple of thousand patients---and contains significant noise introduced by the employed measurement and preprocessing procedures.
 
 \begin{figure}[tb]
 \centering
@@ -57,7 +57,7 @@ The main topic of this thesis is to investigate the use of Markov chain Monte Ca
 
 The primary contributions of this thesis can be summarized as follows.
 \begin{itemize}[leftmargin=3.5em]
-\item[\textsf{Chapter 3}] We analyze the Gibbs sampler in probabilistic submodular models, and prove sufficient theoretical conditions for polynomial-time, and fast---$\mathcal{O}(n\log n)$---mixing.
+\item[\textsf{Chapter 3}] We analyze the Gibbs sampler in probabilistic submodular models, and prove sufficient theoretical conditions for polynomial-time, and fast$\mathcal{O}(n\log n)$---mixing.
 \item[\textsf{Chapter 4}] We propose a novel sampler that makes use of discrete semigradients to perform efficient global moves in the state space to avoid bottlenecks, thus leading to improved mixing compared to the Gibbs sampler.
 \item[\textsf{Chapter 5}] We use sampling to learn probabilistic submodular models via approximate likelihood maximization, and apply this procedure to the problem of modeling interactions between genetic mutations in cancer patients.
 Many of our results demonstrate considerable improvement over the state of the art.
