@@ -204,9 +204,9 @@ We then proceed to upper bound $p_k$, and lower bound $q_k$.
 By definition, we can write $p_k = \hat{p}_k / Z$, where $\hat{p}_0 = 1$, and for $k > 0$ we have
 \begin{align*}
 \hat{p}_k &\defeq \binom{n}{k} \exp\left(-\frac{2\ln(n)}{n} k(n-k)\right)\\
-            &= \binom{n}{k} n^{-\frac{2k}{n} (n-k)}\\
-            &\leq \left(\frac{en}{k}\right)^k n^{-\frac{2k}{n} (n-k)}\\
-            &= \left(\frac{e}{k}\right)^k n^{-k + \frac{2k^2}{n}}.
+            &\,\,= \binom{n}{k} n^{-\frac{2k}{n} (n-k)}\\
+            &\,\,\leq \left(\frac{en}{k}\right)^k n^{-\frac{2k}{n} (n-k)}\\
+            &\,\,= \left(\frac{e}{k}\right)^k n^{-k + \frac{2k^2}{n}}.
 \end{align*}
 It follows that
 \begin{align} \label{eq:logpk}
