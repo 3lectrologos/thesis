@@ -5,8 +5,8 @@
 
 \def\xd{5}
 \def\yd{5/1.4142}
-\def\nopoff{0}
-\def\opoff{0}
+\def\opoff{0.1}
+\def\noff{20}
 
 \pgfdeclarelayer{bg}
 \pgfsetlayers{bg,main}
@@ -17,7 +17,7 @@
   yscale=1,
   C/.style={
     circle,
-    draw=darkcolor!50!black,
+    draw=white!100!black,
     fill=col3!20!white,
     text=textcolor,
     inner sep=1pt,
@@ -25,13 +25,13 @@
     minimum width=45pt
   },
   D/.style={
-    draw=darkcolor!50!black,
-    fill=col1dark,
+    draw=white!100!black,
+    fill=col1dark!10!Goldenrod,%col1dark!70!BrickRed,
     line width=1pt,
     %fill opacity=0.5
   },
   DC/.style={
-    draw=col1dark,
+    draw=white!100!black,
     line width=10pt,
     %draw opacity=0.5
   },
@@ -40,28 +40,28 @@
   }
 ]
 
-\node[C,fill=col3!14!white] (MLL) at (0,2*\yd) {};
-\node[C,fill=col3!84!white] (DNMT) at (-2*\yd,2*\yd) {};
+\node[C,fill=col3!34!white] (MLL) at (0,2*\yd) {};
+\node[C,fill=col3!100!white] (DNMT) at (-2*\yd,2*\yd) {};
 
-\node[C,fill=col3!26!white] (PML) at (-\yd,\yd) {};
-\node[C,fill=col3!89!white] (NPM) at (\yd,\yd) {};
-\node[C,fill=col3!18!white] (MLLf) at (\yd+\xd,\yd) {};
+\node[C,fill=col3!46!white] (PML) at (-\yd,\yd) {};
+\node[C,fill=col3!100!white] (NPM) at (\yd,\yd) {};
+\node[C,fill=col3!38!white] (MLLf) at (\yd+\xd,\yd) {};
 
-\node[C,fill=col3!42!white] (COH) at (-2*\yd,0) {};
-\node[C,fill=col3!31!white] (IDH1) at (-\yd,-\yd) {};
-\node[C,fill=col3!33!white] (IDH2) at (0,-2*\yd) {};
+\node[C,fill=col3!62!white] (COH) at (-2*\yd,0) {};
+\node[C,fill=col3!51!white] (IDH1) at (-\yd,-\yd) {};
+\node[C,fill=col3!53!white] (IDH2) at (0,-2*\yd) {};
 
-\node[C,fill=col3!11!white] (RXT) at (2*\yd+\xd,0) {};
-\node[C,fill=col3!33!white] (RUNX) at (\yd+\xd,-\yd) {};
-\node[C,fill=col3!24!white] (TP) at (\yd,-\yd) {};
-\node[C,fill=col3!18!white] (MYH) at (0,0) {};
+\node[C,fill=col3!31!white] (RXT) at (2*\yd+\xd,0) {};
+\node[C,fill=col3!53!white] (RUNX) at (\yd+\xd,-\yd) {};
+\node[C,fill=col3!44!white] (TP) at (\yd,-\yd) {};
+\node[C,fill=col3!38!white] (MYH) at (0,0) {};
 
-\node[C,fill=col3!92!white] (FLT) at (\yd+\xd,-\yd-\xd) {};
-\node[C,fill=col3!37!white] (NRAS) at (\yd,-\yd-\xd) {};
+\node[C,fill=col3!100!white] (FLT) at (\yd+\xd,-\yd-\xd) {};
+\node[C,fill=col3!57!white] (NRAS) at (\yd,-\yd-\xd) {};
 
-\node[C,fill=col3!41!white] (STK) at (\yd,-\yd-2*\xd) {};
-\node[C,fill=col3!14!white] (TYK) at (\yd+\xd,-\yd-2*\xd) {};
-\node[C,fill=col3!44!white] (SPL) at (2*\yd+\xd,-\yd-1.5*\xd) {};
+\node[C,fill=col3!61!white] (STK) at (\yd,-\yd-2*\xd) {};
+\node[C,fill=col3!34!white] (TYK) at (\yd+\xd,-\yd-2*\xd) {};
+\node[C,fill=col3!64!white] (SPL) at (2*\yd+\xd,-\yd-1.5*\xd) {};
 
 \begin{pgfonlayer}{bg}
 \draw[D,fill opacity=0.6+\opoff] (TP.center) -- (MYH.center) -- (PML.center) -- (NPM.center) -- (MLLf.center) -- (RXT.center) -- (RUNX.center) -- cycle;
