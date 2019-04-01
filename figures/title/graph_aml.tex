@@ -23,17 +23,17 @@
     text=textcolor,
     inner sep=1pt,
     line width=1.2pt,
-    minimum width=45pt
+    minimum width=25pt
   },
   D/.style={
     draw=white!100!black,
     fill=red!15!Goldenrod,%col1dark!70!BrickRed,
-    line width=1pt,
+    line width=1.2pt,
     %fill opacity=0.5
   },
   DC/.style={
     draw=white!100!black,
-    line width=1.2pt,
+    line width=3.6pt,
     %draw opacity=0.5
   },
   T/.style={
@@ -46,10 +46,10 @@
 
 \node[C,fill=col3!46!white] (PML) at (-\yd,\yd) {};
 \node[C,fill=col3!100!white] (NPM) at (\yd,\yd) {};
-\node[C,fill=col3!38!white] (MLLf) at (\yd+\xd,\yd) {};
+\node[C,minimum width=35pt,fill=col3!38!white] (MLLf) at (\yd+\xd,\yd) {};
 
 \node[C,fill=col3!62!white] (COH) at (-2*\yd,0) {};
-\node[C,fill=col3!51!white] (IDH1) at (-\yd,-\yd) {};
+\node[C,minimum width=45pt,fill=col3!51!white] (IDH1) at (-\yd,-\yd) {};
 \node[C,fill=col3!53!white] (IDH2) at (0,-2*\yd) {};
 
 \node[C,fill=col3!31!white] (RXT) at (2*\yd+\xd,0) {};
