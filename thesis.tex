@@ -115,7 +115,16 @@
 \newlength\figurewidth
 
 
+\newif\ifbookprint
+\bookprinttrue
+
 \begin{document}
+
+\ifbookprint
+\else
+\includepdf[pages={1}]{title/outer.pdf}
+\cleardoublepage
+\fi
 
 \frontmatter
 \pagestyle{frontmatter}
@@ -144,6 +153,8 @@
 \bibliography{thesis}
 \bibliographystyle{icml2019}
 
+\ifbookprint
 \includepdf[pages={1,2}]{cv.pdf}
+\fi
 
 \end{document}
